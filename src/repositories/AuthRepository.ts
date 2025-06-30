@@ -18,13 +18,25 @@ export interface ResetPasswordData {
 export class AuthRepository {
   // Obter usuário atual
   async getCurrentUser(): Promise<User | null> {
-    const { data: { user }, error } = await supabase.auth.getUser()
-    
-    if (error) {
-      throw new Error(`Erro ao obter usuário: ${error.message}`)
-    }
+    try {
+      const { data: { user }, error } = await supabase.auth.getUser()
+      
+      if (error) {
+        // Se o erro for relacionado à sessão ausente, retornar null silenciosamente
+        if (error.message.includes('Auth session missing') || error.message.includes('Invalid JWT')) {
+          return null
+        }
+        throw new Error(`Erro ao obter usuário: ${error.message}`)
+      }
 
-    return user
+      return user
+    } catch (error) {
+      // Se for erro de sessão ausente, retornar null
+      if (error instanceof Error && error.message.includes('Auth session missing')) {
+        return null
+      }
+      throw error
+    }
   }
 
   // Fazer login

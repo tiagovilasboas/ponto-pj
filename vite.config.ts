@@ -64,22 +64,7 @@ export default defineConfig({
             purpose: 'any'
           }
         ],
-        screenshots: [
-          {
-            src: '/screenshot-wide.png',
-            sizes: '1280x720',
-            type: 'image/png',
-            form_factor: 'wide',
-            label: 'Tela principal do Ponto PJ'
-          },
-          {
-            src: '/screenshot-narrow.png',
-            sizes: '750x1334',
-            type: 'image/png',
-            form_factor: 'narrow',
-            label: 'Tela principal do Ponto PJ'
-          }
-        ]
+
       }
     })
   ],

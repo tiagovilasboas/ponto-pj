@@ -141,7 +141,10 @@ export const useAppStore = create<AppState>((set, get) => ({
       // Tratar silenciosamente erros de autenticação
       // Não bloquear a aplicação com tela de erro
       set({ user: null, session: null, error: null, userLoaded: true })
-      console.error('Error loading user and session:', error)
+      // Log silencioso apenas em desenvolvimento
+      if (import.meta.env.DEV) {
+        console.error('Error loading user and session:', error)
+      }
     } finally {
       set({ loading: false })
     }
