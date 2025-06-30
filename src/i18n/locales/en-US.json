@@ -17,56 +17,40 @@
   },
   "auth": {
     "login": {
-      "title": "Sign in to access the system",
+      "title": "Login",
+      "subtitle": "Sign in to access the system",
       "email": "Email",
-      "emailPlaceholder": "your@email.com",
       "password": "Password",
-      "passwordPlaceholder": "Your password",
       "submit": "Sign In",
       "submitting": "Signing in...",
-      "noAccount": "Don't have an account?",
-      "signUp": "Sign up",
+      "success": "Login successful!",
       "errors": {
         "fillFields": "Please fill in all fields",
         "invalidCredentials": "Invalid email or password",
-        "emailNotConfirmed": "Please confirm your email before signing in",
-        "generic": "Error signing in"
-      },
-      "loginError": "Login error",
-      "registerError": "Registration error",
-      "loginSuccess": "Login successful",
-      "registerSuccess": "Registration successful",
-      "invalidEmail": "Invalid email",
-      "invalidPassword": "Invalid password",
-      "passwordMismatch": "Passwords don't match",
-      "weakPassword": "Password too weak",
-      "emailAlreadyExists": "Email already registered",
-      "userNotFound": "User not found",
-      "invalidCredentials": "Invalid credentials",
-      "tooManyAttempts": "Too many login attempts. Try again in 30 minutes.",
-      "insecureEnvironment": "Insecure environment. Use HTTPS.",
-      "invalidInput": "Invalid input data"
+        "emailNotConfirmed": "Email not confirmed",
+        "generic": "Login error"
+      }
     },
     "register": {
-      "title": "Create new account",
-      "subtitle": "Fill in the data to register",
+      "title": "Register",
+      "subtitle": "Create your account to get started",
       "email": "Email",
-      "emailPlaceholder": "your@email.com",
       "password": "Password",
-      "passwordPlaceholder": "Your password",
-      "submit": "Sign Up",
-      "submitting": "Signing up...",
-      "hasAccount": "Already have an account?",
-      "signIn": "Sign in",
+      "confirmPassword": "Confirm password",
+      "submit": "Register",
+      "submitting": "Registering...",
+      "success": "Account created successfully!",
       "errors": {
         "fillFields": "Please fill in all fields",
-        "generic": "Error signing up"
-      },
-      "success": "Registration successful! Sign in to continue."
+        "passwordsNotMatch": "Passwords do not match",
+        "generic": "Registration error"
+      }
     },
     "confirmPassword": "Confirm Password",
     "forgotPassword": "Forgot my password",
-    "logout": "Logout"
+    "logout": "Logout",
+    "notAuthenticated": "User not authenticated",
+    "logoutError": "Logout error"
   },
   "home": {
     "logout": "Sign Out",
@@ -118,6 +102,23 @@
       "workedTime": "Worked time",
       "manualEdit": "Manual entry"
     },
+    "feedback": {
+      "congratulations": "🎉 Congratulations! You have successfully completed your daily shift!",
+      "inProgress": "⏰ Your shift is in progress. Don't forget to end it!",
+      "startJourney": "🚀 Register your shift to start your work day.",
+      "manualBadge": "✏️ Manual entry"
+    },
+    "timeline": {
+      "start": "Start",
+      "end": "End",
+      "time": "Time"
+    },
+    "actions": {
+      "quickActions": "📋 Quick Actions",
+      "edit": "Edit",
+      "history": "History",
+      "pdf": "PDF"
+    },
     "edit": {
       "title": "Edit Session",
       "startTime": "Entry Time",
@@ -150,7 +151,10 @@
     "editError": "Error updating record",
     "editSession": "Edit Record",
     "editSessionSubtitle": "Change the entry and exit times for this day.",
-    "invalidTimes": "Exit time must be greater than entry time"
+    "invalidTimes": "Exit time must be greater than entry time",
+    "showing": "Showing",
+    "of": "of",
+    "records": "records"
   },
   "relatorio": {
     "title": "Monthly Report",
@@ -205,15 +209,11 @@
     "noData": "No data found"
   },
   "security": {
-    "alert": "Security Alert",
-    "sessionExpired": "Session expired due to inactivity",
-    "suspiciousActivity": "Suspicious activity detected",
-    "invalidSession": "Invalid session detected",
-    "suspiciousUrlChange": "Suspicious URL change detected",
-    "suspiciousUrlReplace": "Suspicious URL replacement detected",
-    "rateLimitExceeded": "Rate limit exceeded",
-    "invalidTimeFormat": "Invalid time format",
-    "invalidDateFormat": "Invalid date format",
-    "sessionRegisteredSuccessfully": "Session registered successfully"
+    "alertTitle": "Security Alert",
+    "session_integrity_failed": "Invalid session detected",
+    "suspicious_activity_detected": "Suspicious activity detected",
+    "user_inactivity_timeout": "Session expired due to inactivity",
+    "suspicious_url_change": "Suspicious URL change detected",
+    "suspicious_url_replace": "Suspicious URL replacement detected"
   }
 } 

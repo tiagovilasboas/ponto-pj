@@ -17,47 +17,37 @@
   },
   "auth": {
     "login": {
-      "title": "Faça login para acessar o sistema",
+      "title": "Entrar",
+      "subtitle": "Faça login para acessar o sistema",
       "email": "E-mail",
-      "emailPlaceholder": "seu@email.com",
       "password": "Senha",
-      "passwordPlaceholder": "Sua senha",
       "submit": "Entrar",
       "submitting": "Entrando...",
-      "noAccount": "Não tem uma conta?",
-      "signUp": "Cadastre-se",
+      "success": "Login realizado com sucesso!",
       "errors": {
         "fillFields": "Preencha todos os campos",
-        "invalidCredentials": "E-mail ou senha inválidos",
-        "emailNotConfirmed": "Confirme seu e-mail antes de entrar",
+        "invalidCredentials": "E-mail ou senha incorretos",
+        "emailNotConfirmed": "E-mail não confirmado",
         "generic": "Erro ao fazer login"
-      },
-      "loginError": "Erro ao fazer login"
+      }
     },
     "register": {
-      "title": "Criar nova conta",
-      "subtitle": "Preencha os dados para se cadastrar",
+      "title": "Cadastrar",
+      "subtitle": "Crie sua conta para começar",
       "email": "E-mail",
-      "emailPlaceholder": "seu@email.com",
       "password": "Senha",
-      "passwordPlaceholder": "Sua senha",
+      "confirmPassword": "Confirmar senha",
       "submit": "Cadastrar",
       "submitting": "Cadastrando...",
-      "hasAccount": "Já tem uma conta?",
-      "signIn": "Entrar",
+      "success": "Conta criada com sucesso!",
       "errors": {
         "fillFields": "Preencha todos os campos",
-        "generic": "Erro ao fazer cadastro"
-      },
-      "registerError": "Erro ao fazer cadastro",
-      "loginSuccess": "Login realizado com sucesso",
-      "registerSuccess": "Cadastro realizado com sucesso",
-      "invalidEmail": "E-mail inválido",
-      "invalidPassword": "Senha inválida",
-      "passwordMismatch": "Senhas não coincidem",
-      "weakPassword": "Senha muito fraca",
-      "success": "Cadastro realizado! Faça login para continuar."
-    }
+        "passwordsNotMatch": "As senhas não coincidem",
+        "generic": "Erro ao criar conta"
+      }
+    },
+    "notAuthenticated": "Usuário não autenticado",
+    "logoutError": "Erro no logout"
   },
   "home": {
     "logout": "Sair",
@@ -100,6 +90,23 @@
       "endedAt": "Encerrado às",
       "workedTime": "Tempo trabalhado",
       "manualEdit": "Registro manual"
+    },
+    "feedback": {
+      "congratulations": "🎉 Parabéns! Você completou sua jornada diária com sucesso!",
+      "inProgress": "⏰ Sua jornada está em andamento. Não esqueça de encerrar!",
+      "startJourney": "🚀 Registre sua jornada para começar o dia de trabalho.",
+      "manualBadge": "✏️ Registro manual"
+    },
+    "timeline": {
+      "start": "Início",
+      "end": "Fim",
+      "time": "Tempo"
+    },
+    "actions": {
+      "quickActions": "📋 Ações rápidas",
+      "edit": "Editar",
+      "history": "Histórico",
+      "pdf": "PDF"
     }
   },
   "database": {
@@ -129,7 +136,10 @@
     "deleteSession": "Excluir registro",
     "deleteConfirm": "Tem certeza que deseja excluir este registro? Esta ação não pode ser desfeita.",
     "deleteSuccess": "Registro excluído com sucesso.",
-    "deleteError": "Erro ao excluir registro."
+    "deleteError": "Erro ao excluir registro.",
+    "showing": "Mostrando",
+    "of": "de",
+    "records": "registros"
   },
   "relatorio": {
     "title": "Relatório Mensal",
@@ -152,5 +162,13 @@
     "exportPDF": "Exportar PDF",
     "exportSuccess": "PDF exportado com sucesso!",
     "exportError": "Erro ao exportar PDF"
+  },
+  "security": {
+    "alertTitle": "Alerta de Segurança",
+    "session_integrity_failed": "Sessão inválida detectada",
+    "suspicious_activity_detected": "Atividade suspeita detectada",
+    "user_inactivity_timeout": "Sessão expirada por inatividade",
+    "suspicious_url_change": "Mudança suspeita na URL detectada",
+    "suspicious_url_replace": "Substituição suspeita na URL detectada"
   }
 } 
