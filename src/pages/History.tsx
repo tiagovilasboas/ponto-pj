@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { Container, Stack, Card, Text, Badge, Group, ActionIcon, Modal, TextInput, Button, Select, Pagination } from '@mantine/core'
 import { IconEdit, IconCalendar, IconClock, IconTrash } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
@@ -31,7 +31,7 @@ export const History = () => {
 
   useEffect(() => {
     loadSessions()
-  }, [loadSessions])
+  }, [selectedMonth])
 
   const loadSessions = async (page: number = 1) => {
     setLoading(true)
