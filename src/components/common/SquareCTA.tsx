@@ -33,20 +33,29 @@ export const SquareCTA = ({
       withBorder
       className={`
         aspect-square cursor-pointer transition-all duration-200
+        min-h-[140px] min-w-[140px] touch-manipulation
         ${colorClasses[color]}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 hover:shadow-lg'}
+        ${disabled ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105 hover:shadow-lg active:scale-95'}
         ${loading ? 'animate-pulse' : ''}
       `}
       onClick={disabled || loading ? undefined : onClick}
-      p="md"
+      p="xl"
+      role="button"
+      tabIndex={disabled || loading ? -1 : 0}
+      onKeyDown={(e) => {
+        if ((e.key === 'Enter' || e.key === ' ') && !disabled && !loading) {
+          e.preventDefault()
+          onClick()
+        }
+      }}
     >
       <div className="h-full flex flex-col justify-center items-center text-center">
-        <Icon size={32} className="mb-3" />
-        <Text size="sm" fw={600} className="mb-1">
+        <Icon size={44} className="mb-4" />
+        <Text size="md" fw={600} className="mb-2 leading-tight">
           {title}
         </Text>
         {subtitle && (
-          <Text size="xs" opacity={0.7}>
+          <Text size="sm" opacity={0.7} className="leading-tight">
             {subtitle}
           </Text>
         )}
