@@ -1,15 +1,19 @@
 {
   "app": {
     "title": "Ponto PJ",
+    "welcome": "Bem-vindo",
     "loading": "Carregando...",
     "loadingPage": "Carregando página...",
     "error": "Erro",
-    "success": "Sucesso!",
+    "success": "Sucesso",
     "cancel": "Cancelar",
     "save": "Salvar",
     "saving": "Salvando...",
     "tryAgain": "Tentar novamente",
-    "unknownError": "Erro desconhecido"
+    "unknownError": "Erro desconhecido",
+    "logout": "Sair",
+    "back": "Voltar",
+    "delete": "Excluir"
   },
   "auth": {
     "login": {
@@ -20,14 +24,15 @@
       "passwordPlaceholder": "Sua senha",
       "submit": "Entrar",
       "submitting": "Entrando...",
-      "noAccount": "Não tem conta?",
+      "noAccount": "Não tem uma conta?",
       "signUp": "Cadastre-se",
       "errors": {
         "fillFields": "Preencha todos os campos",
         "invalidCredentials": "E-mail ou senha inválidos",
         "emailNotConfirmed": "Confirme seu e-mail antes de entrar",
         "generic": "Erro ao fazer login"
-      }
+      },
+      "loginError": "Erro ao fazer login"
     },
     "register": {
       "title": "Criar nova conta",
@@ -38,12 +43,19 @@
       "passwordPlaceholder": "Sua senha",
       "submit": "Cadastrar",
       "submitting": "Cadastrando...",
-      "hasAccount": "Já tem conta?",
-      "signIn": "Faça login",
+      "hasAccount": "Já tem uma conta?",
+      "signIn": "Entrar",
       "errors": {
         "fillFields": "Preencha todos os campos",
-        "generic": "Erro ao cadastrar"
+        "generic": "Erro ao fazer cadastro"
       },
+      "registerError": "Erro ao fazer cadastro",
+      "loginSuccess": "Login realizado com sucesso",
+      "registerSuccess": "Cadastro realizado com sucesso",
+      "invalidEmail": "E-mail inválido",
+      "invalidPassword": "Senha inválida",
+      "passwordMismatch": "Senhas não coincidem",
+      "weakPassword": "Senha muito fraca",
       "success": "Cadastro realizado! Faça login para continuar."
     }
   },
@@ -92,5 +104,53 @@
   },
   "database": {
     "constraintError": "Erro de configuração do banco: É necessário criar uma constraint única para user_id e date. Execute: ALTER TABLE work_sessions ADD CONSTRAINT work_sessions_user_id_date_key UNIQUE (user_id, date);"
+  },
+  "historico": {
+    "title": "Histórico de Registros",
+    "currentMonth": "Mês atual",
+    "date": "Data",
+    "entry": "Entrada",
+    "exit": "Saída",
+    "netTime": "Tempo líquido",
+    "status": "Status",
+    "actions": "Ações",
+    "edit": "Editar",
+    "complete": "Completa",
+    "incomplete": "Incompleta",
+    "manual": "Manual",
+    "noRecord": "Sem registro",
+    "noSessions": "Nenhum registro encontrado para este mês",
+    "loadError": "Erro ao carregar histórico",
+    "editSuccess": "Registro atualizado com sucesso!",
+    "editError": "Erro ao atualizar registro",
+    "editSession": "Editar Registro",
+    "editSessionSubtitle": "Altere os horários de entrada e saída para este dia.",
+    "invalidTimes": "Horário de saída deve ser maior que o de entrada",
+    "deleteSession": "Excluir registro",
+    "deleteConfirm": "Tem certeza que deseja excluir este registro? Esta ação não pode ser desfeita.",
+    "deleteSuccess": "Registro excluído com sucesso.",
+    "deleteError": "Erro ao excluir registro."
+  },
+  "relatorio": {
+    "title": "Relatório Mensal",
+    "selectMonth": "Selecionar mês",
+    "statistics": "Estatísticas do período",
+    "totalHours": "Total de horas",
+    "completeDays": "Dias completos",
+    "incompleteDays": "Dias incompletos",
+    "date": "Data",
+    "entry": "Entrada",
+    "exit": "Saída",
+    "netTime": "Tempo líquido",
+    "status": "Status",
+    "complete": "Completa",
+    "incomplete": "Incompleta",
+    "manual": "Manual",
+    "noRecord": "Sem registro",
+    "noSessions": "Nenhum registro encontrado para este mês",
+    "loadError": "Erro ao carregar relatório",
+    "exportPDF": "Exportar PDF",
+    "exportSuccess": "PDF exportado com sucesso!",
+    "exportError": "Erro ao exportar PDF"
   }
 } 

@@ -1,15 +1,19 @@
 {
   "app": {
     "title": "Time Clock PJ",
+    "welcome": "Welcome",
     "loading": "Loading...",
     "loadingPage": "Loading page...",
     "error": "Error",
-    "success": "Success!",
+    "success": "Success",
     "cancel": "Cancel",
     "save": "Save",
     "saving": "Saving...",
     "tryAgain": "Try again",
-    "unknownError": "Unknown error"
+    "unknownError": "Unknown error",
+    "logout": "Logout",
+    "back": "Back",
+    "delete": "Delete"
   },
   "auth": {
     "login": {
@@ -27,7 +31,21 @@
         "invalidCredentials": "Invalid email or password",
         "emailNotConfirmed": "Please confirm your email before signing in",
         "generic": "Error signing in"
-      }
+      },
+      "loginError": "Login error",
+      "registerError": "Registration error",
+      "loginSuccess": "Login successful",
+      "registerSuccess": "Registration successful",
+      "invalidEmail": "Invalid email",
+      "invalidPassword": "Invalid password",
+      "passwordMismatch": "Passwords don't match",
+      "weakPassword": "Password too weak",
+      "emailAlreadyExists": "Email already registered",
+      "userNotFound": "User not found",
+      "invalidCredentials": "Invalid credentials",
+      "tooManyAttempts": "Too many login attempts. Try again in 30 minutes.",
+      "insecureEnvironment": "Insecure environment. Use HTTPS.",
+      "invalidInput": "Invalid input data"
     },
     "register": {
       "title": "Create new account",
@@ -45,12 +63,24 @@
         "generic": "Error signing up"
       },
       "success": "Registration successful! Sign in to continue."
-    }
+    },
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot my password",
+    "logout": "Logout"
   },
   "home": {
     "logout": "Sign Out",
     "logoutSuccess": "Successfully signed out!",
-    "logoutError": "Error signing out"
+    "logoutError": "Error signing out",
+    "welcome": "Welcome",
+    "today": "Today",
+    "currentSession": "Current Session",
+    "noSession": "No active session",
+    "startSession": "Start Session",
+    "endSession": "End Session",
+    "manualRegister": "Manual Register",
+    "totalHours": "Total Hours",
+    "status": "Status"
   },
   "user": {
     "title": "User",
@@ -69,14 +99,15 @@
       "error": "Error ending shift"
     },
     "manual": {
-      "title": "Manual Entry",
-      "subtitle": "Enter start and end times for today.",
+      "title": "Manual Register",
+      "subtitle": "Manually register your entry and exit times",
       "currentTime": "Current Time",
-      "startTime": "Start Time",
-      "endTime": "End Time",
-      "fillTimes": "Please fill in start and end times",
-      "success": "Manual entry completed successfully!",
-      "error": "Error creating manual entry"
+      "startTime": "Entry Time",
+      "endTime": "Exit Time",
+      "fillTimes": "Fill in entry and exit times",
+      "success": "Session registered successfully",
+      "error": "Error registering session",
+      "invalidTimeFormat": "Invalid time format"
     },
     "status": {
       "noSession": "No entry for today",
@@ -86,9 +117,103 @@
       "endedAt": "Ended at",
       "workedTime": "Worked time",
       "manualEdit": "Manual entry"
+    },
+    "edit": {
+      "title": "Edit Session",
+      "startTime": "Entry Time",
+      "endTime": "Exit Time",
+      "success": "Session updated successfully",
+      "error": "Error updating session"
     }
   },
   "database": {
-    "constraintError": "Database configuration error: A unique constraint for user_id and date is required. Execute: ALTER TABLE work_sessions ADD CONSTRAINT work_sessions_user_id_date_key UNIQUE (user_id, date);"
+    "constraintError": "Database configuration error: A unique constraint for user_id and date is required. Execute: ALTER TABLE work_sessions ADD CONSTRAINT work_sessions_user_id_date_key UNIQUE (user_id, date);",
+    "constraintError": "Database constraint error"
+  },
+  "historico": {
+    "title": "Time Records History",
+    "currentMonth": "Current month",
+    "date": "Date",
+    "entry": "Entry",
+    "exit": "Exit",
+    "netTime": "Net time",
+    "status": "Status",
+    "actions": "Actions",
+    "edit": "Edit",
+    "complete": "Complete",
+    "incomplete": "Incomplete",
+    "manual": "Manual",
+    "noRecord": "No record",
+    "noSessions": "No records found for this month",
+    "loadError": "Error loading history",
+    "editSuccess": "Record updated successfully!",
+    "editError": "Error updating record",
+    "editSession": "Edit Record",
+    "editSessionSubtitle": "Change the entry and exit times for this day.",
+    "invalidTimes": "Exit time must be greater than entry time"
+  },
+  "relatorio": {
+    "title": "Monthly Report",
+    "selectMonth": "Select month",
+    "statistics": "Period statistics",
+    "totalHours": "Total hours",
+    "completeDays": "Complete days",
+    "incompleteDays": "Incomplete days",
+    "date": "Date",
+    "entry": "Entry",
+    "exit": "Exit",
+    "netTime": "Net time",
+    "status": "Status",
+    "complete": "Complete",
+    "incomplete": "Incomplete",
+    "manual": "Manual",
+    "noRecord": "No record",
+    "noSessions": "No records found for this month",
+    "loadError": "Error loading report",
+    "exportPDF": "Export PDF",
+    "exportSuccess": "PDF exported successfully!",
+    "exportError": "Error exporting PDF"
+  },
+  "history": {
+    "title": "History",
+    "noSessions": "No sessions found",
+    "date": "Date",
+    "startTime": "Entry",
+    "endTime": "Exit",
+    "duration": "Duration",
+    "status": "Status",
+    "actions": "Actions",
+    "edit": "Edit",
+    "complete": "Complete",
+    "incomplete": "Incomplete",
+    "manual": "Manual",
+    "deleteSession": "Delete record",
+    "deleteConfirm": "Are you sure you want to delete this record? This action cannot be undone.",
+    "deleteSuccess": "Record deleted successfully.",
+    "deleteError": "Error deleting record."
+  },
+  "report": {
+    "title": "Report",
+    "month": "Month",
+    "totalHours": "Total Hours",
+    "completeDays": "Complete Days",
+    "incompleteDays": "Incomplete Days",
+    "export": "Export PDF",
+    "exporting": "Exporting...",
+    "exportSuccess": "Report exported successfully",
+    "exportError": "Error exporting report",
+    "noData": "No data found"
+  },
+  "security": {
+    "alert": "Security Alert",
+    "sessionExpired": "Session expired due to inactivity",
+    "suspiciousActivity": "Suspicious activity detected",
+    "invalidSession": "Invalid session detected",
+    "suspiciousUrlChange": "Suspicious URL change detected",
+    "suspiciousUrlReplace": "Suspicious URL replacement detected",
+    "rateLimitExceeded": "Rate limit exceeded",
+    "invalidTimeFormat": "Invalid time format",
+    "invalidDateFormat": "Invalid date format",
+    "sessionRegisteredSuccessfully": "Session registered successfully"
   }
 } 

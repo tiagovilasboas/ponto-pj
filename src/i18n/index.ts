@@ -39,9 +39,6 @@ i18n
       
       // Cache do idioma detectado
       caches: ['localStorage', 'cookie'],
-      
-      // Idioma padrão
-      fallbackLng: 'pt-BR',
     }
   })
 
