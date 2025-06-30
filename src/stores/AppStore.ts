@@ -3,6 +3,8 @@ import { AuthRepository } from '@/repositories/AuthRepository'
 import { WorkSessionRepository } from '@/repositories/WorkSessionRepository'
 import type { User } from '@supabase/supabase-js'
 import type { WorkSession } from '@/types/workSession'
+import { SecurityUtils } from '@/lib/security'
+import { getCurrentDate } from '@/lib/utils'
 
 interface AppState {
   // State
@@ -11,13 +13,15 @@ interface AppState {
   loading: boolean
   actionLoading: boolean
   error: string | null
+  userLoaded: boolean // Flag para controlar se o usuário já foi carregado
 
   // Actions
   setUser: (user: User | null) => void
   setSession: (session: WorkSession | null) => void
   setLoading: (loading: boolean) => void
-  setActionLoading: (loading: boolean) => void
+  setActionLoading: (actionLoading: boolean) => void
   setError: (error: string | null) => void
+  setUserLoaded: (loaded: boolean) => void
 
   // Auth actions
   login: (email: string, password: string) => Promise<void>
@@ -46,6 +50,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   loading: true,
   actionLoading: false,
   error: null,
+  userLoaded: false,
 
   // State setters
   setUser: (user) => set({ user }),
@@ -53,14 +58,40 @@ export const useAppStore = create<AppState>((set, get) => ({
   setLoading: (loading) => set({ loading }),
   setActionLoading: (actionLoading) => set({ actionLoading }),
   setError: (error) => set({ error }),
+  setUserLoaded: (loaded) => set({ userLoaded: loaded }),
 
   // Auth actions
   login: async (email: string, password: string) => {
+    // Validação de entrada (menos restritiva em desenvolvimento)
+    if (!import.meta.env.DEV && (!SecurityUtils.validateInput(email, 'email') || !SecurityUtils.validateInput(password, 'password'))) {
+      SecurityUtils.logSecurityEvent('invalid_input', { email: email.substring(0, 10) + '...' })
+      throw new Error('Dados de entrada inválidos')
+    }
+
+    // Rate limiting (desabilitado em desenvolvimento)
+    if (!import.meta.env.DEV) {
+      const identifier = email.toLowerCase()
+      if (!SecurityUtils.checkRateLimit(identifier)) {
+        SecurityUtils.logSecurityEvent('rate_limit_exceeded', { email: email.substring(0, 10) + '...' })
+        throw new Error('Muitas tentativas de login. Tente novamente em 30 minutos.')
+      }
+    }
+
+    // Verificação de ambiente seguro (desabilitada em desenvolvimento)
+    if (!import.meta.env.DEV && !SecurityUtils.isSecureEnvironment()) {
+      SecurityUtils.logSecurityEvent('insecure_environment')
+      throw new Error('Ambiente não seguro. Use HTTPS.')
+    }
+
     set({ actionLoading: true })
     try {
       const { user, error } = await authRepository.signIn({ email, password })
-      if (error) throw new Error(error.message)
+      if (error) {
+        SecurityUtils.logSecurityEvent('login_failed', { email: email.substring(0, 10) + '...' })
+        throw new Error(error.message)
+      }
       if (user) {
+        SecurityUtils.logSecurityEvent('login_success', { userId: user.id })
         set({ user })
         await get().loadUserAndSession()
       }
@@ -76,7 +107,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ actionLoading: true, error: null })
     try {
       await authRepository.signOut()
-      set({ user: null, session: null })
+      set({ user: null, session: null, userLoaded: false })
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
       throw new Error(errorMessage)
@@ -86,21 +117,30 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   loadUserAndSession: async () => {
+    const { userLoaded } = get()
+    
+    // Se já foi carregado, não executar novamente
+    if (userLoaded) {
+      return
+    }
+
     set({ loading: true, error: null })
     try {
       const user = await authRepository.getCurrentUser()
       if (user) {
         set({ user })
-        const today = new Date().toISOString().split('T')[0]
+        
+        // Carregar sessão do dia diretamente
+        const today = getCurrentDate()
         const session = await workSessionRepository.findByUserAndDate(user.id, today)
-        set({ session })
+        set({ session, userLoaded: true })
       } else {
-        set({ user: null, session: null })
+        set({ user: null, session: null, userLoaded: true })
       }
     } catch (error: unknown) {
       // Tratar silenciosamente erros de autenticação
       // Não bloquear a aplicação com tela de erro
-      set({ user: null, session: null, error: null })
+      set({ user: null, session: null, error: null, userLoaded: true })
       console.error('Error loading user and session:', error)
     } finally {
       set({ loading: false })
@@ -114,7 +154,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       const { user } = get()
       if (!user) throw new Error('Usuário não autenticado')
 
-      const today = new Date().toISOString().split('T')[0]
+      const today = getCurrentDate()
       const now = new Date().toLocaleTimeString('pt-BR', { 
         hour: '2-digit', 
         minute: '2-digit',
@@ -131,6 +171,12 @@ export const useAppStore = create<AppState>((set, get) => ({
       set({ session })
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
+      
+      // Tratar erro específico de foreign key
+      if (errorMessage.includes('Usuário não encontrado no sistema') || errorMessage.includes('23503')) {
+        throw new Error('Erro de configuração: Usuário não encontrado no sistema. Entre em contato com o administrador.')
+      }
+      
       throw new Error(errorMessage)
     } finally {
       set({ actionLoading: false })
@@ -163,6 +209,12 @@ export const useAppStore = create<AppState>((set, get) => ({
       set({ session: updatedSession })
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
+      
+      // Tratar erro específico de foreign key
+      if (errorMessage.includes('Usuário não encontrado no sistema') || errorMessage.includes('23503')) {
+        throw new Error('Erro de configuração: Usuário não encontrado no sistema. Entre em contato com o administrador.')
+      }
+      
       throw new Error(errorMessage)
     } finally {
       set({ actionLoading: false })
@@ -175,7 +227,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       const { user } = get()
       if (!user) throw new Error('Usuário não autenticado')
 
-      const today = new Date().toISOString().split('T')[0]
+      const today = getCurrentDate()
 
       // Calculate worked time
       const start = new Date(`2000-01-01T${startTime}`)
@@ -195,6 +247,12 @@ export const useAppStore = create<AppState>((set, get) => ({
       set({ session })
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido'
+      
+      // Tratar erro específico de foreign key
+      if (errorMessage.includes('Usuário não encontrado no sistema') || errorMessage.includes('23503')) {
+        throw new Error('Erro de configuração: Usuário não encontrado no sistema. Entre em contato com o administrador.')
+      }
+      
       throw new Error(errorMessage)
     } finally {
       set({ actionLoading: false })
