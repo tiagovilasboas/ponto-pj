@@ -184,31 +184,56 @@ export class WorkSessionService {
   }
 
   /**
-   * Retorna todos os registros do usuário no mês selecionado
+   * Retorna todos os registros do usuário no mês selecionado com paginação
    */
-  async getSessionsForMonth(month: string): Promise<WorkSession[]> {
+  async getSessionsForMonth(month: string, page: number = 1, limit: number = 20): Promise<{
+    sessions: WorkSession[]
+    total: number
+    page: number
+    totalPages: number
+  }> {
     try {
       const userId = await this.getUserId()
       
       // Usar utilitário para obter range de datas do mês
       const { startDate, endDate } = getMonthDateRange(month)
 
-      console.log('Buscando sessões:', { startDate, endDate, userId })
+      // Primeiro, contar o total de registros
+      const { count, error: countError } = await supabase
+        .from('work_sessions')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .gte('date', startDate)
+        .lte('date', endDate)
 
+      if (countError) {
+        throw new Error(countError.message)
+      }
+
+      const total = count || 0
+      const totalPages = Math.ceil(total / limit)
+      const offset = (page - 1) * limit
+
+      // Buscar registros paginados com query mais explícita
       const { data, error } = await supabase
         .from('work_sessions')
         .select('*')
         .eq('user_id', userId)
         .gte('date', startDate)
         .lte('date', endDate)
-        .order('date', { ascending: true })
+        .order('date', { ascending: false }) // Mais novos primeiro
+        .range(offset, offset + limit - 1)
 
       if (error) {
         throw new Error(error.message)
       }
 
-      console.log('Sessões encontradas:', data?.length || 0)
-      return data || []
+      return {
+        sessions: data || [],
+        total,
+        page,
+        totalPages
+      }
     } catch (error) {
       console.error('Erro ao buscar sessões do mês:', error)
       throw error
@@ -225,7 +250,7 @@ export class WorkSessionService {
     totalDays: number
   }> {
     try {
-      const sessions = await this.getSessionsForMonth(month)
+      const { sessions } = await this.getSessionsForMonth(month, 1, 1000) // Buscar todas as sessões para estatísticas
       
       let totalHours = 0
       let completeDays = 0
@@ -274,6 +299,8 @@ export class WorkSessionService {
       throw error
     }
   }
+
+
 }
 
 // Instância singleton do serviço

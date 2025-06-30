@@ -22,7 +22,8 @@ export function getMonthOptionsThisYear(yearsBack = 0) {
     const startMonth = y === currentYear ? currentMonth : 12
     const endMonth = y === currentYear - yearsBack ? 1 : 1
     
-    for (let m = startMonth; m >= endMonth; m--) {
+    // Ordenar do mês 1 ao 12 (ou até o mês atual)
+    for (let m = endMonth; m <= startMonth; m++) {
       const value = `${y}-${String(m).padStart(2, '0')}`
       const label = `${new Date(y, m - 1, 1).toLocaleString('pt-BR', { month: 'long' })} ${y}`
       options.push({ value, label: label.charAt(0).toUpperCase() + label.slice(1) })
@@ -68,6 +69,36 @@ export function formatMonthForDisplay(monthString: string, locale = 'pt-BR'): st
 }
 
 /**
+ * Formata data para exibição com dia da semana (ex: "30/06/2025 (Seg)")
+ * @param dateString - String de data (YYYY-MM-DD)
+ * @param locale - Locale para formatação (padrão: 'pt-BR')
+ * @returns String formatada com dia da semana
+ */
+export function formatDateWithWeekday(dateString: string, locale = 'pt-BR'): string {
+  const date = new Date(dateString)
+  const dayOfWeek = date.getDay() // 0 = Domingo, 6 = Sábado
+  
+  // Abreviações dos dias da semana
+  const weekdayAbbr = {
+    0: 'Dom', // Domingo
+    1: 'Seg', // Segunda
+    2: 'Ter', // Terça
+    3: 'Qua', // Quarta
+    4: 'Qui', // Quinta
+    5: 'Sex', // Sexta
+    6: 'Sáb'  // Sábado
+  }
+  
+  const formattedDate = date.toLocaleDateString(locale, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  })
+  
+  return `${formattedDate} (${weekdayAbbr[dayOfWeek as keyof typeof weekdayAbbr]})`
+}
+
+/**
  * Formata data para exibição (ex: "30/06/2025")
  * @param dateString - String de data (YYYY-MM-DD)
  * @param locale - Locale para formatação (padrão: 'pt-BR')
@@ -88,7 +119,15 @@ export function formatDateForDisplay(dateString: string, locale = 'pt-BR'): stri
  */
 export function getMonthDateRange(monthString: string) {
   const [year, month] = monthString.split('-').map(Number)
+  
+  // Validar entrada
+  if (!year || !month || month < 1 || month > 12) {
+    throw new Error(`Mês inválido: ${monthString}`)
+  }
+  
   const startDate = `${monthString}-01`
+  
+  // Calcular último dia do mês de forma mais robusta
   const lastDay = new Date(year, month, 0).getDate()
   const endDate = `${monthString}-${String(lastDay).padStart(2, '0')}`
   
