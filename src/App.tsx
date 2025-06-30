@@ -1,14 +1,18 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { MantineProvider, createTheme, LoadingOverlay, Center, Text } from '@mantine/core'
+import { MantineProvider, createTheme, Center, Text } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
 import { useAppStore } from '@/hooks/useAppStore'
 import { useTranslation } from '@/i18n/useTranslation'
 import { useEffect, Suspense, lazy } from 'react'
+import { SecurityMonitor } from './components/security/SecurityMonitor'
+import './index.css'
 
 const Home = lazy(() => import('@/pages/Home').then(m => ({ default: m.Home })))
 const Login = lazy(() => import('@/pages/Login').then(m => ({ default: m.Login })))
 const Register = lazy(() => import('@/pages/Register').then(m => ({ default: m.Register })))
+const History = lazy(() => import('@/pages/History').then(m => ({ default: m.History })))
+const Report = lazy(() => import('@/pages/Report').then(m => ({ default: m.Report })))
 
 const theme = createTheme({
   primaryColor: 'blue',
@@ -43,19 +47,19 @@ const theme = createTheme({
 })
 
 function App() {
-  const { loading, loadUserAndSession } = useAppStore()
+  const { loadUserAndSession } = useAppStore()
   const { t } = useTranslation()
 
   // Inicializar dados de autenticação ao carregar a aplicação
   useEffect(() => {
     loadUserAndSession()
-  }, [])
+  }, [loadUserAndSession])
 
   return (
     <MantineProvider theme={theme}>
-      <Notifications position="top-right" />
+      <Notifications />
       <Router>
-        <LoadingOverlay visible={loading} />
+        <SecurityMonitor />
         <Suspense fallback={
           <Center h="100vh">
             <Text size="lg">{t('app.loadingPage')}</Text>
@@ -64,6 +68,29 @@ function App() {
           <Routes>
             {/* Rota pública - Login */}
             <Route path="/login" element={<Login />} />
+            
+            {/* Rota para cadastro */}
+            <Route path="/register" element={<Register />} />
+
+            {/* Protected route - History */}
+            <Route 
+              path="/history" 
+              element={
+                <ProtectedRoute>
+                  <History />
+                </ProtectedRoute>
+              } 
+            />
+
+            {/* Protected route - Report */}
+            <Route 
+              path="/report" 
+              element={
+                <ProtectedRoute>
+                  <Report />
+                </ProtectedRoute>
+              } 
+            />
             
             {/* Rota protegida - Home */}
             <Route 
@@ -74,9 +101,6 @@ function App() {
                 </ProtectedRoute>
               } 
             />
-
-            {/* Rota para cadastro */}
-            <Route path="/register" element={<Register />} />
           </Routes>
         </Suspense>
       </Router>

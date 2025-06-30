@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { TextInput, PasswordInput, Button, Card, Title, Stack, Container, Text, Center, Anchor, Group } from '@mantine/core'
+import { TextInput, PasswordInput, Card, Title, Stack, Container, Text, Center, Anchor, Group } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconMail, IconLock, IconUserPlus } from '@tabler/icons-react'
+import { IconMail, IconLock } from '@tabler/icons-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthRepository } from '@/repositories/AuthRepository'
 import { useTranslation } from '@/i18n/useTranslation'
+import { PrimaryButton } from '../components/common/PrimaryButton'
 
 export const Register = () => {
   const [email, setEmail] = useState('')
@@ -88,33 +89,13 @@ export const Register = () => {
                 />
 
                 <Stack gap="xs" align="center">
-                  <Button
+                  <PrimaryButton
                     type="submit"
                     loading={loading}
-                    leftSection={<IconUserPlus size={16} />}
-                    size="md"
-                    fullWidth
-                    variant="gradient"
-                    gradient={{ from: 'blue', to: 'indigo' }}
-                    styles={{
-                      root: {
-                        color: 'white !important',
-                        backgroundColor: 'transparent !important',
-                        '&:hover': {
-                          transform: 'translateY(-1px)',
-                          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                        },
-                        '& .mantine-Button-label': {
-                          color: 'white !important',
-                        },
-                        '& .mantine-Button-leftSection': {
-                          color: 'white !important',
-                        },
-                      },
-                    }}
+                    className="w-full mt-2"
                   >
-                    {loading ? t('auth.register.submitting') : t('auth.register.submit')}
-                  </Button>
+                    {t('auth.register.submit')}
+                  </PrimaryButton>
                   <Group gap={4}>
                     <Text size="sm" c="gray.7">{t('auth.register.hasAccount')}</Text>
                     <Anchor component={Link} to="/login" size="sm">{t('auth.register.signIn')}</Anchor>

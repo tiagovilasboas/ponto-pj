@@ -1,11 +1,12 @@
 import { useAppStore } from '@/hooks/useAppStore'
 import { useState } from 'react'
-import { TextInput, PasswordInput, Button, Card, Title, Stack, Container, Text, Center, Anchor, Group } from '@mantine/core'
+import { TextInput, PasswordInput, Card, Title, Stack, Container, Text, Center, Anchor, Group } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
-import { IconMail, IconLock, IconLogin } from '@tabler/icons-react'
+import { IconMail, IconLock } from '@tabler/icons-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { mapAuthError, AuthErrorType } from '@/types/auth'
 import { useTranslation } from '@/i18n/useTranslation'
+import { PrimaryButton } from '../components/common/PrimaryButton'
 
 export const Login = () => {
   const appStore = useAppStore()
@@ -79,33 +80,13 @@ export const Login = () => {
                 />
 
                 <Stack gap="xs" align="center">
-                  <Button
+                  <PrimaryButton
                     type="submit"
                     loading={appStore.actionLoading}
-                    leftSection={<IconLogin size={16} />}
-                    size="md"
-                    fullWidth
-                    variant="gradient"
-                    gradient={{ from: 'blue', to: 'indigo' }}
-                    styles={{
-                      root: {
-                        color: 'white !important',
-                        backgroundColor: 'transparent !important',
-                        '&:hover': {
-                          transform: 'translateY(-1px)',
-                          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                        },
-                        '& .mantine-Button-label': {
-                          color: 'white !important',
-                        },
-                        '& .mantine-Button-leftSection': {
-                          color: 'white !important',
-                        },
-                      },
-                    }}
+                    className="w-full mt-2"
                   >
                     {appStore.actionLoading ? t('auth.login.submitting') : t('auth.login.submit')}
-                  </Button>
+                  </PrimaryButton>
                   <Group gap={4}>
                     <Text size="sm" c="gray.7">{t('auth.login.noAccount')}</Text>
                     <Anchor component={Link} to="/register" size="sm">{t('auth.login.signUp')}</Anchor>
