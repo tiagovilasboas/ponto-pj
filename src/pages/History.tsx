@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import { Container, Stack, Card, Text, Badge, Group, ActionIcon, Modal, TextInput, Button, Select } from '@mantine/core'
+import { useState, useEffect, useCallback } from 'react'
+import { Container, Stack, Card, Text, Badge, Group, ActionIcon, Modal, TextInput, Button, Select, Pagination } from '@mantine/core'
 import { IconEdit, IconCalendar, IconClock, IconTrash } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
 import { useTranslation } from '@/i18n/useTranslation'
@@ -7,7 +7,7 @@ import { useAppStore } from '@/hooks/useAppStore'
 import { AppHeader } from '@/components/common/AppHeader'
 import { BottomNavigation } from '@/components/common/BottomNavigation'
 import { workSessionService } from '@/services'
-import { getMonthOptionsThisYear, getCurrentMonth, formatDateForDisplay } from '@/lib/utils'
+import { getMonthOptionsThisYear, getCurrentMonth, formatDateWithWeekday } from '@/lib/utils'
 import type { WorkSession } from '@/types/workSession'
 
 export const History = () => {
@@ -15,6 +15,9 @@ export const History = () => {
   const { formatTime, formatWorkedHours } = useAppStore()
   const [sessions, setSessions] = useState<WorkSession[]>([])
   const [loading, setLoading] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalSessions, setTotalSessions] = useState(0)
   const monthOptions = getMonthOptionsThisYear()
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth())
   const [editingSession, setEditingSession] = useState<WorkSession | null>(null)
@@ -28,13 +31,16 @@ export const History = () => {
 
   useEffect(() => {
     loadSessions()
-  }, [selectedMonth])
+  }, [loadSessions])
 
-  const loadSessions = async () => {
+  const loadSessions = async (page: number = 1) => {
     setLoading(true)
     try {
-      const data = await workSessionService.getSessionsForMonth(selectedMonth)
-      setSessions(data)
+      const result = await workSessionService.getSessionsForMonth(selectedMonth, page, 10) // 10 itens por página
+      setSessions(result.sessions)
+      setTotalPages(result.totalPages)
+      setTotalSessions(result.total)
+      setCurrentPage(result.page)
     } catch {
       notifications.show({
         title: t('app.error'),
@@ -44,6 +50,10 @@ export const History = () => {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handlePageChange = (page: number) => {
+    loadSessions(page)
   }
 
   const handleEditSession = (session: WorkSession) => {
@@ -71,7 +81,7 @@ export const History = () => {
       })
       setDeleteModalOpen(false)
       setDeletingSession(null)
-      loadSessions()
+      loadSessions(currentPage) // Recarregar página atual
     } catch {
       notifications.show({
         title: t('app.error'),
@@ -105,7 +115,7 @@ export const History = () => {
         color: 'green',
       })
       setEditModalOpen(false)
-      loadSessions()
+      loadSessions(currentPage) // Recarregar página atual
     } catch {
       notifications.show({
         title: t('app.error'),
@@ -119,10 +129,8 @@ export const History = () => {
     const color = session.status === 'completa' ? 'green' : session.status === 'incompleta' ? 'yellow' : 'gray'
     const label = session.status === 'completa' ? t('historico.complete') : 
                   session.status === 'incompleta' ? t('historico.incomplete') : t('historico.noRecord')
-    return <Badge color={color} size="sm">{label}</Badge>
+    return <Badge color={color} size="xs">{label}</Badge>
   }
-
-
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
@@ -131,99 +139,127 @@ export const History = () => {
         showBack={true}
         subtitle={t('historico.currentMonth')}
       />
-      <Container size="sm" py="md">
-        <Stack gap="lg">
-          {/* Month Selector */}
-          <Card withBorder p="lg" className="bg-white">
+      <Container size="sm" py="sm">
+        <Stack gap="sm">
+          {/* Month Selector - Compact */}
+          <Card withBorder p="sm" className="bg-white">
             <Group justify="space-between" align="center">
               <Group gap="sm">
-                <IconCalendar size={20} className="text-blue-600" />
-                <Text fw={600}>{t('historico.currentMonth')}</Text>
+                <IconCalendar size={16} className="text-blue-600" />
+                <Text fw={600} size="sm">{t('historico.currentMonth')}</Text>
               </Group>
               <Select
                 value={selectedMonth}
                 onChange={(value) => setSelectedMonth(value || selectedMonth)}
                 data={monthOptions}
-                size="sm"
-                w={180}
+                size="xs"
+                w={140}
                 searchable
               />
             </Group>
           </Card>
-          {/* Sessions List */}
-          <Card withBorder p="lg" className="bg-white">
+
+          {/* Sessions List - Horizontal Layout */}
+          <Card withBorder p="sm" className="bg-white">
             {loading ? (
-              <div className="text-center py-8">
-                <Text c="gray.6">{t('app.loading')}</Text>
+              <div className="text-center py-4">
+                <Text c="gray.6" size="sm">{t('app.loading')}</Text>
               </div>
             ) : sessions.length === 0 ? (
-              <div className="text-center py-8">
-                <IconClock size={48} className="text-gray-400 mx-auto mb-4" />
-                <Text c="gray.6">{t('historico.noSessions')}</Text>
+              <div className="text-center py-4">
+                <IconClock size={24} className="text-gray-400 mx-auto mb-2" />
+                <Text c="gray.6" size="sm">{t('historico.noSessions')}</Text>
               </div>
             ) : (
-              <div className="space-y-3">
-                {sessions.map((session) => (
-                  <div key={session.id} className="border border-gray-200 rounded-lg p-4">
-                    <Group justify="space-between" align="flex-start" mb="sm">
-                      <div>
-                        <Text fw={600} size="sm">
-                          {formatDateForDisplay(session.date)}
-                        </Text>
-                        <Text size="xs" c="gray.6">
-                          {session.manual_edit && t('workSession.status.manualEdit')}
-                        </Text>
-                      </div>
-                      <Group gap="xs">
-                        {getStatusBadge(session)}
-                        <ActionIcon
-                          variant="subtle"
-                          size="sm"
-                          onClick={() => handleEditSession(session)}
-                          className="text-blue-600 hover:bg-blue-50"
-                        >
-                          <IconEdit size={16} />
-                        </ActionIcon>
-                        <ActionIcon
-                          variant="subtle"
-                          size="sm"
-                          onClick={() => handleDeleteSession(session)}
-                          className="text-red-600 hover:bg-red-50"
-                        >
-                          <IconTrash size={16} />
-                        </ActionIcon>
+              <>
+                {/* Sessions Count */}
+                <div className="mb-3 pb-2 border-b border-gray-100">
+                  <Text size="xs" c="gray.6">
+                    {t('historico.showing')} {sessions.length} {t('historico.of')} {totalSessions} {t('historico.records')}
+                  </Text>
+                </div>
+
+                <div className="space-y-1">
+                  {sessions.map((session) => (
+                    <div key={session.id} className="border border-gray-200 rounded-lg p-2 hover:bg-gray-50 transition-colors">
+                      {/* Main Row - Date, Status, Actions */}
+                      <Group justify="space-between" align="center" mb="xs">
+                        <Group gap="sm" align="center">
+                          <Text fw={600} size="sm" className="min-w-[85px]">
+                            {formatDateWithWeekday(session.date)}
+                          </Text>
+                          {getStatusBadge(session)}
+                          {session.manual_edit && (
+                            <Badge color="blue" size="xs" variant="light">
+                              {t('workSession.status.manualEdit')}
+                            </Badge>
+                          )}
+                        </Group>
+                        <Group gap="xs">
+                          <ActionIcon
+                            variant="subtle"
+                            size="md"
+                            onClick={() => handleEditSession(session)}
+                            className="text-blue-600 hover:bg-blue-50"
+                          >
+                            <IconEdit size={16} />
+                          </ActionIcon>
+                          <ActionIcon
+                            variant="subtle"
+                            size="md"
+                            onClick={() => handleDeleteSession(session)}
+                            className="text-red-600 hover:bg-red-50"
+                          >
+                            <IconTrash size={16} />
+                          </ActionIcon>
+                        </Group>
                       </Group>
-                    </Group>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <Text size="xs" c="gray.6" mb="xs">{t('historico.entry')}</Text>
-                        <Text fw={500}>
-                          {session.start_time ? formatTime(session.start_time) : '-'}
-                        </Text>
-                      </div>
-                      <div>
-                        <Text size="xs" c="gray.6" mb="xs">{t('historico.exit')}</Text>
-                        <Text fw={500}>
-                          {session.end_time ? formatTime(session.end_time) : '-'}
-                        </Text>
+
+                      {/* Time Row - Entry, Exit, Worked Time */}
+                      <div className="grid grid-cols-3 gap-2 text-xs">
+                        <div>
+                          <Text size="xs" c="gray.6" mb="xs">{t('historico.entry')}</Text>
+                          <Text fw={500} size="xs">
+                            {session.start_time ? formatTime(session.start_time) : '-'}
+                          </Text>
+                        </div>
+                        <div>
+                          <Text size="xs" c="gray.6" mb="xs">{t('historico.exit')}</Text>
+                          <Text fw={500} size="xs">
+                            {session.end_time ? formatTime(session.end_time) : '-'}
+                          </Text>
+                        </div>
+                        <div>
+                          <Text size="xs" c="gray.6" mb="xs">{t('historico.netTime')}</Text>
+                          <Text fw={600} c="blue.6" size="xs">
+                            {session.worked_time_real ? formatWorkedHours(session.worked_time_real) : '-'}
+                          </Text>
+                        </div>
                       </div>
                     </div>
-                    {session.worked_time_real && (
-                      <div className="mt-3 pt-3 border-t border-gray-100">
-                        <Text size="xs" c="gray.6" mb="xs">{t('historico.netTime')}</Text>
-                        <Text fw={600} c="blue.6">
-                          {formatWorkedHours(session.worked_time_real)}
-                        </Text>
-                      </div>
-                    )}
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="mt-4 pt-3 border-t border-gray-100">
+                    <Pagination
+                      total={totalPages}
+                      value={currentPage}
+                      onChange={handlePageChange}
+                      size="xs"
+                      radius="md"
+                      className="justify-center"
+                    />
                   </div>
-                ))}
-              </div>
+                )}
+              </>
             )}
           </Card>
         </Stack>
       </Container>
       <BottomNavigation />
+
       {/* Edit Modal */}
       <Modal
         opened={editModalOpen}
@@ -257,6 +293,7 @@ export const History = () => {
           </Group>
         </Stack>
       </Modal>
+
       {/* Delete Modal */}
       <Modal
         opened={deleteModalOpen}

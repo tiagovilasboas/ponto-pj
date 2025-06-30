@@ -8,7 +8,7 @@ import { AppHeader } from '@/components/common/AppHeader'
 import { BottomNavigation } from '@/components/common/BottomNavigation'
 import { workSessionService } from '@/services'
 import { generatePDF } from '@/lib/pdfGenerator'
-import { getMonthOptionsThisYear, getCurrentMonth, formatDateForDisplay, formatMonthForDisplay } from '@/lib/utils'
+import { getMonthOptionsThisYear, getCurrentMonth, formatDateWithWeekday, formatMonthForDisplay } from '@/lib/utils'
 import type { WorkSession } from '@/types/workSession'
 
 export const Report = () => {
@@ -32,11 +32,11 @@ export const Report = () => {
   const loadReport = async () => {
     setLoading(true)
     try {
-      const [sessionsData, statsData] = await Promise.all([
-        workSessionService.getSessionsForMonth(selectedMonth),
+      const [sessionsResult, statsData] = await Promise.all([
+        workSessionService.getSessionsForMonth(selectedMonth, 1, 1000),
         workSessionService.getMonthStatistics(selectedMonth)
       ])
-      setSessions(sessionsData)
+      setSessions(sessionsResult.sessions)
       setStatistics(statsData)
     } catch {
       notifications.show({
@@ -61,7 +61,7 @@ export const Report = () => {
           incompleteDays: statistics.incompleteDays
         },
         sessions: sessions.map(session => ({
-          date: formatDateForDisplay(session.date),
+          date: formatDateWithWeekday(session.date),
           entry: session.start_time ? formatTime(session.start_time) : '-',
           exit: session.end_time ? formatTime(session.end_time) : '-',
           netTime: session.worked_time_real ? formatWorkedHours(session.worked_time_real) : '-',
@@ -93,8 +93,6 @@ export const Report = () => {
     return <Badge color={color} size="sm">{label}</Badge>
   }
 
-
-
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       <AppHeader 
@@ -103,73 +101,73 @@ export const Report = () => {
         subtitle={t('relatorio.selectMonth')}
       />
       
-      <Container size="sm" py="md">
-        <Stack gap="lg">
+      <Container size="sm" py="sm">
+        <Stack gap="sm">
           {/* Month Selector */}
-          <Card withBorder p="lg" className="bg-white">
+          <Card withBorder p="sm" className="bg-white">
             <Group justify="space-between" align="center">
               <Group gap="sm">
-                <IconCalendar size={20} className="text-blue-600" />
-                <Text fw={600}>{t('relatorio.selectMonth')}</Text>
+                <IconCalendar size={16} className="text-blue-600" />
+                <Text fw={600} size="sm">{t('relatorio.selectMonth')}</Text>
               </Group>
               <Select
                 value={selectedMonth}
                 onChange={(value) => setSelectedMonth(value || selectedMonth)}
                 data={monthOptions}
-                size="sm"
-                w={180}
+                size="xs"
+                w={140}
                 searchable
               />
             </Group>
           </Card>
 
           {/* Statistics */}
-          <Card withBorder p="lg" className="bg-white">
-            <Group gap="sm" mb="md">
-              <IconChartBar size={20} className="text-purple-600" />
-              <Text fw={600}>{t('relatorio.statistics')}</Text>
+          <Card withBorder p="sm" className="bg-white">
+            <Group gap="sm" mb="sm">
+              <IconChartBar size={16} className="text-purple-600" />
+              <Text fw={600} size="sm">{t('relatorio.statistics')}</Text>
             </Group>
             
-            <Grid gutter="md">
+            <Grid gutter="sm">
               <Grid.Col span={6}>
-                <div className="text-center p-4 bg-blue-50 rounded-lg">
-                  <Text size="2xl" fw={700} c="blue.6">
+                <div className="text-center p-3 bg-blue-50 rounded-lg">
+                  <Text size="lg" fw={700} c="blue.6">
                     {formatWorkedHours(statistics.totalHours)}
                   </Text>
-                  <Text size="sm" c="gray.6">
+                  <Text size="xs" c="gray.6">
                     {t('relatorio.totalHours')}
                   </Text>
                 </div>
               </Grid.Col>
               
               <Grid.Col span={6}>
-                <div className="text-center p-4 bg-green-50 rounded-lg">
-                  <Text size="2xl" fw={700} c="green.6">
+                <div className="text-center p-3 bg-green-50 rounded-lg">
+                  <Text size="lg" fw={700} c="green.6">
                     {statistics.completeDays}
                   </Text>
-                  <Text size="sm" c="gray.6">
+                  <Text size="xs" c="gray.6">
                     {t('relatorio.completeDays')}
                   </Text>
                 </div>
               </Grid.Col>
               
               <Grid.Col span={6}>
-                <div className="text-center p-4 bg-yellow-50 rounded-lg">
-                  <Text size="2xl" fw={700} c="yellow.6">
+                <div className="text-center p-3 bg-yellow-50 rounded-lg">
+                  <Text size="lg" fw={700} c="yellow.6">
                     {statistics.incompleteDays}
                   </Text>
-                  <Text size="sm" c="gray.6">
+                  <Text size="xs" c="gray.6">
                     {t('relatorio.incompleteDays')}
                   </Text>
                 </div>
               </Grid.Col>
               
               <Grid.Col span={6}>
-                <div className="text-center p-4 bg-gray-50 rounded-lg">
-                  <Text size="2xl" fw={700} c="gray.6">
+                <div className="text-center p-3 bg-gray-50 rounded-lg">
+                  <Text size="lg" fw={700} c="gray.6">
                     {statistics.totalDays}
                   </Text>
-                  <Text size="sm" c="gray.6">
+                  <Text size="xs" c="gray.6">
                     Total
                   </Text>
                 </div>
@@ -178,11 +176,11 @@ export const Report = () => {
           </Card>
 
           {/* Export Button */}
-          <Card withBorder p="lg" className="bg-white">
+          <Card withBorder p="sm" className="bg-white">
             <Button
               fullWidth
-              size="lg"
-              leftSection={<IconDownload size={20} />}
+              size="md"
+              leftSection={<IconDownload size={16} />}
               onClick={handleExportPDF}
               className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
             >
@@ -190,59 +188,69 @@ export const Report = () => {
             </Button>
           </Card>
 
-          {/* Sessions List */}
-          <Card withBorder p="lg" className="bg-white">
+          {/* Sessions List - Same layout as History */}
+          <Card withBorder p="sm" className="bg-white">
             {loading ? (
-              <div className="text-center py-8">
-                <Text c="gray.6">{t('app.loading')}</Text>
+              <div className="text-center py-4">
+                <Text c="gray.6" size="sm">{t('app.loading')}</Text>
               </div>
             ) : sessions.length === 0 ? (
-              <div className="text-center py-8">
-                <IconClock size={48} className="text-gray-400 mx-auto mb-4" />
-                <Text c="gray.6">{t('relatorio.noSessions')}</Text>
+              <div className="text-center py-4">
+                <IconClock size={24} className="text-gray-400 mx-auto mb-2" />
+                <Text c="gray.6" size="sm">{t('relatorio.noSessions')}</Text>
               </div>
             ) : (
-              <div className="space-y-3">
-                {sessions.map((session) => (
-                  <div key={session.id} className="border border-gray-200 rounded-lg p-4">
-                    <Group justify="space-between" align="flex-start" mb="sm">
-                      <div>
-                        <Text fw={600} size="sm">
-                          {formatDateForDisplay(session.date)}
-                        </Text>
-                        <Text size="xs" c="gray.6">
-                          {session.manual_edit && t('workSession.status.manualEdit')}
-                        </Text>
-                      </div>
-                      {getStatusBadge(session)}
-                    </Group>
-                    
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <Text size="xs" c="gray.6" mb="xs">{t('relatorio.entry')}</Text>
-                        <Text fw={500}>
-                          {session.start_time ? formatTime(session.start_time) : '-'}
-                        </Text>
-                      </div>
-                      <div>
-                        <Text size="xs" c="gray.6" mb="xs">{t('relatorio.exit')}</Text>
-                        <Text fw={500}>
-                          {session.end_time ? formatTime(session.end_time) : '-'}
-                        </Text>
+              <>
+                {/* Sessions Count */}
+                <div className="mb-3 pb-2 border-b border-gray-100">
+                  <Text size="xs" c="gray.6">
+                    {t('historico.showing')} {sessions.length} {t('historico.of')} {sessions.length} {t('historico.records')}
+                  </Text>
+                </div>
+
+                <div className="space-y-1">
+                  {sessions.map((session) => (
+                    <div key={session.id} className="border border-gray-200 rounded-lg p-2 hover:bg-gray-50 transition-colors">
+                      {/* Main Row - Date, Status */}
+                      <Group justify="space-between" align="center" mb="xs">
+                        <Group gap="sm" align="center">
+                          <Text fw={600} size="sm" className="min-w-[85px]">
+                            {formatDateWithWeekday(session.date)}
+                          </Text>
+                          {getStatusBadge(session)}
+                          {session.manual_edit && (
+                            <Badge color="blue" size="xs" variant="light">
+                              {t('workSession.status.manualEdit')}
+                            </Badge>
+                          )}
+                        </Group>
+                      </Group>
+
+                      {/* Time Row - Entry, Exit, Worked Time */}
+                      <div className="grid grid-cols-3 gap-2 text-xs">
+                        <div>
+                          <Text size="xs" c="gray.6" mb="xs">{t('relatorio.entry')}</Text>
+                          <Text fw={500} size="xs">
+                            {session.start_time ? formatTime(session.start_time) : '-'}
+                          </Text>
+                        </div>
+                        <div>
+                          <Text size="xs" c="gray.6" mb="xs">{t('relatorio.exit')}</Text>
+                          <Text fw={500} size="xs">
+                            {session.end_time ? formatTime(session.end_time) : '-'}
+                          </Text>
+                        </div>
+                        <div>
+                          <Text size="xs" c="gray.6" mb="xs">{t('relatorio.netTime')}</Text>
+                          <Text fw={600} c="blue.6" size="xs">
+                            {session.worked_time_real ? formatWorkedHours(session.worked_time_real) : '-'}
+                          </Text>
+                        </div>
                       </div>
                     </div>
-                    
-                    {session.worked_time_real && (
-                      <div className="mt-3 pt-3 border-t border-gray-100">
-                        <Text size="xs" c="gray.6" mb="xs">{t('relatorio.netTime')}</Text>
-                        <Text fw={600} c="blue.6">
-                          {formatWorkedHours(session.worked_time_real)}
-                        </Text>
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              </>
             )}
           </Card>
         </Stack>
