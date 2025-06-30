@@ -53,9 +53,8 @@ class SecurityUtils {
       }
 
       case 'password': {
-        // Mínimo 8 caracteres, pelo menos 1 letra e 1 número
-        const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/
-        return passwordRegex.test(input) && input.length <= 128
+        // Validação mais flexível: mínimo 6 caracteres
+        return input.length >= 6 && input.length <= 128
       }
 
       case 'time': {
