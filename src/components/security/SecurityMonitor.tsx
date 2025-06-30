@@ -1,13 +1,43 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { notifications } from '@mantine/notifications'
 import { SecurityUtils } from '@/lib/security'
 import { useAppStore } from '@/hooks/useAppStore'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from '@/i18n/useTranslation'
 
 export const SecurityMonitor = () => {
   const [isMonitoring, setIsMonitoring] = useState(true)
   const { logout } = useAppStore()
   const navigate = useNavigate()
+  const { t } = useTranslation()
+
+  const handleSecurityViolation = useCallback(async (message: string) => {
+    setIsMonitoring(false)
+    
+    // Log do evento
+    SecurityUtils.logSecurityEvent('security_violation', { message })
+    
+    // Notificar o usuário
+    notifications.show({
+      title: t('security.alertTitle'),
+      message,
+      color: 'red',
+      autoClose: false,
+    })
+
+    // Limpar dados sensíveis
+    SecurityUtils.clearSensitiveData()
+    
+    // Fazer logout
+    try {
+      await logout()
+    } catch (error) {
+      console.error(t('auth.logoutError'), error)
+    }
+    
+    // Redirecionar para login
+    navigate('/login', { replace: true })
+  }, [logout, navigate, t])
 
   useEffect(() => {
     // Em desenvolvimento, desabilitar monitoramento agressivo
@@ -21,7 +51,7 @@ export const SecurityMonitor = () => {
     const sessionCheckInterval = setInterval(() => {
       if (!SecurityUtils.validateSessionIntegrity()) {
         SecurityUtils.logSecurityEvent('session_integrity_failed')
-        handleSecurityViolation('Sessão inválida detectada')
+        handleSecurityViolation(t('session_integrity_failed'))
       }
     }, 5 * 60 * 1000)
 
@@ -29,7 +59,7 @@ export const SecurityMonitor = () => {
     const suspiciousActivityCheck = setInterval(() => {
       if (SecurityUtils.detectSuspiciousActivity()) {
         SecurityUtils.logSecurityEvent('suspicious_activity_detected')
-        handleSecurityViolation('Atividade suspeita detectada')
+        handleSecurityViolation(t('suspicious_activity_detected'))
       }
     }, 10 * 1000)
 
@@ -39,7 +69,7 @@ export const SecurityMonitor = () => {
       clearTimeout(inactivityTimer)
       inactivityTimer = setTimeout(() => {
         SecurityUtils.logSecurityEvent('user_inactivity_timeout')
-        handleSecurityViolation('Sessão expirada por inatividade')
+        handleSecurityViolation(t('user_inactivity_timeout'))
       }, 30 * 60 * 1000)
     }
 
@@ -59,7 +89,7 @@ export const SecurityMonitor = () => {
       const newUrl = args[2] as string
       if (newUrl && SecurityUtils.detectSuspiciousActivity()) {
         SecurityUtils.logSecurityEvent('suspicious_url_change', { url: newUrl })
-        handleSecurityViolation('Mudança suspeita na URL detectada')
+        handleSecurityViolation(t('suspicious_url_change'))
         return
       }
       return originalPushState.apply(history, args)
@@ -69,7 +99,7 @@ export const SecurityMonitor = () => {
       const newUrl = args[2] as string
       if (newUrl && SecurityUtils.detectSuspiciousActivity()) {
         SecurityUtils.logSecurityEvent('suspicious_url_replace', { url: newUrl })
-        handleSecurityViolation('Substituição suspeita na URL detectada')
+        handleSecurityViolation(t('suspicious_url_replace'))
         return
       }
       return originalReplaceState.apply(history, args)
@@ -86,35 +116,7 @@ export const SecurityMonitor = () => {
       history.pushState = originalPushState
       history.replaceState = originalReplaceState
     }
-  }, [isMonitoring])
-
-  const handleSecurityViolation = async (message: string) => {
-    setIsMonitoring(false)
-    
-    // Log do evento
-    SecurityUtils.logSecurityEvent('security_violation', { message })
-    
-    // Notificar o usuário
-    notifications.show({
-      title: 'Alerta de Segurança',
-      message,
-      color: 'red',
-      autoClose: false,
-    })
-
-    // Limpar dados sensíveis
-    SecurityUtils.clearSensitiveData()
-    
-    // Fazer logout
-    try {
-      await logout()
-    } catch (error) {
-      console.error('Erro ao fazer logout:', error)
-    }
-    
-    // Redirecionar para login
-    navigate('/login', { replace: true })
-  }
+  }, [isMonitoring, t, handleSecurityViolation])
 
   // Componente invisível - apenas monitora
   return null

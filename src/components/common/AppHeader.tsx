@@ -37,7 +37,7 @@ export const AppHeader = ({
       await logout()
       navigate('/login')
     } catch (error) {
-      console.error('Erro no logout:', error)
+      console.error(t('auth.logoutError'), error)
     }
   }
 

@@ -49,7 +49,7 @@ export const EditSessionModal = ({ open, session, onClose, onSuccess }: EditSess
     try {
       const { user } = appStore
       if (!user) {
-        throw new Error('Usuário não autenticado')
+        throw new Error(t('auth.notAuthenticated'))
       }
 
       // Calcular tempo trabalhado
@@ -74,7 +74,7 @@ export const EditSessionModal = ({ open, session, onClose, onSuccess }: EditSess
         message: t('historico.editError'),
         color: 'red',
       })
-      console.error('Erro ao editar sessão:', error)
+      console.error(t('historico.editError'), error)
     } finally {
       setLoading(false)
     }

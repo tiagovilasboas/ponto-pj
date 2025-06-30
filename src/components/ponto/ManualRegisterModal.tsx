@@ -38,7 +38,6 @@ export const ManualRegisterModal = ({ open, onClose }: ManualRegisterModalProps)
         hour12: false
       })
       setCurrentTime(timeString)
-      console.log('Relógio atualizado:', timeString) // Debug
     }
 
     // Atualizar imediatamente
@@ -96,7 +95,7 @@ export const ManualRegisterModal = ({ open, onClose }: ManualRegisterModalProps)
         message: isConstraintError ? t('database.constraintError') : t('workSession.manual.error'),
         color: 'red',
       })
-      console.error(error)
+      console.error(t('workSession.manual.error'), error)
     }
   }
 
