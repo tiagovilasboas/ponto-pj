@@ -85,7 +85,7 @@ export const Home = () => {
                   <div className="flex justify-center mb-2">
                     <IconTarget size={16} className="text-purple-600" />
                   </div>
-                  <Text size="xs" className="text-gray-500 mb-2 font-medium">Início</Text>
+                  <Text size="xs" className="text-gray-500 mb-2 font-medium">{t('workSession.timeline.start')}</Text>
                   <Text fw={700} size="2xl" className="text-gray-800">
                     {session?.start_time ? formatTime(session.start_time) : '--:--'}
                   </Text>
@@ -94,7 +94,7 @@ export const Home = () => {
                   <div className="flex justify-center mb-2">
                     <IconTarget size={16} className="text-green-600" />
                   </div>
-                  <Text size="xs" className="text-gray-500 mb-2 font-medium">Fim</Text>
+                  <Text size="xs" className="text-gray-500 mb-2 font-medium">{t('workSession.timeline.end')}</Text>
                   <Text fw={700} size="2xl" className="text-gray-800">
                     {session?.end_time ? formatTime(session.end_time) : '--:--'}
                   </Text>
@@ -103,7 +103,7 @@ export const Home = () => {
                   <div className="flex justify-center mb-2">
                     <IconClock size={16} className="text-blue-600" />
                   </div>
-                  <Text size="xs" className="text-gray-500 mb-2 font-medium">Tempo</Text>
+                  <Text size="xs" className="text-gray-500 mb-2 font-medium">{t('workSession.timeline.time')}</Text>
                   <Text fw={700} size="2xl" className="text-gray-800">
                     {session?.worked_time_real ? formatWorkedHours(session.worked_time_real) : '--'}
                   </Text>
@@ -117,7 +117,7 @@ export const Home = () => {
                     size="lg" 
                     className="bg-orange-100 text-orange-700 border-orange-200 px-4 py-2 rounded-full"
                   >
-                    ✏️ Registro manual
+                    {t('workSession.feedback.manualBadge')}
                   </Badge>
                 </div>
               )}
@@ -126,10 +126,10 @@ export const Home = () => {
               <div className="text-center">
                 <Text size="lg" fw={500} className={feedbackColor}>
                   {isComplete
-                    ? '🎉 Parabéns! Você completou sua jornada diária com sucesso!'
+                    ? t('workSession.feedback.congratulations')
                     : isValidSession(session)
-                      ? '⏰ Sua jornada está em andamento. Não esqueça de encerrar!'
-                      : '🚀 Registre sua jornada para começar o dia de trabalho.'}
+                      ? t('workSession.feedback.inProgress')
+                      : t('workSession.feedback.startJourney')}
                 </Text>
               </div>
             </Stack>
@@ -144,38 +144,38 @@ export const Home = () => {
           >
             <Stack gap="md">
               <Text fw={600} size="lg" className="text-gray-800 text-center mb-2">
-                📋 Ações rápidas
+                {t('workSession.actions.quickActions')}
               </Text>
               <div className="grid grid-cols-3 gap-4">
                 <Button 
-                  leftSection={<IconEdit size={20} />} 
+                  leftSection={<IconEdit size={24} />} 
                   size="lg" 
                   variant="light" 
                   color="gray" 
                   onClick={handleEdit}
-                  className="bg-gray-50 hover:bg-gray-100 text-gray-700 h-16 rounded-2xl"
+                  className="bg-gray-50 hover:bg-gray-100 text-gray-700 h-20 rounded-2xl text-sm font-semibold"
                 >
-                  Editar
+                  {t('workSession.actions.edit')}
                 </Button>
                 <Button 
-                  leftSection={<IconHistory size={20} />} 
+                  leftSection={<IconHistory size={24} />} 
                   size="lg" 
                   variant="light" 
                   color="gray" 
                   onClick={handleHistory}
-                  className="bg-gray-50 hover:bg-gray-100 text-gray-700 h-16 rounded-2xl"
+                  className="bg-gray-50 hover:bg-gray-100 text-gray-700 h-20 rounded-2xl text-sm font-semibold"
                 >
-                  Histórico
+                  {t('workSession.actions.history')}
                 </Button>
                 <Button 
-                  leftSection={<IconFileDownload size={20} />} 
+                  leftSection={<IconFileDownload size={24} />} 
                   size="lg" 
                   variant="light" 
                   color="gray" 
                   onClick={handlePDF}
-                  className="bg-gray-50 hover:bg-gray-100 text-gray-700 h-16 rounded-2xl"
+                  className="bg-gray-50 hover:bg-gray-100 text-gray-700 h-20 rounded-2xl text-sm font-semibold"
                 >
-                  PDF
+                  {t('workSession.actions.pdf')}
                 </Button>
               </div>
             </Stack>
