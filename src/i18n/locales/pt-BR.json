@@ -1,0 +1,96 @@
+{
+  "app": {
+    "title": "Ponto PJ",
+    "loading": "Carregando...",
+    "loadingPage": "Carregando página...",
+    "error": "Erro",
+    "success": "Sucesso!",
+    "cancel": "Cancelar",
+    "save": "Salvar",
+    "saving": "Salvando...",
+    "tryAgain": "Tentar novamente",
+    "unknownError": "Erro desconhecido"
+  },
+  "auth": {
+    "login": {
+      "title": "Faça login para acessar o sistema",
+      "email": "E-mail",
+      "emailPlaceholder": "seu@email.com",
+      "password": "Senha",
+      "passwordPlaceholder": "Sua senha",
+      "submit": "Entrar",
+      "submitting": "Entrando...",
+      "noAccount": "Não tem conta?",
+      "signUp": "Cadastre-se",
+      "errors": {
+        "fillFields": "Preencha todos os campos",
+        "invalidCredentials": "E-mail ou senha inválidos",
+        "emailNotConfirmed": "Confirme seu e-mail antes de entrar",
+        "generic": "Erro ao fazer login"
+      }
+    },
+    "register": {
+      "title": "Criar nova conta",
+      "subtitle": "Preencha os dados para se cadastrar",
+      "email": "E-mail",
+      "emailPlaceholder": "seu@email.com",
+      "password": "Senha",
+      "passwordPlaceholder": "Sua senha",
+      "submit": "Cadastrar",
+      "submitting": "Cadastrando...",
+      "hasAccount": "Já tem conta?",
+      "signIn": "Faça login",
+      "errors": {
+        "fillFields": "Preencha todos os campos",
+        "generic": "Erro ao cadastrar"
+      },
+      "success": "Cadastro realizado! Faça login para continuar."
+    }
+  },
+  "home": {
+    "logout": "Sair",
+    "logoutSuccess": "Logout realizado com sucesso!",
+    "logoutError": "Erro ao fazer logout"
+  },
+  "user": {
+    "title": "Usuário",
+    "email": "E-mail",
+    "id": "ID"
+  },
+  "workSession": {
+    "start": {
+      "button": "Iniciar Jornada",
+      "submitting": "Iniciando...",
+      "success": "Jornada iniciada com sucesso!",
+      "error": "Erro ao iniciar jornada"
+    },
+    "end": {
+      "button": "Encerrar Jornada",
+      "submitting": "Encerrando...",
+      "success": "Jornada encerrada com sucesso!",
+      "error": "Erro ao encerrar jornada"
+    },
+    "manual": {
+      "title": "Registro Manual",
+      "subtitle": "Informe os horários de entrada e saída para hoje.",
+      "currentTime": "Hora Atual",
+      "startTime": "Horário de Entrada",
+      "endTime": "Horário de Saída",
+      "fillTimes": "Preencha os horários de entrada e saída",
+      "success": "Registro manual realizado com sucesso!",
+      "error": "Erro ao registrar manualmente"
+    },
+    "status": {
+      "noSession": "Nenhum registro para hoje",
+      "incomplete": "Jornada em andamento",
+      "complete": "Jornada completa",
+      "startedAt": "Iniciado às",
+      "endedAt": "Encerrado às",
+      "workedTime": "Tempo trabalhado",
+      "manualEdit": "Registro manual"
+    }
+  },
+  "database": {
+    "constraintError": "Erro de configuração do banco: É necessário criar uma constraint única para user_id e date. Execute: ALTER TABLE work_sessions ADD CONSTRAINT work_sessions_user_id_date_key UNIQUE (user_id, date);"
+  }
+} 

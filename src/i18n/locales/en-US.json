@@ -1,0 +1,94 @@
+{
+  "app": {
+    "title": "Time Clock PJ",
+    "loading": "Loading...",
+    "loadingPage": "Loading page...",
+    "error": "Error",
+    "success": "Success!",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "tryAgain": "Try again",
+    "unknownError": "Unknown error"
+  },
+  "auth": {
+    "login": {
+      "title": "Sign in to access the system",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "password": "Password",
+      "passwordPlaceholder": "Your password",
+      "submit": "Sign In",
+      "submitting": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up",
+      "errors": {
+        "fillFields": "Please fill in all fields",
+        "invalidCredentials": "Invalid email or password",
+        "emailNotConfirmed": "Please confirm your email before signing in",
+        "generic": "Error signing in"
+      }
+    },
+    "register": {
+      "title": "Create new account",
+      "subtitle": "Fill in the data to register",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "password": "Password",
+      "passwordPlaceholder": "Your password",
+      "submit": "Sign Up",
+      "submitting": "Signing up...",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "errors": {
+        "fillFields": "Please fill in all fields",
+        "generic": "Error signing up"
+      },
+      "success": "Registration successful! Sign in to continue."
+    }
+  },
+  "home": {
+    "logout": "Sign Out",
+    "logoutSuccess": "Successfully signed out!",
+    "logoutError": "Error signing out"
+  },
+  "user": {
+    "title": "User",
+    "email": "Email",
+    "id": "ID"
+  },
+  "workSession": {
+    "start": {
+      "button": "Start Shift",
+      "success": "Shift started successfully!",
+      "error": "Error starting shift"
+    },
+    "end": {
+      "button": "End Shift",
+      "success": "Shift ended successfully!",
+      "error": "Error ending shift"
+    },
+    "manual": {
+      "title": "Manual Entry",
+      "subtitle": "Enter start and end times for today.",
+      "currentTime": "Current Time",
+      "startTime": "Start Time",
+      "endTime": "End Time",
+      "fillTimes": "Please fill in start and end times",
+      "success": "Manual entry completed successfully!",
+      "error": "Error creating manual entry"
+    },
+    "status": {
+      "noSession": "No entry for today",
+      "incomplete": "Shift in progress",
+      "complete": "Shift completed",
+      "startedAt": "Started at",
+      "endedAt": "Ended at",
+      "workedTime": "Worked time",
+      "manualEdit": "Manual entry"
+    }
+  },
+  "database": {
+    "constraintError": "Database configuration error: A unique constraint for user_id and date is required. Execute: ALTER TABLE work_sessions ADD CONSTRAINT work_sessions_user_id_date_key UNIQUE (user_id, date);"
+  }
+} 

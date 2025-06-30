@@ -1,0 +1,49 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Reset global */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+#root {
+  height: 100%;
+}
+
+/* Garantir que o Mantine funcione corretamente */
+.mantine-Container-root {
+  width: 100%;
+}
+
+/* Forçar cores dos botões gradiente */
+.mantine-Button[data-variant="gradient"] {
+  color: white !important;
+}
+
+.mantine-Button[data-variant="gradient"] .mantine-Button-label {
+  color: white !important;
+}
+
+.mantine-Button[data-variant="gradient"] .mantine-Button-leftSection {
+  color: white !important;
+}
+
+.mantine-Button[data-variant="gradient"] .mantine-Button-rightSection {
+  color: white !important;
+}
+
+/* Melhorar responsividade */
+@media (max-width: 768px) {
+  .mantine-Container-root {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
