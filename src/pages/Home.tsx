@@ -1,100 +1,194 @@
-import { useAppStore } from '@/hooks/useAppStore'
-import { useState } from 'react'
-import { Container, Stack } from '@mantine/core'
-import { notifications } from '@mantine/notifications'
-import { ManualRegisterModal } from '@/components/ponto/ManualRegisterModal'
-import { HomeHeader } from '@/components/home/HomeHeader'
-import { CurrentDateCard } from '@/components/home/CurrentDateCard'
-import { SessionStatusCard } from '@/components/home/SessionStatusCard'
-import { UserInfoCard } from '@/components/home/UserInfoCard'
+import { Container, Stack, Card, Text, Badge, Button } from '@mantine/core'
+import { IconClock, IconEdit, IconHistory, IconFileDownload, IconTrophy, IconTarget } from '@tabler/icons-react'
 import { useTranslation } from '@/i18n/useTranslation'
+import { useAppStore } from '@/hooks/useAppStore'
+import { AppHeader } from '@/components/common/AppHeader'
+import { BottomNavigation } from '@/components/common/BottomNavigation'
+import { ManualRegisterModal } from '@/components/ponto/ManualRegisterModal'
+import { useState, useEffect } from 'react'
+import { isValidSession, isCompleteSession, formatDateForDisplay } from '@/lib/utils'
 
 export const Home = () => {
-  const appStore = useAppStore()
-  const [manualModalOpen, setManualModalOpen] = useState(false)
+  const { session, formatTime, formatWorkedHours, loadUserAndSession } = useAppStore()
   const { t } = useTranslation()
+  const [showManualModal, setShowManualModal] = useState(false)
 
-  const handleStartJourney = async () => {
-    try {
-      await appStore.startJourney()
-      notifications.show({
-        title: t('app.success'),
-        message: t('workSession.start.success'),
-        color: 'green',
-      })
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : t('app.unknownError')
-      const isConstraintError = errorMessage === 'database.constraintError'
-      
-      notifications.show({
-        title: t('app.error'),
-        message: isConstraintError ? t('database.constraintError') : t('workSession.start.error'),
-        color: 'red',
-      })
-    }
-  }
+  // Recarregar sessão quando o componente montar
+  useEffect(() => {
+    loadUserAndSession()
+  }, [loadUserAndSession])
 
-  const handleEndJourney = async () => {
-    try {
-      await appStore.endJourney()
-      notifications.show({
-        title: t('app.success'),
-        message: t('workSession.end.success'),
-        color: 'green',
-      })
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : t('app.unknownError')
-      const isConstraintError = errorMessage === 'database.constraintError'
-      
-      notifications.show({
-        title: t('app.error'),
-        message: isConstraintError ? t('database.constraintError') : t('workSession.end.error'),
-        color: 'red',
-      })
-    }
-  }
+  // Ações rápidas (placeholders)
+  const handleEdit = () => setShowManualModal(true)
+  const handleHistory = () => window.location.href = '/history'
+  const handlePDF = () => window.location.href = '/report'
 
-  const handleLogout = async () => {
-    try {
-      await appStore.logout()
-      notifications.show({
-        title: t('app.success'),
-        message: t('home.logoutSuccess'),
-        color: 'green',
-      })
-    } catch {
-      notifications.show({
-        title: t('app.error'),
-        message: t('home.logoutError'),
-        color: 'red',
-      })
-    }
-  }
+  // Status e cores
+  const isComplete = isCompleteSession(session)
+  const isManual = !!session?.manual_edit
+  const statusIcon = isComplete ? <IconTrophy size={32} className="text-white" /> : <IconClock size={32} className="text-white" />
+  const statusText = isComplete ? t('workSession.status.complete') : isValidSession(session) ? t('workSession.status.incomplete') : t('workSession.status.noSession')
+  const feedbackColor = isComplete ? 'text-green-600' : isValidSession(session) ? 'text-orange-600' : 'text-gray-500'
 
-  const handleManualRegister = () => {
-    setManualModalOpen(true)
-  }
+  // Data do registro
+  const todayLabel = formatDateForDisplay(session?.date || new Date().toISOString().split('T')[0])
 
   return (
-    <Container size="xs" py="xl" px="md">
-      <Stack gap="md">
-        <HomeHeader onLogout={handleLogout} />
-        <CurrentDateCard date={appStore.formatCurrentDate()} />
-        <SessionStatusCard
-          session={appStore.session}
-          actionLoading={appStore.actionLoading}
-          onStart={handleStartJourney}
-          onEnd={handleEndJourney}
-          onManualRegister={handleManualRegister}
-          formatTime={appStore.formatTime}
-          formatWorkedHours={appStore.formatWorkedHours}
-        />
-        <UserInfoCard user={appStore.user} />
-        <ManualRegisterModal 
-          open={manualModalOpen} 
-          onClose={() => setManualModalOpen(false)} 
-        />
-      </Stack>
-    </Container>
+    <div className="min-h-screen bg-gray-50 pb-20">
+      <AppHeader 
+        title={t('app.title')} 
+        subtitle={isValidSession(session) ? todayLabel : t('app.welcome')}
+        showLogout={true}
+      />
+      
+      <Container size="sm" py="md">
+        <Stack gap="6">
+          {/* Card principal - Status */}
+          <Card
+            withBorder
+            p="xl"
+            className="rounded-3xl shadow-lg"
+            style={{ border: 0 }}
+          >
+            <div className={`w-full h-40 rounded-2xl ${isComplete ? 'bg-gradient-to-br from-purple-600 to-pink-600' : 'bg-gradient-to-br from-orange-500 to-red-500'} relative overflow-hidden`}>
+              {/* Padrão de fundo sutil */}
+              <div className="absolute inset-0 opacity-10">
+                <div className="absolute top-4 right-4 w-20 h-20 rounded-full bg-white/20"></div>
+                <div className="absolute bottom-4 left-4 w-16 h-16 rounded-full bg-white/20"></div>
+              </div>
+              
+              <div className="relative z-10 h-full flex flex-col justify-center items-center text-white">
+                <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mb-4">
+                  {statusIcon}
+                </div>
+                <Text fw={700} size="xl" className="text-center">
+                  {statusText}
+                </Text>
+                <Text size="sm" className="text-white/80 mt-2">
+                  {todayLabel}
+                </Text>
+              </div>
+            </div>
+          </Card>
+
+          {/* Card de detalhes */}
+          <Card
+            withBorder
+            p="xl"
+            className="rounded-3xl shadow-lg bg-white"
+            style={{ border: 0 }}
+          >
+            <Stack gap="xl">
+              {/* Linha do tempo */}
+              <div className="grid grid-cols-3 gap-6">
+                <div className="text-center">
+                  <div className="flex justify-center mb-2">
+                    <IconTarget size={16} className="text-purple-600" />
+                  </div>
+                  <Text size="xs" className="text-gray-500 mb-2 font-medium">Início</Text>
+                  <Text fw={700} size="2xl" className="text-gray-800">
+                    {session?.start_time ? formatTime(session.start_time) : '--:--'}
+                  </Text>
+                </div>
+                <div className="text-center">
+                  <div className="flex justify-center mb-2">
+                    <IconTarget size={16} className="text-green-600" />
+                  </div>
+                  <Text size="xs" className="text-gray-500 mb-2 font-medium">Fim</Text>
+                  <Text fw={700} size="2xl" className="text-gray-800">
+                    {session?.end_time ? formatTime(session.end_time) : '--:--'}
+                  </Text>
+                </div>
+                <div className="text-center">
+                  <div className="flex justify-center mb-2">
+                    <IconClock size={16} className="text-blue-600" />
+                  </div>
+                  <Text size="xs" className="text-gray-500 mb-2 font-medium">Tempo</Text>
+                  <Text fw={700} size="2xl" className="text-gray-800">
+                    {session?.worked_time_real ? formatWorkedHours(session.worked_time_real) : '--'}
+                  </Text>
+                </div>
+              </div>
+
+              {/* Badge de registro manual */}
+              {isManual && (
+                <div className="flex justify-center">
+                  <Badge 
+                    size="lg" 
+                    className="bg-orange-100 text-orange-700 border-orange-200 px-4 py-2 rounded-full"
+                  >
+                    ✏️ Registro manual
+                  </Badge>
+                </div>
+              )}
+
+              {/* Mensagem de feedback */}
+              <div className="text-center">
+                <Text size="lg" fw={500} className={feedbackColor}>
+                  {isComplete
+                    ? '🎉 Parabéns! Você completou sua jornada diária com sucesso!'
+                    : isValidSession(session)
+                      ? '⏰ Sua jornada está em andamento. Não esqueça de encerrar!'
+                      : '🚀 Registre sua jornada para começar o dia de trabalho.'}
+                </Text>
+              </div>
+            </Stack>
+          </Card>
+
+          {/* Card de ações */}
+          <Card
+            withBorder
+            p="xl"
+            className="rounded-3xl shadow-lg bg-white"
+            style={{ border: 0 }}
+          >
+            <Stack gap="md">
+              <Text fw={600} size="lg" className="text-gray-800 text-center mb-2">
+                📋 Ações rápidas
+              </Text>
+              <div className="grid grid-cols-3 gap-4">
+                <Button 
+                  leftSection={<IconEdit size={20} />} 
+                  size="lg" 
+                  variant="light" 
+                  color="gray" 
+                  onClick={handleEdit}
+                  className="bg-gray-50 hover:bg-gray-100 text-gray-700 h-16 rounded-2xl"
+                >
+                  Editar
+                </Button>
+                <Button 
+                  leftSection={<IconHistory size={20} />} 
+                  size="lg" 
+                  variant="light" 
+                  color="gray" 
+                  onClick={handleHistory}
+                  className="bg-gray-50 hover:bg-gray-100 text-gray-700 h-16 rounded-2xl"
+                >
+                  Histórico
+                </Button>
+                <Button 
+                  leftSection={<IconFileDownload size={20} />} 
+                  size="lg" 
+                  variant="light" 
+                  color="gray" 
+                  onClick={handlePDF}
+                  className="bg-gray-50 hover:bg-gray-100 text-gray-700 h-16 rounded-2xl"
+                >
+                  PDF
+                </Button>
+              </div>
+            </Stack>
+          </Card>
+        </Stack>
+      </Container>
+
+      <BottomNavigation />
+
+      <ManualRegisterModal
+        open={showManualModal}
+        onClose={() => setShowManualModal(false)}
+      />
+    </div>
   )
 } 

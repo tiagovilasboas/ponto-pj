@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
-import { Modal, TextInput, Button, Stack, Title, Text, Group } from '@mantine/core'
+import { Modal, TextInput, Stack, Title, Text, Group } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { IconClock, IconDeviceFloppy, IconX } from '@tabler/icons-react'
 import { useAppStore } from '@/hooks/useAppStore'
 import { useTranslation } from '@/i18n/useTranslation'
+import { PrimaryButton } from '../common/PrimaryButton'
+import { SecurityUtils } from '@/lib/security'
 
 interface ManualRegisterModalProps {
   open: boolean
@@ -52,6 +54,16 @@ export const ManualRegisterModal = ({ open, onClose }: ManualRegisterModalProps)
   }, []) // Array vazio para executar apenas uma vez na montagem
 
   const handleSubmit = async () => {
+    // Validação de segurança
+    if (!SecurityUtils.validateInput(startTime, 'time') || !SecurityUtils.validateInput(endTime, 'time')) {
+      notifications.show({
+        title: t('app.error'),
+        message: t('workSession.manual.invalidTimeFormat'),
+        color: 'red',
+      })
+      return
+    }
+
     if (!startTime || !endTime) {
       notifications.show({
         title: t('app.error'),
@@ -61,8 +73,12 @@ export const ManualRegisterModal = ({ open, onClose }: ManualRegisterModalProps)
       return
     }
 
+    // Sanitizar dados
+    const sanitizedStartTime = SecurityUtils.sanitizeInput(startTime)
+    const sanitizedEndTime = SecurityUtils.sanitizeInput(endTime)
+
     try {
-      await appStore.registerManual(startTime, endTime)
+      await appStore.registerManual(sanitizedStartTime, sanitizedEndTime)
       notifications.show({
         title: t('app.success'),
         message: t('workSession.manual.success'),
@@ -135,39 +151,23 @@ export const ManualRegisterModal = ({ open, onClose }: ManualRegisterModalProps)
         />
 
         <Group justify="flex-end" gap="sm">
-          <Button 
-            variant="light" 
-            color="gray" 
+          <button 
+            type="button"
+            className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
             onClick={handleClose}
-            leftSection={<IconX size={16} />}
           >
+            <IconX size={16} className="mr-2" />
             {t('app.cancel')}
-          </Button>
-          <Button 
+          </button>
+          <PrimaryButton
+            type="button"
             onClick={handleSubmit}
             loading={appStore.actionLoading}
-            leftSection={<IconDeviceFloppy size={16} />}
-            variant="gradient"
-            gradient={{ from: 'blue', to: 'indigo' }}
-            styles={{
-              root: {
-                color: 'white !important',
-                backgroundColor: 'transparent !important',
-                '&:hover': {
-                  transform: 'translateY(-1px)',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                },
-                '& .mantine-Button-label': {
-                  color: 'white !important',
-                },
-                '& .mantine-Button-leftSection': {
-                  color: 'white !important',
-                },
-              },
-            }}
+            leftIcon={<IconDeviceFloppy size={16} />}
+            disabled={appStore.actionLoading}
           >
             {appStore.actionLoading ? t('app.saving') : t('app.save')}
-          </Button>
+          </PrimaryButton>
         </Group>
       </Stack>
     </Modal>

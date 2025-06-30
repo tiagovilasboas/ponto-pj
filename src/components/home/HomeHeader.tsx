@@ -1,7 +1,8 @@
-import { Card, Group, Title, ActionIcon } from '@mantine/core'
-import { IconLogout, IconClock } from '@tabler/icons-react'
+import { Card, Group, Title, ActionIcon, Button } from '@mantine/core'
+import { IconLogout, IconClock, IconHistory, IconFileReport } from '@tabler/icons-react'
 import { useTranslation } from '@/i18n/useTranslation'
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher'
+import { useNavigate } from 'react-router-dom'
 
 interface HomeHeaderProps {
   onLogout: () => void
@@ -9,6 +10,7 @@ interface HomeHeaderProps {
 
 export function HomeHeader({ onLogout }: HomeHeaderProps) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   return (
     <Card withBorder mb="md">
@@ -18,6 +20,22 @@ export function HomeHeader({ onLogout }: HomeHeaderProps) {
           <Title order={1} size="h4" c="gray.8">{t('app.title')}</Title>
         </Group>
         <Group gap="sm">
+          <Button
+            variant="light"
+            size="sm"
+            leftSection={<IconHistory size={16} />}
+            onClick={() => navigate('/history')}
+          >
+            {t('historico.title')}
+          </Button>
+          <Button
+            variant="light"
+            size="sm"
+            leftSection={<IconFileReport size={16} />}
+            onClick={() => navigate('/report')}
+          >
+            {t('relatorio.title')}
+          </Button>
           <LanguageSwitcher />
           <ActionIcon 
             variant="light" 
