@@ -8,7 +8,7 @@ import {
 } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
-import { useAppStore } from '@/hooks/useAppStore';
+import { useAppStoreWithAuth } from '@/hooks/useAppStore';
 import { useTranslation } from '@/i18n/useTranslation';
 import { useEffect, Suspense, lazy } from 'react';
 import { SecurityMonitor } from './components/security/SecurityMonitor';
@@ -88,14 +88,14 @@ const LoadingFallback = () => {
 };
 
 function App() {
-  const { loadUserAndSession } = useAppStore();
+  const { loadUser } = useAppStoreWithAuth();
   // const { t } = useTranslation() // Temporarily disabled for development
 
   // Inicializar dados de autenticação ao carregar a aplicação
   useEffect(() => {
-    loadUserAndSession();
+    loadUser();
     preloadPages();
-  }, [loadUserAndSession]);
+  }, [loadUser]);
 
   return (
     <MantineProvider theme={theme}>

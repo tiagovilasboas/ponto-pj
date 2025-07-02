@@ -188,7 +188,7 @@ export const Report = () => {
                     <SessionRecordCard
                       key={session.id}
                       date={formatDateWithWeekday(session.date)}
-                      status={session.status || ''}
+                      status={(session.status as 'completa' | 'incompleta' | 'pendente') || 'pendente'}
                       statusLabel={getStatusBadge(session).props.children}
                       manualEdit={!!session.manual_edit}
                       manualEditLabel={session.manual_edit ? t('workSession.status.manualEdit') : undefined}

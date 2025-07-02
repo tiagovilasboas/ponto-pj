@@ -235,3 +235,25 @@ export function getLastNMonthsOptions() {
   }
   return options
 }
+
+/**
+ * Formata horário para exibição (ex: "08:30")
+ * @param timeString - String de horário (HH:MM)
+ * @returns String formatada
+ */
+export function formatTime(timeString: string): string {
+  if (!timeString) return '-'
+  
+  // Se já está no formato HH:MM, retorna como está
+  if (/^\d{2}:\d{2}$/.test(timeString)) {
+    return timeString
+  }
+  
+  // Se é um timestamp ISO, extrai apenas o horário
+  if (timeString.includes('T')) {
+    const time = timeString.split('T')[1]
+    return time.substring(0, 5) // Pega apenas HH:MM
+  }
+  
+  return timeString
+}

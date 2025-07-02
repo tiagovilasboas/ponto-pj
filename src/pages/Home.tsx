@@ -1,26 +1,26 @@
 import { Container, Stack, Card, Text, Badge } from '@mantine/core'
 import { IconClock, IconTarget } from '@tabler/icons-react'
-import { useTranslation } from '../i18n/useTranslation'
-import { useAppStore } from '@/hooks/useAppStore'
+import { useAppStoreWithAuth } from '@/hooks/useAppStore'
 import { AppHeader } from '@/components/common/AppHeader'
 import { BottomNavigation } from '@/components/common/BottomNavigation'
+import { SessionStatusCard } from '@/components/home/SessionStatusCard'
 import { ManualRegisterModal } from '@/components/ponto/ManualRegisterModal'
-import { SessionStatusCard } from '../components/home/SessionStatusCard'
 import { useState, useEffect } from 'react'
+import { useTranslation } from '@/i18n/useTranslation'
 import { isValidSession, isCompleteSession, formatDateForDisplay } from '@/lib/utils'
 
 export const Home = () => {
-  const { session, formatTime, formatWorkedHours, loadUserAndSession, startJourney, endJourney } = useAppStore()
+  const { session, formatTime, formatWorkedHours, loadUser, startJourney, endJourney } = useAppStoreWithAuth()
   const { t } = useTranslation()
-  const [showManualModal, setShowManualModal] = useState(false)
+  const [manualModalOpen, setManualModalOpen] = useState(false)
 
   // Recarregar sessão quando o componente montar
   useEffect(() => {
-    loadUserAndSession()
-  }, [loadUserAndSession])
+    loadUser()
+  }, [loadUser])
 
   // Ações rápidas (placeholders)
-  const handleEdit = () => setShowManualModal(true)
+  const handleEdit = () => setManualModalOpen(true)
 
   // Status e cores
   const isComplete = isCompleteSession(session)
@@ -122,8 +122,8 @@ export const Home = () => {
       <BottomNavigation />
 
       <ManualRegisterModal
-        open={showManualModal}
-        onClose={() => setShowManualModal(false)}
+        open={manualModalOpen}
+        onClose={() => setManualModalOpen(false)}
       />
     </div>
   )
