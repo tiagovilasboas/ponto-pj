@@ -589,7 +589,7 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 - 🌐 **LinkedIn**: [tiagovilasboas](https://www.linkedin.com/in/tiagovilasboas/)
 - 🐙 **GitHub**: [tiagovilasboas](https://github.com/tiagovilasboas)
-- 📧 **Email**: [contato@tiagovilasboas.com](mailto:contato@tiagovilasboas.com)
+- 📧 **Email**: [tcarvalhovb@gmail.com](mailto:tcarvalhovb@gmail.com)
 
 ### 🎯 Experiência
 
