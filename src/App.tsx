@@ -1,20 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import {
-  MantineProvider,
-  createTheme,
-  Center,
-  Text,
-  Loader,
-} from '@mantine/core';
+import { MantineProvider, createTheme } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useAppStoreWithAuth } from '@/hooks/useAppStore';
-import { useTranslation } from '@/i18n/useTranslation';
 import { useEffect, Suspense, lazy } from 'react';
 import { SecurityMonitor } from './components/security/SecurityMonitor';
 import './index.css';
 
-// Lazy loading com preload para melhor performance
 const Home = lazy(() =>
   import('@/pages/Home').then(m => ({ default: m.Home }))
 );
@@ -30,15 +22,6 @@ const History = lazy(() =>
 const Report = lazy(() =>
   import('@/pages/Report').then(m => ({ default: m.Report }))
 );
-
-// Preload das páginas mais importantes
-const preloadPages = () => {
-  // Preload Home após carregamento inicial
-  setTimeout(() => {
-    import('@/pages/Home');
-    import('@/pages/History');
-  }, 1000);
-};
 
 const theme = createTheme({
   primaryColor: 'blue',
@@ -72,29 +55,20 @@ const theme = createTheme({
   },
 });
 
-// Componente de loading otimizado
-const LoadingFallback = () => {
-  const { t } = useTranslation();
-  return (
-    <Center h='100vh' className='bg-gradient-to-br from-blue-50 to-indigo-50'>
-      <div className='text-center'>
-        <Loader size='lg' color='blue' className='mb-4' />
-        <Text size='lg' c='dimmed'>
-          {t('app.loadingPage')}
-        </Text>
-      </div>
-    </Center>
-  );
-};
+const LoadingFallback = () => (
+  <div className='loading-critical'>
+    <div className='text-center'>
+      <div className='spinner mb-4'></div>
+      <div className='text-gray-600 text-lg font-medium'>Loading page...</div>
+    </div>
+  </div>
+);
 
 function App() {
   const { loadUser } = useAppStoreWithAuth();
-  // const { t } = useTranslation() // Temporarily disabled for development
 
-  // Inicializar dados de autenticação ao carregar a aplicação
   useEffect(() => {
     loadUser();
-    preloadPages();
   }, [loadUser]);
 
   return (
@@ -104,13 +78,8 @@ function App() {
         <SecurityMonitor />
         <Suspense fallback={<LoadingFallback />}>
           <Routes>
-            {/* Rota pública - Login */}
             <Route path='/login' element={<Login />} />
-
-            {/* Rota para cadastro */}
             <Route path='/register' element={<Register />} />
-
-            {/* Protected route - History */}
             <Route
               path='/history'
               element={
@@ -119,8 +88,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
-            {/* Protected route - Report */}
             <Route
               path='/report'
               element={
@@ -129,8 +96,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
-            {/* Rota protegida - Home */}
             <Route
               path='/'
               element={
