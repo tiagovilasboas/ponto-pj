@@ -76,7 +76,7 @@ describe('Time Clock Registration Flow', () => {
 
   describe('Clock In Registration', () => {
     it('should allow registering clock in time', async () => {
-      const user = userEvent.setup()
+      // const user = userEvent.setup()
       const mockRegisterTime = vi.fn().mockResolvedValue(undefined)
       
       mockUseAppStore.mockReturnValue({
@@ -89,7 +89,7 @@ describe('Time Clock Registration Flow', () => {
       renderWithProviders(<Home />)
 
       const entradaButton = screen.getByRole('button', { name: /entrada/i })
-      await user.click(entradaButton)
+      await userEvent.click(entradaButton)
 
       await waitFor(() => {
         expect(mockRegisterTime).toHaveBeenCalledWith('entrada')
@@ -97,7 +97,7 @@ describe('Time Clock Registration Flow', () => {
     })
 
     it('should show loading during registration', async () => {
-      const user = userEvent.setup()
+      // const user = userEvent.setup()
       const mockRegisterTime = vi.fn()
       
       mockUseAppStore.mockReturnValue({
@@ -120,7 +120,7 @@ describe('Time Clock Registration Flow', () => {
 
   describe('Clock Out Registration', () => {
     it('should allow registering clock out time', async () => {
-      const user = userEvent.setup()
+      // const user = userEvent.setup()
       const mockRegisterTime = vi.fn().mockResolvedValue(undefined)
       
       mockUseAppStore.mockReturnValue({
@@ -133,7 +133,7 @@ describe('Time Clock Registration Flow', () => {
       renderWithProviders(<Home />)
 
       const saidaButton = screen.getByRole('button', { name: /saída/i })
-      await user.click(saidaButton)
+      await userEvent.click(saidaButton)
 
       await waitFor(() => {
         expect(mockRegisterTime).toHaveBeenCalledWith('saida')

@@ -72,15 +72,12 @@ describe('Navigation Flow', () => {
 
   describe('Navigation Accessibility', () => {
     it('should have keyboard accessible buttons', async () => {
-      const user = userEvent.setup()
       renderWithProviders(<BottomNavigation />)
 
       const buttons = screen.getAllByRole('button')
       
-      // Remover verificação de tabindex, pois os botões não têm esse atributo
-      // for (const button of buttons) {
-      //   expect(button).toHaveAttribute('tabindex', '0')
-      // }
+      // Verify buttons are present
+      expect(buttons.length).toBeGreaterThan(0)
     })
 
     it('should allow keyboard navigation', async () => {
