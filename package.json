@@ -6,8 +6,30 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:analyze": "tsc -b && vite build --mode analyze",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "lint:fix": "eslint . --fix",
+    "type-check": "tsc --noEmit",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest --watch",
+    "bundle:analyze": "npx vite-bundle-analyzer dist",
+    "lighthouse": "npx lighthouse http://localhost:4173 --output=html --output-path=./lighthouse-report.html",
+    "prepare": "husky",
+    "pre-commit": "lint-staged && npm run test:run",
+    "pre-push": "npm run type-check && npm run test:coverage"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css,md}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@mantine/core": "^8.1.2",
@@ -33,6 +55,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.5.2",
@@ -41,11 +66,18 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.2.0",
+    "husky": "^9.1.7",
+    "jsdom": "^26.1.0",
+    "lighthouse": "^11.6.0",
+    "lint-staged": "^16.1.2",
     "postcss": "^8.5.6",
+    "prettier": "^3.6.2",
     "tailwindcss": "^3.4.0",
     "tw-animate-css": "^1.3.4",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.34.1",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "vite-bundle-analyzer": "^0.7.0",
+    "vitest": "^3.2.4"
   }
 }

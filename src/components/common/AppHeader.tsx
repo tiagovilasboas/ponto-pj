@@ -1,71 +1,76 @@
-import { Group, Title, ActionIcon, Text } from '@mantine/core'
-import { IconArrowLeft, IconLogout } from '@tabler/icons-react'
-import { useNavigate } from 'react-router-dom'
-import { useAppStore } from '@/hooks/useAppStore'
-import { useTranslation } from '../../i18n/useTranslation'
-import { Logo } from './Logo'
-import { LanguageSwitcher } from '@/components/common/LanguageSwitcher'
+import { Group, Title, ActionIcon, Text } from '@mantine/core';
+import { IconArrowLeft, IconLogout } from '@tabler/icons-react';
+import { useNavigate } from 'react-router-dom';
+import { useAppStore } from '@/hooks/useAppStore';
+import { useTranslation } from '../../i18n/useTranslation';
+import { Logo } from './Logo';
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 
 interface AppHeaderProps {
-  title: string
-  showBack?: boolean
-  onBack?: () => void
-  showLogout?: boolean
-  subtitle?: string
+  title: string;
+  showBack?: boolean;
+  onBack?: () => void;
+  showLogout?: boolean;
+  subtitle?: string;
 }
 
-export const AppHeader = ({ 
-  title, 
-  showBack = false, 
-  onBack, 
+export const AppHeader = ({
+  title,
+  showBack = false,
+  onBack,
   showLogout = true,
-  subtitle 
+  subtitle,
 }: AppHeaderProps) => {
-  const navigate = useNavigate()
-  const { logout } = useAppStore()
-  const { t } = useTranslation()
+  const navigate = useNavigate();
+  const { logout } = useAppStore();
+  const { t } = useTranslation();
 
   const handleBack = () => {
     if (onBack) {
-      onBack()
+      onBack();
     } else {
-      navigate(-1)
+      navigate(-1);
     }
-  }
+  };
 
   const handleLogout = async () => {
     try {
-      await logout()
-      navigate('/login')
+      await logout();
+      navigate('/login');
     } catch (error) {
-      console.error(t('auth.logoutError'), error)
+      console.error(t('auth.logoutError'), error);
     }
-  }
+  };
 
   return (
-    <div className="sticky top-0 z-50 bg-white border-b border-gray-200 px-4 py-3">
-      <Group justify="space-between" align="center">
-        <Group gap="sm">
+    <div className='sticky top-0 z-50 bg-white border-b border-gray-200 px-4 py-3'>
+      <Group justify='space-between' align='center'>
+        <Group gap='sm'>
           {showBack && (
             <ActionIcon
-              variant="subtle"
-              size="lg"
+              variant='subtle'
+              size='lg'
               onClick={handleBack}
-              className="text-gray-600 hover:bg-gray-100"
-              aria-label="Voltar"
+              className='text-gray-600 hover:bg-gray-100'
+              aria-label={t('aria.back')}
             >
               <IconArrowLeft size={20} />
             </ActionIcon>
           )}
-          <Group gap="sm" align="center">
-            <Logo size={32} aria-hidden="true" />
+          <Group gap='sm' align='center'>
+            <Logo size={32} aria-hidden='true' />
             {title && (
               <div>
-                <Title order={1} size="h5" className="text-gray-900 font-semibold" aria-label={title}>
+                <Title
+                  order={1}
+                  size='h5'
+                  className='text-gray-900 font-semibold'
+                  aria-label={title}
+                >
                   {title}
                 </Title>
                 {subtitle && (
-                  <Text size="sm" c="gray.6" className="mt-1">
+                  <Text size='sm' c='gray.6' className='mt-1'>
                     {subtitle}
                   </Text>
                 )}
@@ -73,14 +78,14 @@ export const AppHeader = ({
             )}
           </Group>
         </Group>
-        <Group gap="xs">
+        <Group gap='xs'>
           <LanguageSwitcher />
           {showLogout && (
             <ActionIcon
-              variant="subtle"
-              size="lg"
+              variant='subtle'
+              size='lg'
               onClick={handleLogout}
-              className="text-gray-600 hover:bg-red-50 hover:text-red-600"
+              className='text-gray-600 hover:bg-red-50 hover:text-red-600'
               aria-label={t('home.logout')}
             >
               <IconLogout size={20} />
@@ -89,5 +94,5 @@ export const AppHeader = ({
         </Group>
       </Group>
     </div>
-  )
-} 
+  );
+};

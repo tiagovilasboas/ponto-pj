@@ -175,5 +175,20 @@
     "user_inactivity_timeout": "Sessão expirada por inatividade",
     "suspicious_url_change": "Mudança suspeita na URL detectada",
     "suspicious_url_replace": "Substituição suspeita na URL detectada"
+  },
+  "aria": {
+    "logo": "Logo Ponto PJ",
+    "navigation": "Menu de navegação inferior",
+    "back": "Voltar",
+    "editSession": "Editar registro de ponto",
+    "deleteSession": "Excluir registro de ponto",
+    "cancelEdit": "Cancelar edição",
+    "saveEdit": "Salvar edição",
+    "cancelDelete": "Cancelar exclusão",
+    "confirmDelete": "Confirmar exclusão",
+    "manualRegister": "Registro manual de ponto",
+    "cancelManualRegister": "Cancelar registro manual",
+    "saveManualRegister": "Salvar registro manual",
+    "save": "Salvar"
   }
-} 
+}

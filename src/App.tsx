@@ -1,18 +1,44 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { MantineProvider, createTheme, Center, Text } from '@mantine/core'
-import { Notifications } from '@mantine/notifications'
-import { ProtectedRoute } from '@/components/auth/ProtectedRoute'
-import { useAppStore } from '@/hooks/useAppStore'
-import { useTranslation } from '@/i18n/useTranslation'
-import { useEffect, Suspense, lazy } from 'react'
-import { SecurityMonitor } from './components/security/SecurityMonitor'
-import './index.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {
+  MantineProvider,
+  createTheme,
+  Center,
+  Text,
+  Loader,
+} from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { useAppStore } from '@/hooks/useAppStore';
+import { useTranslation } from '@/i18n/useTranslation';
+import { useEffect, Suspense, lazy } from 'react';
+import { SecurityMonitor } from './components/security/SecurityMonitor';
+import './index.css';
 
-const Home = lazy(() => import('@/pages/Home').then(m => ({ default: m.Home })))
-const Login = lazy(() => import('@/pages/Login').then(m => ({ default: m.Login })))
-const Register = lazy(() => import('@/pages/Register').then(m => ({ default: m.Register })))
-const History = lazy(() => import('@/pages/History').then(m => ({ default: m.History })))
-const Report = lazy(() => import('@/pages/Report').then(m => ({ default: m.Report })))
+// Lazy loading com preload para melhor performance
+const Home = lazy(() =>
+  import('@/pages/Home').then(m => ({ default: m.Home }))
+);
+const Login = lazy(() =>
+  import('@/pages/Login').then(m => ({ default: m.Login }))
+);
+const Register = lazy(() =>
+  import('@/pages/Register').then(m => ({ default: m.Register }))
+);
+const History = lazy(() =>
+  import('@/pages/History').then(m => ({ default: m.History }))
+);
+const Report = lazy(() =>
+  import('@/pages/Report').then(m => ({ default: m.Report }))
+);
+
+// Preload das páginas mais importantes
+const preloadPages = () => {
+  // Preload Home após carregamento inicial
+  setTimeout(() => {
+    import('@/pages/Home');
+    import('@/pages/History');
+  }, 1000);
+};
 
 const theme = createTheme({
   primaryColor: 'blue',
@@ -44,68 +70,80 @@ const theme = createTheme({
       },
     },
   },
-})
+});
+
+// Componente de loading otimizado
+const LoadingFallback = () => {
+  const { t } = useTranslation();
+  return (
+    <Center h='100vh' className='bg-gradient-to-br from-blue-50 to-indigo-50'>
+      <div className='text-center'>
+        <Loader size='lg' color='blue' className='mb-4' />
+        <Text size='lg' c='dimmed'>
+          {t('app.loadingPage')}
+        </Text>
+      </div>
+    </Center>
+  );
+};
 
 function App() {
-  const { loadUserAndSession } = useAppStore()
-  const { t } = useTranslation()
+  const { loadUserAndSession } = useAppStore();
+  // const { t } = useTranslation() // Temporarily disabled for development
 
   // Inicializar dados de autenticação ao carregar a aplicação
   useEffect(() => {
-    loadUserAndSession()
-  }, [loadUserAndSession])
+    loadUserAndSession();
+    preloadPages();
+  }, [loadUserAndSession]);
 
   return (
     <MantineProvider theme={theme}>
-      <Notifications position="top-center" />
+      <Notifications position='top-center' />
       <Router>
         <SecurityMonitor />
-        <Suspense fallback={
-          <Center h="100vh">
-            <Text size="lg">{t('app.loadingPage')}</Text>
-          </Center>
-        }>
+        <Suspense fallback={<LoadingFallback />}>
           <Routes>
             {/* Rota pública - Login */}
-            <Route path="/login" element={<Login />} />
-            
+            <Route path='/login' element={<Login />} />
+
             {/* Rota para cadastro */}
-            <Route path="/register" element={<Register />} />
+            <Route path='/register' element={<Register />} />
 
             {/* Protected route - History */}
-            <Route 
-              path="/history" 
+            <Route
+              path='/history'
               element={
                 <ProtectedRoute>
                   <History />
                 </ProtectedRoute>
-              } 
+              }
             />
 
             {/* Protected route - Report */}
-            <Route 
-              path="/report" 
+            <Route
+              path='/report'
               element={
                 <ProtectedRoute>
                   <Report />
                 </ProtectedRoute>
-              } 
+              }
             />
-            
+
             {/* Rota protegida - Home */}
-            <Route 
-              path="/" 
+            <Route
+              path='/'
               element={
                 <ProtectedRoute>
                   <Home />
                 </ProtectedRoute>
-              } 
+              }
             />
           </Routes>
         </Suspense>
       </Router>
     </MantineProvider>
-  )
+  );
 }
 
-export default App
+export default App;

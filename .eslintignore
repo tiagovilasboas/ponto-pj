@@ -1,0 +1,34 @@
+# Test files
+src/test/
+**/*.test.ts
+**/*.test.tsx
+**/*.test.js
+**/*.test.jsx
+
+# Build files
+dist/
+build/
+coverage/
+
+# Dependencies
+node_modules/
+
+# Generated files
+*.min.js
+*.min.css
+
+# Environment files
+.env*
+
+# IDE files
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Package files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml 
