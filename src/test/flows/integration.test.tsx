@@ -37,8 +37,6 @@ describe('Complete Integration Flow', () => {
 
   describe('Complete User Flow', () => {
     it('should allow complete login and navigation', async () => {
-      const user = userEvent.setup()
-
       renderWithProviders(<App />)
 
       // Verificar se o app renderiza sem quebrar
@@ -54,8 +52,6 @@ describe('Complete Integration Flow', () => {
     })
 
     it('should allow navigation between all pages', async () => {
-      const user = userEvent.setup()
-
       renderWithProviders(<App />)
 
       // Verificar se o app renderiza sem quebrar
@@ -97,8 +93,6 @@ describe('Complete Integration Flow', () => {
 
   describe('Error Handling', () => {
     it('should handle login errors', async () => {
-      const user = userEvent.setup()
-
       renderWithProviders(<App />)
 
       // Verificar se o app renderiza sem quebrar
