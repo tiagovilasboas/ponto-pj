@@ -103,9 +103,9 @@ cd ponto-pj
 npm install
 
 # 3. Configure as variáveis de ambiente
-# Crie um arquivo .env com:
-VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
+# Copie o arquivo .env.example para .env e preencha com suas credenciais:
+cp .env.example .env
+# Edite o arquivo .env com suas credenciais do Supabase
 
 # 4. Execute o projeto
 npm run dev
@@ -307,7 +307,8 @@ npm run lighthouse
 ```bash
 # .env
 VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_SUPABASE_KEY=your-anon-key
+VITE_APP_URL=http://localhost:5173
 ```
 
 ### 📋 Checklist de Segurança
@@ -520,7 +521,7 @@ src/
 ```bash
 # Verifique as variáveis de ambiente
 VITE_SUPABASE_URL=https://your-project.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key
+VITE_SUPABASE_KEY=your-anon-key
 ```
 
 #### 2. Erro de Build

@@ -23,7 +23,8 @@
     "lighthouse:ci": "echo 'Para CI/CD, use: npx lighthouse https://ponto-pj.vercel.app --output=json --output-path=./lighthouse-report.json --chrome-flags=--headless'",
     "prepare": "husky",
     "pre-commit": "lint-staged && npm run test:run",
-    "pre-push": "npm run type-check && npm run test:coverage"
+    "pre-push": "npm run type-check && npm run test:coverage",
+    "test:supabase": "node scripts/test-supabase-auth.js"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
