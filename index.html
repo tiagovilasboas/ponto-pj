@@ -5,6 +5,20 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
+    <!-- Preload de recursos críticos para LCP -->
+    <link rel="preload" href="/src/index.css" as="style" />
+    <link rel="preload" href="/src/main.tsx" as="script" />
+    
+    <!-- Preload de fontes críticas -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" /></noscript>
+    
+    <!-- DNS Prefetch para recursos externos -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    
     <!-- PWA Meta Tags -->
     <meta name="application-name" content="Ponto PJ">
     <meta name="apple-mobile-web-app-capable" content="yes">
