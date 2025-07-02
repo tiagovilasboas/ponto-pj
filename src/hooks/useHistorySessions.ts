@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { notifications } from '@mantine/notifications'
 import { useTranslation } from '@/i18n/useTranslation'
 import { getCurrentMonth, getLastNMonthsOptions, formatDateWithWeekday, formatWorkedHours } from '@/lib/utils'
@@ -7,8 +7,11 @@ import { workSessionService } from '@/services/workSessions'
 
 export function useHistorySessions() {
   const { t } = useTranslation()
+  const [sessions, setSessions] = useState<WorkSession[]>([])
   const [loading, setLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [totalSessions, setTotalSessions] = useState(0)
   const monthOptions = getLastNMonthsOptions()
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth())
   const [editingSession, setEditingSession] = useState<WorkSession | null>(null)
@@ -17,15 +20,14 @@ export function useHistorySessions() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [deletingSession, setDeletingSession] = useState<WorkSession | null>(null)
 
-  // Simulate async load (replace with real API call)
+  // Load sessions from Supabase API
   const loadSessions = useCallback(async () => {
     setLoading(true)
     try {
-      // TODO: Implement real API call
-      // const response = await workSessionService.getSessions(selectedMonth, currentPage)
-      // setSessions(response.sessions)
-      // setTotalPages(response.totalPages)
-      // setTotalSessions(response.totalSessions)
+      const response = await workSessionService.getSessionsForMonth(selectedMonth, currentPage)
+      setSessions(response.sessions)
+      setTotalPages(response.totalPages)
+      setTotalSessions(response.total)
     } catch {
       notifications.show({
         title: t('app.error'),
@@ -35,7 +37,12 @@ export function useHistorySessions() {
     } finally {
       setLoading(false)
     }
-  }, [t])
+  }, [selectedMonth, currentPage, t])
+
+  // Load sessions on mount and when month changes
+  useEffect(() => {
+    loadSessions()
+  }, [loadSessions])
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
@@ -112,11 +119,11 @@ export function useHistorySessions() {
   }
 
   return {
-    sessions: [], // TODO: Return real sessions from API
+    sessions,
     loading,
     currentPage,
-    totalPages: 1, // TODO: Return real total pages from API
-    totalSessions: 0, // TODO: Return real total sessions from API
+    totalPages,
+    totalSessions,
     monthOptions,
     selectedMonth,
     setSelectedMonth,

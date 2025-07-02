@@ -1,24 +1,37 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { notifications } from '@mantine/notifications'
 import { useTranslation } from '@/i18n/useTranslation'
 import { getCurrentMonth, getLastNMonthsOptions, formatDateWithWeekday, formatWorkedHours } from '@/lib/utils'
+import type { WorkSession } from '@/types/workSession'
+import { workSessionService } from '@/services/workSessions'
 
 export function useReportSessions() {
   const { t } = useTranslation()
+  const [sessions, setSessions] = useState<WorkSession[]>([])
   const [loading, setLoading] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [statistics, setStatistics] = useState({
+    totalHours: 0,
+    completeDays: 0,
+    incompleteDays: 0,
+    totalDays: 0,
+  })
   const monthOptions = getLastNMonthsOptions()
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth())
 
-  // Simulate async load (replace with real API call)
+  // Load report data from Supabase API
   const loadReport = useCallback(async () => {
     setLoading(true)
     try {
-      // TODO: Implement real API call
-      // const response = await workSessionService.getReport(selectedMonth, currentPage)
-      // setSessions(response.sessions)
-      // setTotalPages(response.totalPages)
-      // setStatistics(response.statistics)
+      const [sessionsResponse, statsResponse] = await Promise.all([
+        workSessionService.getSessionsForMonth(selectedMonth, currentPage),
+        workSessionService.getMonthStatistics(selectedMonth)
+      ])
+      
+      setSessions(sessionsResponse.sessions)
+      setTotalPages(sessionsResponse.totalPages)
+      setStatistics(statsResponse)
     } catch {
       notifications.show({
         title: t('app.error'),
@@ -28,7 +41,12 @@ export function useReportSessions() {
     } finally {
       setLoading(false)
     }
-  }, [t])
+  }, [selectedMonth, currentPage, t])
+
+  // Load report on mount and when month changes
+  useEffect(() => {
+    loadReport()
+  }, [loadReport])
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page)
@@ -36,19 +54,14 @@ export function useReportSessions() {
   }
 
   return {
-    sessions: [], // TODO: Return real sessions from API
+    sessions,
     loading,
     currentPage,
-    totalPages: 1, // TODO: Return real total pages from API
+    totalPages,
     monthOptions,
     selectedMonth,
     setSelectedMonth,
-    statistics: {
-      totalHours: 0,
-      completeDays: 0,
-      incompleteDays: 0,
-      totalDays: 0,
-    }, // TODO: Return real statistics from API
+    statistics,
     loadReport,
     handlePageChange,
     formatDateWithWeekday,
