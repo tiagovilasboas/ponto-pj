@@ -10,13 +10,14 @@ import { workSessionService } from '@/services'
 import { generatePDF } from '@/lib/pdfGenerator'
 import { getLastNMonthsOptions, getCurrentMonth, formatDateWithWeekday, formatMonthForDisplay } from '@/lib/utils'
 import type { WorkSession } from '@/types/workSession'
+import { SessionRecordCard } from '../components/common/SessionRecordCard'
 
 export const Report = () => {
   const { t } = useTranslation()
   const { formatTime, formatWorkedHours } = useAppStore()
   const [sessions, setSessions] = useState<WorkSession[]>([])
   const [loading, setLoading] = useState(false)
-  const monthOptions = getLastNMonthsOptions(12)
+  const monthOptions = getLastNMonthsOptions()
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth())
   const [statistics, setStatistics] = useState({
     totalHours: 0,
@@ -210,43 +211,17 @@ export const Report = () => {
 
                 <div className="space-y-1">
                   {sessions.map((session) => (
-                    <div key={session.id} className="border border-gray-200 rounded-lg p-2 hover:bg-gray-50 transition-colors">
-                      {/* Main Row - Date, Status */}
-                      <Group justify="space-between" align="center" mb="xs">
-                        <Group gap="sm" align="center">
-                          <Text fw={600} size="sm" className="min-w-[85px]">
-                            {formatDateWithWeekday(session.date)}
-                          </Text>
-                          {getStatusBadge(session)}
-                          {session.manual_edit && (
-                            <Badge color="blue" size="xs" variant="light">
-                              {t('workSession.status.manualEdit')}
-                            </Badge>
-                          )}
-                        </Group>
-                      </Group>
-
-                      {/* Time Row - Entry, Exit, Worked Time */}
-                      <div className="grid grid-cols-3 gap-2 text-xs">
-                        <div>
-                          <Text size="xs" c="gray.6" mb="xs">{t('relatorio.entry')}</Text>
-                          <Text fw={500} size="xs">
-                            {session.start_time ? formatTime(session.start_time) : '-'}
-                          </Text>
-                        </div>
-                        <div>
-                          <Text size="xs" c="gray.6" mb="xs">{t('relatorio.exit')}</Text>
-                          <Text fw={500} size="xs">
-                            {session.end_time ? formatTime(session.end_time) : '-'}
-                          </Text>
-                        </div>
-                        <div className="flex items-center justify-end h-full">
-                          <Text fw={600} c="blue.6" size="xs">
-                            {session.worked_time_real ? formatWorkedHours(session.worked_time_real) : '-'}
-                          </Text>
-                        </div>
-                      </div>
-                    </div>
+                    <SessionRecordCard
+                      key={session.id}
+                      date={formatDateWithWeekday(session.date)}
+                      status={session.status || ''}
+                      statusLabel={getStatusBadge(session).props.children}
+                      manualEdit={!!session.manual_edit}
+                      manualEditLabel={session.manual_edit ? t('workSession.status.manualEdit') : undefined}
+                      startTime={session.start_time ? formatTime(session.start_time) : '-'}
+                      endTime={session.end_time ? formatTime(session.end_time) : '-'}
+                      netTime={session.worked_time_real ? formatWorkedHours(session.worked_time_real) : '-'}
+                    />
                   ))}
                 </div>
               </>
