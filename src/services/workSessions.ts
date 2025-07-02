@@ -1,22 +1,22 @@
-import { supabase } from '@/lib/supabaseClient'
-import { getMonthDateRange, calculateWorkedHours } from '@/lib/utils'
-import type { WorkSession } from '@/types/workSession'
+import { supabase } from '@/lib/supabaseClient';
+import { getMonthDateRange, calculateWorkedHours } from '@/lib/utils';
+import type { WorkSession } from '@/types/workSession';
 
 interface SessionUpdates {
-  start_time?: string
-  end_time?: string
-  worked_time_real?: number
-  status?: 'sem_registro' | 'completa' | 'incompleta'
-  manual_edit?: boolean
+  start_time?: string;
+  end_time?: string;
+  worked_time_real?: number;
+  status?: 'sem_registro' | 'completa' | 'incompleta';
+  manual_edit?: boolean;
 }
 
 export class WorkSessionService {
   private async getUserId(): Promise<string> {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) {
-      throw new Error('Usuário não autenticado')
+    const response = await supabase.auth.getUser();
+    if (!response.data?.user) {
+      throw new Error('Usuário não autenticado');
     }
-    return user.id
+    return response.data.user.id;
   }
 
   /**
@@ -24,23 +24,24 @@ export class WorkSessionService {
    */
   async getSessionByDate(date: string): Promise<WorkSession | null> {
     try {
-      const userId = await this.getUserId()
-      
+      const userId = await this.getUserId();
+
       const { data, error } = await supabase
         .from('work_sessions')
         .select('*')
         .eq('user_id', userId)
         .eq('date', date)
-        .single()
+        .single();
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
-        throw new Error(error.message)
+      if (error && error.code !== 'PGRST116') {
+        // PGRST116 = no rows returned
+        throw new Error(error.message);
       }
 
-      return data || null
+      return data || null;
     } catch (error) {
-      console.error('Erro ao buscar sessão por data:', error)
-      throw error
+      console.error('Erro ao buscar sessão por data:', error);
+      throw error;
     }
   }
 
@@ -49,30 +50,33 @@ export class WorkSessionService {
    */
   async startSession(date: string, time: string): Promise<WorkSession> {
     try {
-      const userId = await this.getUserId()
-      
+      const userId = await this.getUserId();
+
       const { data, error } = await supabase
         .from('work_sessions')
-        .upsert({
-          user_id: userId,
-          date,
-          start_time: time,
-          status: 'incompleta',
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id,date'
-        })
+        .upsert(
+          {
+            user_id: userId,
+            date,
+            start_time: time,
+            status: 'incompleta',
+            updated_at: new Date().toISOString(),
+          },
+          {
+            onConflict: 'user_id,date',
+          }
+        )
         .select()
-        .single()
+        .single();
 
       if (error) {
-        throw new Error(error.message)
+        throw new Error(error.message);
       }
 
-      return data
+      return data;
     } catch (error) {
-      console.error('Erro ao iniciar sessão:', error)
-      throw error
+      console.error('Erro ao iniciar sessão:', error);
+      throw error;
     }
   }
 
@@ -81,16 +85,16 @@ export class WorkSessionService {
    */
   async endSession(date: string, time: string): Promise<WorkSession> {
     try {
-      const userId = await this.getUserId()
-      
+      const userId = await this.getUserId();
+
       // Buscar sessão atual para calcular o tempo trabalhado
-      const currentSession = await this.getSessionByDate(date)
+      const currentSession = await this.getSessionByDate(date);
       if (!currentSession || !currentSession.start_time) {
-        throw new Error('Sessão não encontrada ou sem horário de início')
+        throw new Error('Sessão não encontrada ou sem horário de início');
       }
 
       // Calcular tempo trabalhado usando função utilitária
-      const workedHours = calculateWorkedHours(currentSession.start_time, time)
+      const workedHours = calculateWorkedHours(currentSession.start_time, time);
 
       const { data, error } = await supabase
         .from('work_sessions')
@@ -98,105 +102,119 @@ export class WorkSessionService {
           end_time: time,
           worked_time_real: workedHours,
           status: 'completa',
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('user_id', userId)
         .eq('date', date)
         .select()
-        .single()
+        .single();
 
       if (error) {
-        throw new Error(error.message)
+        throw new Error(error.message);
       }
 
-      return data
+      return data;
     } catch (error) {
-      console.error('Erro ao encerrar sessão:', error)
-      throw error
+      console.error('Erro ao encerrar sessão:', error);
+      throw error;
     }
   }
 
   /**
    * Insere registro manual com manual_edit = true
    */
-  async manualRegister(date: string, start: string, end: string): Promise<WorkSession> {
+  async manualRegister(
+    date: string,
+    start: string,
+    end: string
+  ): Promise<WorkSession> {
     try {
-      const userId = await this.getUserId()
-      
+      const userId = await this.getUserId();
+
       // Calcular tempo trabalhado usando função utilitária
-      const workedHours = calculateWorkedHours(start, end)
+      const workedHours = calculateWorkedHours(start, end);
 
       const { data, error } = await supabase
         .from('work_sessions')
-        .upsert({
-          user_id: userId,
-          date,
-          start_time: start,
-          end_time: end,
-          worked_time_real: workedHours,
-          status: 'completa',
-          manual_edit: true,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id,date'
-        })
+        .upsert(
+          {
+            user_id: userId,
+            date,
+            start_time: start,
+            end_time: end,
+            worked_time_real: workedHours,
+            status: 'completa',
+            manual_edit: true,
+            updated_at: new Date().toISOString(),
+          },
+          {
+            onConflict: 'user_id,date',
+          }
+        )
         .select()
-        .single()
+        .single();
 
       if (error) {
-        throw new Error(error.message)
+        throw new Error(error.message);
       }
 
-      return data
+      return data;
     } catch (error) {
-      console.error('Erro ao registrar manualmente:', error)
-      throw error
+      console.error('Erro ao registrar manualmente:', error);
+      throw error;
     }
   }
 
   /**
    * Atualiza qualquer campo da jornada
    */
-  async updateSession(date: string, updates: SessionUpdates): Promise<WorkSession> {
+  async updateSession(
+    date: string,
+    updates: SessionUpdates
+  ): Promise<WorkSession> {
     try {
-      const userId = await this.getUserId()
-      
+      const userId = await this.getUserId();
+
       const { data, error } = await supabase
         .from('work_sessions')
         .update({
           ...updates,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
         .eq('user_id', userId)
         .eq('date', date)
         .select()
-        .single()
+        .single();
 
       if (error) {
-        throw new Error(error.message)
+        throw new Error(error.message);
       }
 
-      return data
+      return data;
     } catch (error) {
-      console.error('Erro ao atualizar sessão:', error)
-      throw error
+      console.error('Erro ao atualizar sessão:', error);
+      throw error;
     }
   }
 
   /**
    * Retorna todos os registros do usuário no mês selecionado com paginação
    */
-  async getSessionsForMonth(month: string, page: number = 1, limit: number = 20): Promise<{
-    sessions: WorkSession[]
-    total: number
-    page: number
-    totalPages: number
+  async getSessionsForMonth(
+    month: string,
+    page: number = 1,
+    limit: number = 20
+  ): Promise<{
+    sessions: WorkSession[];
+    total: number;
+    page: number;
+    totalPages: number;
   }> {
     try {
-      const userId = await this.getUserId()
-      
+      const userId = await this.getUserId();
+
       // Usar utilitário para obter range de datas do mês
-      const { startDate, endDate } = getMonthDateRange(month)
+      const { startDate, endDate } = getMonthDateRange(month);
 
       // Primeiro, contar o total de registros
       const { count, error: countError } = await supabase
@@ -204,15 +222,15 @@ export class WorkSessionService {
         .select('*', { count: 'exact', head: true })
         .eq('user_id', userId)
         .gte('date', startDate)
-        .lte('date', endDate)
+        .lte('date', endDate);
 
       if (countError) {
-        throw new Error(countError.message)
+        throw new Error(countError.message);
       }
 
-      const total = count || 0
-      const totalPages = Math.ceil(total / limit)
-      const offset = (page - 1) * limit
+      const total = count || 0;
+      const totalPages = Math.ceil(total / limit);
+      const offset = (page - 1) * limit;
 
       // Buscar registros paginados com query mais explícita
       const { data, error } = await supabase
@@ -222,21 +240,21 @@ export class WorkSessionService {
         .gte('date', startDate)
         .lte('date', endDate)
         .order('date', { ascending: false }) // Mais novos primeiro
-        .range(offset, offset + limit - 1)
+        .range(offset, offset + limit - 1);
 
       if (error) {
-        throw new Error(error.message)
+        throw new Error(error.message);
       }
 
       return {
         sessions: data || [],
         total,
         page,
-        totalPages
-      }
+        totalPages,
+      };
     } catch (error) {
-      console.error('Erro ao buscar sessões do mês:', error)
-      throw error
+      console.error('Erro ao buscar sessões do mês:', error);
+      throw error;
     }
   }
 
@@ -244,39 +262,39 @@ export class WorkSessionService {
    * Calcula estatísticas do mês
    */
   async getMonthStatistics(month: string): Promise<{
-    totalHours: number
-    completeDays: number
-    incompleteDays: number
-    totalDays: number
+    totalHours: number;
+    completeDays: number;
+    incompleteDays: number;
+    totalDays: number;
   }> {
     try {
-      const { sessions } = await this.getSessionsForMonth(month, 1, 1000) // Buscar todas as sessões para estatísticas
-      
-      let totalHours = 0
-      let completeDays = 0
-      let incompleteDays = 0
+      const { sessions } = await this.getSessionsForMonth(month, 1, 1000); // Buscar todas as sessões para estatísticas
+
+      let totalHours = 0;
+      let completeDays = 0;
+      let incompleteDays = 0;
 
       sessions.forEach(session => {
         if (session.worked_time_real) {
-          totalHours += session.worked_time_real
+          totalHours += session.worked_time_real;
         }
-        
+
         if (session.status === 'completa') {
-          completeDays++
+          completeDays++;
         } else if (session.status === 'incompleta') {
-          incompleteDays++
+          incompleteDays++;
         }
-      })
+      });
 
       return {
         totalHours,
         completeDays,
         incompleteDays,
-        totalDays: sessions.length
-      }
+        totalDays: sessions.length,
+      };
     } catch (error) {
-      console.error('Erro ao calcular estatísticas do mês:', error)
-      throw error
+      console.error('Erro ao calcular estatísticas do mês:', error);
+      throw error;
     }
   }
 
@@ -285,26 +303,24 @@ export class WorkSessionService {
    */
   async deleteSession(date: string): Promise<void> {
     try {
-      const userId = await this.getUserId()
+      const userId = await this.getUserId();
       const { error } = await supabase
         .from('work_sessions')
         .delete()
         .eq('user_id', userId)
-        .eq('date', date)
+        .eq('date', date);
       if (error) {
-        throw new Error(error.message)
+        throw new Error(error.message);
       }
     } catch (error) {
-      console.error('Erro ao deletar sessão:', error)
-      throw error
+      console.error('Erro ao deletar sessão:', error);
+      throw error;
     }
   }
-
-
 }
 
 // Instância singleton do serviço
-export const workSessionService = new WorkSessionService()
+export const workSessionService = new WorkSessionService();
 
 /*
 EXEMPLOS DE USO:
@@ -339,4 +355,4 @@ const sessions = await workSessionService.getSessionsForMonth('2024-01')
 
 // Estatísticas do mês
 const stats = await workSessionService.getMonthStatistics('2024-01')
-*/ 
+*/

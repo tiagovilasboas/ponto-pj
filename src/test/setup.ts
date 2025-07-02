@@ -33,21 +33,46 @@ if (!window.IntersectionObserver) {
   }));
 }
 
+// Mock para scrollIntoView
+Element.prototype.scrollIntoView = vi.fn();
+
 // Mock do Supabase para testes
 vi.mock('@/lib/supabaseClient', () => ({
   supabase: {
     auth: {
-      getUser: vi.fn(),
+      getUser: vi.fn().mockResolvedValue({
+        data: {
+          user: {
+            id: 'test-user-id',
+            email: 'test@example.com',
+            name: 'Test User',
+          },
+        },
+        error: null,
+      }),
       signIn: vi.fn(),
       signOut: vi.fn(),
     },
     from: vi.fn(() => ({
-      select: vi.fn(),
-      insert: vi.fn(),
-      update: vi.fn(),
-      delete: vi.fn(),
-      eq: vi.fn(),
-      single: vi.fn(),
+      select: vi.fn().mockReturnThis(),
+      insert: vi.fn().mockReturnThis(),
+      update: vi.fn().mockReturnThis(),
+      delete: vi.fn().mockReturnThis(),
+      eq: vi.fn().mockReturnThis(),
+      single: vi.fn().mockResolvedValue({
+        data: null,
+        error: null,
+      }),
+      count: vi.fn().mockResolvedValue({
+        count: 0,
+        error: null,
+      }),
+      gte: vi.fn().mockReturnThis(),
+      lte: vi.fn().mockReturnThis(),
+      order: vi.fn().mockReturnThis(),
+      range: vi.fn().mockReturnThis(),
+      limit: vi.fn().mockReturnThis(),
+      offset: vi.fn().mockReturnThis(),
     })),
   },
 }));
