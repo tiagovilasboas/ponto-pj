@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Container, Stack, Card, Text, Badge, Group, Select, Button, Grid } from '@mantine/core'
 import { IconCalendar, IconClock, IconDownload, IconChartBar } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
@@ -8,7 +8,7 @@ import { AppHeader } from '@/components/common/AppHeader'
 import { BottomNavigation } from '@/components/common/BottomNavigation'
 import { workSessionService } from '@/services'
 import { generatePDF } from '@/lib/pdfGenerator'
-import { getMonthOptionsThisYear, getCurrentMonth, formatDateWithWeekday, formatMonthForDisplay } from '@/lib/utils'
+import { getLastNMonthsOptions, getCurrentMonth, formatDateWithWeekday, formatMonthForDisplay } from '@/lib/utils'
 import type { WorkSession } from '@/types/workSession'
 
 export const Report = () => {
@@ -16,7 +16,7 @@ export const Report = () => {
   const { formatTime, formatWorkedHours } = useAppStore()
   const [sessions, setSessions] = useState<WorkSession[]>([])
   const [loading, setLoading] = useState(false)
-  const monthOptions = getMonthOptionsThisYear()
+  const monthOptions = getLastNMonthsOptions(12)
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth())
   const [statistics, setStatistics] = useState({
     totalHours: 0,
@@ -25,11 +25,7 @@ export const Report = () => {
     totalDays: 0
   })
 
-  useEffect(() => {
-    loadReport()
-  }, [selectedMonth])
-
-  const loadReport = async () => {
+  const loadReport = useCallback(async () => {
     setLoading(true)
     try {
       const [sessionsResult, statsData] = await Promise.all([
@@ -47,7 +43,11 @@ export const Report = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [selectedMonth, t])
+
+  useEffect(() => {
+    loadReport()
+  }, [loadReport])
 
   const handleExportPDF = async () => {
     try {
@@ -240,8 +240,7 @@ export const Report = () => {
                             {session.end_time ? formatTime(session.end_time) : '-'}
                           </Text>
                         </div>
-                        <div>
-                          <Text size="xs" c="gray.6" mb="xs">{t('relatorio.netTime')}</Text>
+                        <div className="flex items-center justify-end h-full">
                           <Text fw={600} c="blue.6" size="xs">
                             {session.worked_time_real ? formatWorkedHours(session.worked_time_real) : '-'}
                           </Text>
