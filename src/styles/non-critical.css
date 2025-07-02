@@ -1,0 +1,164 @@
+/* CSS Não Crítico - Carregado após o primeiro render */
+
+/* Estilos de componentes específicos */
+.session-status-card {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 0;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
+}
+
+.session-status-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+}
+
+/* Animações e transições */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Estilos de hover e interação */
+.hover-lift {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos de formulário */
+.form-input {
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.form-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Estilos de botão */
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* Estilos de card */
+.card-elevated {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease;
+}
+
+.card-elevated:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos de navegação */
+.nav-item {
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.nav-item:hover {
+  color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Estilos de status */
+.status-complete {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.status-incomplete {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+}
+
+.status-pending {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  color: white;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .mobile-optimized {
+    padding: 16px;
+    margin: 8px;
+  }
+
+  .mobile-text {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+}
+
+/* Estilos de loading */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

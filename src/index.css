@@ -2,16 +2,155 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Reset global */
+/* CSS Crítico para LCP - APENAS o essencial para o primeiro render */
+
+:root {
+  --primary-color: #3b82f6;
+  --background-gradient: linear-gradient(
+    135deg,
+    #dbeafe 0%,
+    #e0e7ff 50%,
+    #f3e8ff 100%
+  );
+}
+
+/* Reset crítico e estilos base */
 * {
   box-sizing: border-box;
 }
 
-html, body {
+body {
+  margin: 0;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  background: var(--background-gradient);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Loading state crítico - otimizado */
+.loading-critical {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--background-gradient);
+}
+
+.loading-critical .spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e5e7eb;
+  border-top: 3px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Home page crítico - apenas o essencial */
+.home-page-critical {
+  min-height: 100vh;
+  background: var(--background-gradient);
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Session card crítico - apenas o essencial */
+.session-card-critical {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Utilitários críticos mínimos */
+.text-center {
+  text-align: center;
+}
+.mb-4 {
+  margin-bottom: 1rem;
+}
+.text-gray-600 {
+  color: #4b5563;
+}
+.text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+.font-medium {
+  font-weight: 500;
+}
+
+/* Loading state crítico */
+.loading-critical {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--background-gradient);
+}
+
+.loading-critical .spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e5e7eb;
+  border-top: 4px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Estilos críticos para o primeiro render */
+.home-page-critical {
+  min-height: 100vh;
+  background: var(--background-gradient);
+  padding-bottom: 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.session-card-critical {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px);
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  border: 0;
+  overflow: hidden;
+}
+
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
   overflow-x: hidden;
 }
 
@@ -26,19 +165,19 @@ html, body {
 }
 
 /* Forçar cores dos botões gradiente */
-.mantine-Button[data-variant="gradient"] {
+.mantine-Button[data-variant='gradient'] {
   color: white !important;
 }
 
-.mantine-Button[data-variant="gradient"] .mantine-Button-label {
+.mantine-Button[data-variant='gradient'] .mantine-Button-label {
   color: white !important;
 }
 
-.mantine-Button[data-variant="gradient"] .mantine-Button-leftSection {
+.mantine-Button[data-variant='gradient'] .mantine-Button-leftSection {
   color: white !important;
 }
 
-.mantine-Button[data-variant="gradient"] .mantine-Button-rightSection {
+.mantine-Button[data-variant='gradient'] .mantine-Button-rightSection {
   color: white !important;
 }
 
@@ -52,7 +191,9 @@ html, body {
 
 /* Prevent zoom on input focus on iOS */
 @media screen and (max-width: 768px) {
-  input, select, textarea {
+  input,
+  select,
+  textarea {
     font-size: 16px !important;
   }
 }
@@ -80,14 +221,15 @@ html, body {
   .safe-area-top {
     padding-top: max(1rem, env(safe-area-inset-top));
   }
-  
+
   .safe-area-bottom {
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
 }
 
 /* Touch-friendly buttons */
-button, [role="button"] {
+button,
+[role='button'] {
   min-height: 44px;
   min-width: 44px;
 }
@@ -114,9 +256,13 @@ textarea:focus-visible {
 
 /* Card shadows for depth */
 .card-shadow {
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
 .card-shadow-hover:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }

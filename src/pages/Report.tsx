@@ -19,7 +19,7 @@ import { notifications } from '@mantine/notifications';
 import { useAppStore } from '@/hooks/useAppStore';
 import { AppHeader } from '@/components/common/AppHeader';
 import { BottomNavigation } from '@/components/common/BottomNavigation';
-import { generatePDF } from '@/lib/pdfGenerator';
+import { getPdfGenerator } from '@/lib/utils';
 import { formatMonthForDisplay } from '@/lib/utils';
 import { SessionRecordCard } from '../components/common/SessionRecordCard';
 import { useReportSessions } from '../hooks/useReportSessions';
@@ -66,6 +66,7 @@ export const Report = () => {
         })),
       };
 
+      const generatePDF = await getPdfGenerator();
       generatePDF(pdfData);
       notifications.show({
         title: t('app.success'),
