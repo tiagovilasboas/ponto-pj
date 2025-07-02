@@ -16,6 +16,12 @@ const Login = lazy(() =>
 const Register = lazy(() =>
   import('@/pages/Register').then(m => ({ default: m.Register }))
 );
+const ForgotPassword = lazy(() =>
+  import('@/pages/ForgotPassword').then(m => ({ default: m.ForgotPassword }))
+);
+const ResetPassword = lazy(() =>
+  import('@/pages/ResetPassword').then(m => ({ default: m.ResetPassword }))
+);
 const History = lazy(() =>
   import('@/pages/History').then(m => ({ default: m.History }))
 );
@@ -80,6 +86,8 @@ function App() {
           <Routes>
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
+            <Route path='/forgot-password' element={<ForgotPassword />} />
+            <Route path='/reset-password' element={<ResetPassword />} />
             <Route
               path='/history'
               element={
