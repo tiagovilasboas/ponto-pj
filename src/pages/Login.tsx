@@ -1,12 +1,13 @@
 import { useAppStore } from '@/hooks/useAppStore'
 import { useState } from 'react'
-import { TextInput, PasswordInput, Card, Title, Stack, Container, Text, Center, Anchor, Group } from '@mantine/core'
-import { notifications } from '@mantine/notifications'
+import { TextInput, PasswordInput, Card, Stack, Container, Text, Anchor, Group } from '@mantine/core'
 import { IconMail, IconLock } from '@tabler/icons-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { mapAuthError, AuthErrorType } from '@/types/auth'
 import { useTranslation } from '@/i18n/useTranslation'
 import { PrimaryButton } from '../components/common/PrimaryButton'
+import { notificationService } from '@/services/notifications'
+import { AppLogoHeader } from '../components/common/AppLogoHeader'
 
 export const Login = () => {
   const appStore = useAppStore()
@@ -18,46 +19,39 @@ export const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email || !password) {
-      notifications.show({
-        title: t('app.error'),
-        message: t('auth.login.errors.fillFields'),
-        color: 'red',
-      })
+      notificationService.error(t('auth.login.errors.fillFields'), t('app.error'))
       return
     }
     try {
       await appStore.login(email, password)
-      notifications.show({
-        title: t('app.success'),
-        message: t('auth.login.success'),
-        color: 'green',
-      })
+      notificationService.success(t('auth.login.success'), t('app.success'))
       navigate('/')
     } catch (error: unknown) {
       const type = mapAuthError(error instanceof Error ? error.message : '')
       let msg = t('auth.login.errors.generic')
       if (type === AuthErrorType.INVALID_CREDENTIALS) msg = t('auth.login.errors.invalidCredentials')
       if (type === AuthErrorType.EMAIL_NOT_CONFIRMED) msg = t('auth.login.errors.emailNotConfirmed')
-      notifications.show({
-        title: t('app.error'),
-        message: msg,
-        color: 'red',
-      })
+      notificationService.error(msg, t('app.error'))
     }
   }
 
   return (
-    <Center h="100vh" w="100vw" style={{ background: '#f8fafc' }}>
-      <Container size="xs" px="md" w="100%" maw={400}>
-        <Card withBorder shadow="md" p="xl" radius="md" w="100%">
-          <Stack gap="lg">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 flex flex-col items-center justify-center p-4">
+      <AppLogoHeader />
+      <div className="h-4" />
+      <Container size="xs" w="100%" maw={400}>
+        <Card 
+          p="xl"
+          radius="3xl"
+          className="bg-white/80 backdrop-blur-md shadow-2xl border-0"
+          style={{ border: 0 }}
+        >
+          <Stack gap="xl">
             <div style={{ textAlign: 'center' }}>
-              <Title order={1} size="h2" c="blue.6" mb="xs">{t('app.title')}</Title>
-              <Text c="gray.6" size="sm">{t('auth.login.title')}</Text>
+              <Text c="gray.6" size="md">Digite seus dados para acessar o sistema</Text>
             </div>
-
             <form onSubmit={handleSubmit}>
-              <Stack gap="md">
+              <Stack gap="lg">
                 <TextInput
                   label={t('auth.login.email')}
                   placeholder={t('auth.login.emailPlaceholder')}
@@ -67,8 +61,8 @@ export const Login = () => {
                   required
                   type="email"
                   autoComplete="username"
+                  size="md"
                 />
-
                 <PasswordInput
                   label={t('auth.login.password')}
                   placeholder={t('auth.login.passwordPlaceholder')}
@@ -77,19 +71,19 @@ export const Login = () => {
                   leftSection={<IconLock size={16} />}
                   required
                   autoComplete="current-password"
+                  size="md"
                 />
-
-                <Stack gap="xs" align="center">
+                <Stack gap="md" align="center">
                   <PrimaryButton
                     type="submit"
                     loading={appStore.actionLoading}
-                    className="w-full mt-2"
+                    className="w-full h-12 text-base font-semibold bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white shadow-md"
                   >
                     {appStore.actionLoading ? t('auth.login.submitting') : t('auth.login.submit')}
                   </PrimaryButton>
                   <Group gap={4}>
                     <Text size="sm" c="gray.7">{t('auth.login.noAccount')}</Text>
-                    <Anchor component={Link} to="/register" size="sm">{t('auth.login.signUp')}</Anchor>
+                    <Anchor component={Link} to="/register" size="sm" c="blue.7" fw={700}>{t('auth.login.signUp')}</Anchor>
                   </Group>
                 </Stack>
               </Stack>
@@ -97,6 +91,6 @@ export const Login = () => {
           </Stack>
         </Card>
       </Container>
-    </Center>
+    </div>
   )
 } 
