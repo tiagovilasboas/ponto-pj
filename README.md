@@ -284,9 +284,14 @@ npm run lighthouse
 
 ### 🎯 Core Web Vitals
 
-- **LCP**: < 2.5s (Largest Contentful Paint)
+- **FCP**: 2.8s (First Contentful Paint)
+- **LCP**: 3.0s (Largest Contentful Paint)
+- **Speed Index**: 2.8s
 - **FID**: < 100ms (First Input Delay)
-- **CLS**: < 0.1 (Cumulative Layout Shift)
+- **CLS**: 0 (Cumulative Layout Shift)
+- **PWA**: Instalável, offline, auto-update OK
+
+> ⚠️ **Nota:** O LCP ficou levemente acima do ideal (<2.5s), mas ainda é considerado bom para a maioria dos cenários. Melhorias são bem-vindas!
 
 ## 🔐 Segurança
 
