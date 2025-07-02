@@ -4,8 +4,8 @@ import path from 'path';
 import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [
+export default defineConfig(({ mode }) => {
+  const plugins = [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -67,71 +67,79 @@ export default defineConfig({
         ],
       },
     }),
-  ],
-  resolve: {
-    alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
-  },
-  build: {
-    target: 'esnext',
-    minify: 'terser',
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          mantine: [
-            '@mantine/core',
-            '@mantine/hooks',
-            '@mantine/notifications',
-            '@mantine/dates',
-          ],
-          'tabler-icons': ['@tabler/icons-react'],
-          supabase: ['@supabase/supabase-js'],
-          i18n: [
-            'i18next',
-            'react-i18next',
-            'i18next-browser-languagedetector',
-          ],
-          utils: ['dayjs', 'jspdf', 'jspdf-autotable'],
-        },
-        chunkFileNames: () => {
-          return `js/[name]-[hash].js`;
-        },
-        assetFileNames: assetInfo => {
-          const info = assetInfo.name?.split('.') || [];
-          const ext = info[info.length - 1];
-          if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
-            return `images/[name]-[hash][extname]`;
-          }
-          if (/css/i.test(ext)) {
-            return `css/[name]-[hash][extname]`;
-          }
-          return `assets/[name]-[hash][extname]`;
-        },
+  ];
+
+  return {
+    plugins,
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, './src'),
       },
     },
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true,
+    build: {
+      target: 'esnext',
+      minify: mode === 'analyze' ? false : 'terser',
+      sourcemap: mode === 'analyze',
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'react-vendor': ['react', 'react-dom'],
+            mantine: [
+              '@mantine/core',
+              '@mantine/hooks',
+              '@mantine/notifications',
+              '@mantine/dates',
+            ],
+            'tabler-icons': ['@tabler/icons-react'],
+            supabase: ['@supabase/supabase-js'],
+            i18n: [
+              'i18next',
+              'react-i18next',
+              'i18next-browser-languagedetector',
+            ],
+            utils: ['dayjs', 'jspdf', 'jspdf-autotable'],
+          },
+          chunkFileNames: () => {
+            return `js/[name]-[hash].js`;
+          },
+          assetFileNames: assetInfo => {
+            const info = assetInfo.name?.split('.') || [];
+            const ext = info[info.length - 1];
+            if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(ext)) {
+              return `images/[name]-[hash][extname]`;
+            }
+            if (/css/i.test(ext)) {
+              return `css/[name]-[hash][extname]`;
+            }
+            return `assets/[name]-[hash][extname]`;
+          },
+        },
       },
+      terserOptions:
+        mode === 'analyze'
+          ? undefined
+          : {
+              compress: {
+                drop_console: true,
+                drop_debugger: true,
+              },
+            },
     },
-  },
-  optimizeDeps: {
-    include: [
-      'react',
-      'react-dom',
-      '@mantine/core',
-      '@mantine/hooks',
-      '@mantine/notifications',
-      '@tabler/icons-react',
-      'zustand',
-    ],
-  },
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: ['./src/test/setup.ts'],
-  },
+    optimizeDeps: {
+      include: [
+        'react',
+        'react-dom',
+        '@mantine/core',
+        '@mantine/hooks',
+        '@mantine/notifications',
+        '@tabler/icons-react',
+        'zustand',
+      ],
+    },
+    test: {
+      globals: true,
+      environment: 'jsdom',
+      setupFiles: ['./src/test/setup.ts'],
+    },
+  };
 });

@@ -17,14 +17,15 @@ Pra quem é PJ e cansou de marcar hora na mão ou tentar lembrar quantas reuniõ
 [![PWA](https://img.shields.io/badge/PWA-Ready-5A0FC8?logo=pwa)](https://web.dev/progressive-web-apps/)
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?logo=supabase)](https://supabase.com/)
 [![Zustand](https://img.shields.io/badge/Zustand-5.0.6-764ABC?logo=redux)](https://zustand-demo.pmnd.rs/)
-[![Tests](https://img.shields.io/badge/Tests-100%25%20Passing-6E56CF?logo=vitest)](https://vitest.dev/)
+[![Tests](https://img.shields.io/badge/Tests-62%20Passing-6E56CF?logo=vitest)](https://vitest.dev/)
+[![Coverage](https://img.shields.io/badge/Coverage-41.38%25-orange?logo=vitest)](https://vitest.dev/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 <div align="center">
   <img src="https://img.shields.io/badge/Architecture-Clean%20Architecture-00D4AA?style=for-the-badge" alt="Clean Architecture" />
   <img src="https://img.shields.io/badge/Pattern-Repository%20Pattern-FF6B6B?style=for-the-badge" alt="Repository Pattern" />
   <img src="https://img.shields.io/badge/Principle-SOLID%20Compliant-4ECDC4?style=for-the-badge" alt="SOLID Compliant" />
-  <img src="https://img.shields.io/badge/Cache-Intelligent%20Caching-FFE66D?style=for-the-badge" alt="Intelligent Caching" />
+  <img src="https://img.shields.io/badge/Status-Production%20Ready-10B981?style=for-the-badge" alt="Production Ready" />
 </div>
 
 ---
@@ -43,7 +44,7 @@ Pra quem é PJ e cansou de marcar hora na mão ou tentar lembrar quantas reuniõ
 - [🌐 Internacionalização](#-internacionalização)
 - [📦 Instalação Completa](#-instalação-completa)
 - [🏛️ Estrutura do Projeto](#️-estrutura-do-projeto)
-- [🎨 Design System](#-design-system)
+- [📚 Documentação](#-documentação)
 - [📊 Métricas de Qualidade](#-métricas-de-qualidade)
 - [🐛 Troubleshooting](#-troubleshooting)
 - [🤝 Contribuindo](#-contribuindo)
@@ -51,18 +52,17 @@ Pra quem é PJ e cansou de marcar hora na mão ou tentar lembrar quantas reuniõ
 
 ## 🎯 Sobre o Projeto
 
-**Ponto PJ** é mais que um sistema de ponto eletrônico - é um **boilerplate de referência** que demonstra como construir aplicações React escaláveis seguindo as melhores práticas da indústria.
+**Ponto PJ** é um sistema de ponto eletrônico pessoal que demonstra boas práticas de desenvolvimento React com arquitetura limpa.
 
 ### ✨ Por que este projeto é especial?
 
-- 🎯 **Arquitetura Limpa**: Implementação completa dos princípios SOLID
+- 🎯 **Arquitetura Limpa**: Implementação dos princípios SOLID
 - 🏗️ **Repository Pattern**: Camada de dados robusta e testável
-- ⚡ **Cache Inteligente**: Sistema de cache com invalidação automática
-- 🔒 **Validação Robusta**: Sistema de validação centralizado
-- 📱 **PWA Nativo**: Funciona offline e pode ser instalado como app
-- 🧪 **Testes Abrangentes**: 62 testes passando (100% de sucesso!)
-- 🌐 **Internacionalização**: Suporte completo a múltiplos idiomas
-- 🎨 **Design System**: Componentes reutilizáveis e consistentes
+- ⚡ **PWA Nativo**: Funciona offline e pode ser instalado como app
+- 🧪 **Testes Estruturados**: 62 testes passando com cobertura de 41.38%
+- 🌐 **Internacionalização**: Suporte a português e inglês
+- 🎨 **UI Moderna**: Interface responsiva com Mantine + Tailwind
+- 🔒 **Segurança**: Autenticação robusta com Supabase
 
 ## ✨ Funcionalidades
 
@@ -84,7 +84,6 @@ Pra quem é PJ e cansou de marcar hora na mão ou tentar lembrar quantas reuniõ
 - ✅ **Autenticação**: Supabase Auth com múltiplos provedores
 - ✅ **Row Level Security**: Segurança granular no banco
 - ✅ **Validação**: Sistema robusto de validação
-- ✅ **Monitoramento**: Detecção de atividade suspeita
 - ✅ **Session Management**: Gerenciamento seguro de sessões
 
 ### 🌐 Internacionalização
@@ -104,14 +103,20 @@ cd ponto-pj
 npm install
 
 # 3. Configure as variáveis de ambiente
-cp .env.example .env
-# Edite .env com suas credenciais do Supabase
+# Crie um arquivo .env com:
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_ANON_KEY=your-anon-key
 
 # 4. Execute o projeto
 npm run dev
 ```
 
 **🎯 Em 5 minutos você terá o projeto rodando!**
+
+> **📚 Documentação Completa:**
+> - [DATABASE_SETUP.md](DATABASE_SETUP.md) - Configuração do banco de dados
+> - [SECURITY.md](SECURITY.md) - Medidas de segurança implementadas
+> - [ARCHITECTURE_IMPROVEMENTS.md](ARCHITECTURE_IMPROVEMENTS.md) - Melhorias arquiteturais
 
 ## 🏗️ Arquitetura & Boas Práticas
 
@@ -145,7 +150,7 @@ Este projeto implementa uma arquitetura limpa com separação clara de responsab
 
 ### 🔧 Repository Pattern
 
-Implementação robusta do Repository Pattern com cache inteligente:
+Implementação do Repository Pattern com cache:
 
 ```typescript
 // Hierarquia de Repositories
@@ -210,7 +215,7 @@ class WorkSessionRepository extends CachedRepository {
 ### 🧪 Testes
 - **[Vitest](https://vitest.dev/)** - Test runner moderno
 - **[Testing Library](https://testing-library.com/)** - Utilitários de teste
-- **[MSW](https://mswjs.io/)** - Mock Service Worker
+- **[@vitest/coverage-v8](https://vitest.dev/guide/coverage.html)** - Cobertura de testes
 
 ## 📱 PWA - Progressive Web App
 
@@ -219,8 +224,7 @@ class WorkSessionRepository extends CachedRepository {
 - **📱 Instalável**: Pode ser instalado como app nativo
 - **🔌 Offline**: Funciona sem internet (cache inteligente)
 - **⚡ Rápido**: Carregamento instantâneo
-- **📲 Push Notifications**: Notificações push (em desenvolvimento)
-- **🔄 Background Sync**: Sincronização em background
+- **🔄 Auto Update**: Atualizações automáticas
 
 ### 🛠️ Configuração PWA
 
@@ -259,21 +263,23 @@ export default defineConfig({
 
 - **Code Splitting**: Carregamento sob demanda
 - **Lazy Loading**: Componentes carregados quando necessário
-- **Virtual Scrolling**: Listas grandes otimizadas
-- **Image Optimization**: Imagens otimizadas automaticamente
-- **Bundle Analysis**: Análise de tamanho do bundle
+- **Bundle Optimization**: Otimização automática do bundle
+- **PWA Cache**: Cache inteligente para recursos estáticos
 
 ### 📊 Métricas de Performance
 
 ```bash
-# Análise de performance
+# Análise de bundle
 npm run analyze
 
-# Lighthouse CI
-npm run lighthouse
+# Build para produção
+npm run build
 
-# Bundle size
-npm run build:analyze
+# Preview do build
+npm run preview
+
+# Análise de performance (Lighthouse)
+npm run lighthouse
 ```
 
 ### 🎯 Core Web Vitals
@@ -289,8 +295,6 @@ npm run build:analyze
 - **Row Level Security**: Segurança granular no banco
 - **Input Validation**: Validação rigorosa de entrada
 - **XSS Protection**: Proteção contra XSS
-- **CSRF Protection**: Proteção contra CSRF
-- **Rate Limiting**: Limitação de tentativas
 - **Session Management**: Gerenciamento seguro de sessões
 
 ### 🔑 Variáveis de Ambiente
@@ -308,7 +312,8 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 - [x] Sanitização de dados
 - [x] HTTPS obrigatório
 - [x] Headers de segurança
-- [x] Monitoramento de atividade
+
+> **📖 Detalhes completos:** [SECURITY.md](SECURITY.md)
 
 ## 🧪 Testes
 
@@ -316,9 +321,8 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 
 - **62 testes passando** (100% de sucesso!)
 - **10 arquivos de teste**
-- **Cobertura de componentes**: 100%
-- **Cobertura de hooks**: 100%
-- **Cobertura de serviços**: 100%
+- **Cobertura geral**: 41.38%
+- **Cobertura de src/**: 85.82%
 
 ### 🛠️ Comandos de Teste
 
@@ -332,18 +336,22 @@ npm run test:watch
 # Executar testes com cobertura
 npm run test:coverage
 
-# Executar testes específicos
-npm run test:unit
-npm run test:integration
-npm run test:e2e
+# Executar testes uma vez
+npm run test:run
 ```
 
 ### 🎯 Estratégia de Testes
 
 - **Unit Tests**: Testes isolados de funções
 - **Integration Tests**: Testes de integração entre componentes
-- **E2E Tests**: Testes end-to-end (em desenvolvimento)
-- **Visual Regression**: Testes de regressão visual
+- **Component Tests**: Testes de renderização de componentes
+- **Flow Tests**: Testes de fluxos completos
+
+### ⚠️ Notas sobre Testes
+
+- Alguns warnings do React Testing Library sobre `act()`
+- Warnings do React Router sobre futuras mudanças (v7)
+- Todos os testes passam, mas podem ser otimizados
 
 ## 🌐 Internacionalização
 
@@ -394,7 +402,7 @@ t('app.title') // "Ponto PJ" ou "Time Clock PJ"
 ### 2️⃣ Configuração do Supabase
 
 1. Crie um projeto no [Supabase](https://supabase.com/)
-2. Configure as tabelas seguindo `DATABASE_SETUP.md`
+2. Configure as tabelas seguindo [DATABASE_SETUP.md](DATABASE_SETUP.md)
 3. Copie as credenciais da API
 
 ### 3️⃣ Configuração Local
@@ -408,8 +416,7 @@ cd ponto-pj
 npm install
 
 # Configure as variáveis de ambiente
-cp .env.example .env
-# Edite .env com suas credenciais
+# Crie um arquivo .env com suas credenciais do Supabase
 
 # Execute o projeto
 npm run dev
@@ -439,10 +446,19 @@ src/
 ├── repositories/       # Camada de acesso a dados
 ├── services/           # Serviços de negócio
 ├── stores/             # Gerenciamento de estado (Zustand)
+├── test/               # Testes
 └── types/              # Definições de tipos TypeScript
 ```
 
-## 🎨 Design System
+## 📚 Documentação
+
+### 📖 Arquivos de Documentação
+
+- **[DATABASE_SETUP.md](DATABASE_SETUP.md)** - Configuração completa do banco de dados
+- **[SECURITY.md](SECURITY.md)** - Medidas de segurança implementadas
+- **[ARCHITECTURE_IMPROVEMENTS.md](ARCHITECTURE_IMPROVEMENTS.md)** - Melhorias arquiteturais planejadas
+
+### 🎨 Design System
 
 ### 🎯 Componentes Principais
 
@@ -467,7 +483,6 @@ src/
 
 - **Responsivo**: Funciona em todos os dispositivos
 - **Touch-friendly**: Botões com tamanho adequado
-- **Gestos**: Suporte a gestos nativos
 - **Performance**: Otimizado para mobile
 
 ## 📊 Métricas de Qualidade
@@ -481,16 +496,16 @@ src/
 
 ### 📈 Métricas de Performance
 
-- **Bundle Size**: < 500KB gzipped
+- **Bundle Size**: Otimizado para produção
 - **First Paint**: < 1s
 - **Time to Interactive**: < 3s
 - **Core Web Vitals**: Todos verdes
 
 ### 🧪 Qualidade dos Testes
 
-- **Cobertura**: 100% dos componentes
+- **Cobertura**: 41.38% geral, 85.82% em src/
 - **Testes**: 62 testes passando
-- **Performance**: Testes de performance automatizados
+- **Estrutura**: Testes organizados por fluxos
 
 ## 🐛 Troubleshooting
 
@@ -506,7 +521,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key
 #### 2. Erro de Build
 ```bash
 # Limpe o cache
-npm run clean
+rm -rf node_modules
 npm install
 npm run build
 ```
@@ -514,8 +529,7 @@ npm run build
 #### 3. Testes Falhando
 ```bash
 # Verifique os mocks
-npm run test:setup
-npm run test
+npm run test:run
 ```
 
 #### 4. PWA Não Funcionando
@@ -529,7 +543,7 @@ npm run preview
 
 ```bash
 # Modo debug
-npm run dev:debug
+npm run dev
 
 # Logs detalhados
 DEBUG=* npm run dev
@@ -564,7 +578,7 @@ chore: tarefas de manutenção
 
 ```bash
 # Execute os testes antes de commitar
-npm run test
+npm run test:run
 npm run lint
 npm run type-check
 ```
