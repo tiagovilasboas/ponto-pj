@@ -1,54 +1,28 @@
-import { useState, useEffect, useCallback } from 'react'
 import { Container, Stack, Card, Text, Badge, Group, Select, Button, Grid } from '@mantine/core'
 import { IconCalendar, IconClock, IconDownload, IconChartBar } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
-import { useTranslation } from '@/i18n/useTranslation'
 import { useAppStore } from '@/hooks/useAppStore'
 import { AppHeader } from '@/components/common/AppHeader'
 import { BottomNavigation } from '@/components/common/BottomNavigation'
-import { workSessionService } from '@/services'
 import { generatePDF } from '@/lib/pdfGenerator'
-import { getLastNMonthsOptions, getCurrentMonth, formatDateWithWeekday, formatMonthForDisplay } from '@/lib/utils'
-import type { WorkSession } from '@/types/workSession'
+import { formatMonthForDisplay } from '@/lib/utils'
 import { SessionRecordCard } from '../components/common/SessionRecordCard'
+import { useReportSessions } from '../hooks/useReportSessions'
+import type { WorkSession } from '@/types/workSession'
 
 export const Report = () => {
-  const { t } = useTranslation()
-  const { formatTime, formatWorkedHours } = useAppStore()
-  const [sessions, setSessions] = useState<WorkSession[]>([])
-  const [loading, setLoading] = useState(false)
-  const monthOptions = getLastNMonthsOptions()
-  const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth())
-  const [statistics, setStatistics] = useState({
-    totalHours: 0,
-    completeDays: 0,
-    incompleteDays: 0,
-    totalDays: 0
-  })
-
-  const loadReport = useCallback(async () => {
-    setLoading(true)
-    try {
-      const [sessionsResult, statsData] = await Promise.all([
-        workSessionService.getSessionsForMonth(selectedMonth, 1, 1000),
-        workSessionService.getMonthStatistics(selectedMonth)
-      ])
-      setSessions(sessionsResult.sessions)
-      setStatistics(statsData)
-    } catch {
-      notifications.show({
-        title: t('app.error'),
-        message: t('relatorio.loadError'),
-        color: 'red',
-      })
-    } finally {
-      setLoading(false)
-    }
-  }, [selectedMonth, t])
-
-  useEffect(() => {
-    loadReport()
-  }, [loadReport])
+  const {
+    sessions,
+    loading,
+    monthOptions,
+    selectedMonth,
+    setSelectedMonth,
+    statistics,
+    formatDateWithWeekday,
+    formatWorkedHours,
+    t,
+  } = useReportSessions()
+  const { formatTime } = useAppStore()
 
   const handleExportPDF = async () => {
     try {

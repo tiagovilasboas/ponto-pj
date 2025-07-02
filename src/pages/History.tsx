@@ -1,130 +1,36 @@
-import { useState, useEffect, useCallback } from 'react'
 import { Container, Stack, Card, Text, Badge, Group, Modal, TextInput, Button, Select, Pagination } from '@mantine/core'
 import { IconCalendar, IconClock } from '@tabler/icons-react'
-import { notifications } from '@mantine/notifications'
-import { useTranslation } from '@/i18n/useTranslation'
 import { useAppStore } from '@/hooks/useAppStore'
 import { AppHeader } from '@/components/common/AppHeader'
 import { BottomNavigation } from '@/components/common/BottomNavigation'
-import { workSessionService } from '@/services'
-import { getLastNMonthsOptions, getCurrentMonth, formatDateWithWeekday } from '@/lib/utils'
 import type { WorkSession } from '@/types/workSession'
 import { SessionRecordCard } from '../components/common/SessionRecordCard'
+import { useHistorySessions } from '../hooks/useHistorySessions'
 
 export const History = () => {
-  const { t } = useTranslation()
-  const { formatTime, formatWorkedHours } = useAppStore()
-  const [sessions, setSessions] = useState<WorkSession[]>([])
-  const [loading, setLoading] = useState(false)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-  const [totalSessions, setTotalSessions] = useState(0)
-  const monthOptions = getLastNMonthsOptions()
-  const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth())
-  const [editingSession, setEditingSession] = useState<WorkSession | null>(null)
-  const [editModalOpen, setEditModalOpen] = useState(false)
-  const [editForm, setEditForm] = useState({
-    startTime: '',
-    endTime: ''
-  })
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
-  const [deletingSession, setDeletingSession] = useState<WorkSession | null>(null)
-
-  const loadSessions = useCallback(async (page: number = 1) => {
-    setLoading(true)
-    try {
-      const result = await workSessionService.getSessionsForMonth(selectedMonth, page, 10) // 10 itens por página
-      setSessions(result.sessions)
-      setTotalPages(result.totalPages)
-      setTotalSessions(result.total)
-      setCurrentPage(result.page)
-    } catch {
-      notifications.show({
-        title: t('app.error'),
-        message: t('historico.loadError'),
-        color: 'red',
-      })
-    } finally {
-      setLoading(false)
-    }
-  }, [selectedMonth, t])
-
-  useEffect(() => {
-    loadSessions()
-  }, [loadSessions])
-
-  const handlePageChange = (page: number) => {
-    loadSessions(page)
-  }
-
-  const handleEditSession = (session: WorkSession) => {
-    setEditingSession(session)
-    setEditForm({
-      startTime: session.start_time || '',
-      endTime: session.end_time || ''
-    })
-    setEditModalOpen(true)
-  }
-
-  const handleDeleteSession = (session: WorkSession) => {
-    setDeletingSession(session)
-    setDeleteModalOpen(true)
-  }
-
-  const confirmDeleteSession = async () => {
-    if (!deletingSession) return
-    try {
-      await workSessionService.deleteSession(deletingSession.date)
-      notifications.show({
-        title: t('app.success'),
-        message: t('historico.deleteSuccess'),
-        color: 'green',
-      })
-      setDeleteModalOpen(false)
-      setDeletingSession(null)
-      loadSessions(currentPage) // Recarregar página atual
-    } catch {
-      notifications.show({
-        title: t('app.error'),
-        message: t('historico.deleteError'),
-        color: 'red',
-      })
-    }
-  }
-
-  const handleSaveEdit = async () => {
-    if (!editingSession) return
-    try {
-      const startTime = new Date(`2000-01-01T${editForm.startTime}`)
-      const endTime = new Date(`2000-01-01T${editForm.endTime}`)
-      if (endTime <= startTime) {
-        notifications.show({
-          title: t('app.error'),
-          message: t('historico.invalidTimes'),
-          color: 'red',
-        })
-        return
-      }
-      await workSessionService.updateSession(editingSession.date, {
-        start_time: editForm.startTime,
-        end_time: editForm.endTime,
-        manual_edit: true
-      })
-      notifications.show({
-        title: t('app.success'),
-        message: t('historico.editSuccess'),
-        color: 'green',
-      })
-      setEditModalOpen(false)
-      loadSessions(currentPage) // Recarregar página atual
-    } catch {
-      notifications.show({
-        title: t('app.error'),
-        message: t('historico.editError'),
-        color: 'red',
-      })
-    }
-  }
+  const {
+    sessions,
+    loading,
+    currentPage,
+    totalPages,
+    totalSessions,
+    monthOptions,
+    selectedMonth,
+    setSelectedMonth,
+    editModalOpen,
+    editForm,
+    setEditForm,
+    setEditModalOpen,
+    deleteModalOpen,
+    setDeleteModalOpen,
+    handlePageChange,
+    handleEditSession,
+    handleDeleteSession,
+    formatDateWithWeekday,
+    formatWorkedHours,
+    t,
+  } = useHistorySessions()
+  const { formatTime } = useAppStore()
 
   const getStatusBadge = (session: WorkSession) => {
     const color = session.status === 'completa' ? 'green' : session.status === 'incompleta' ? 'yellow' : 'gray'
