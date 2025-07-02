@@ -43,22 +43,23 @@ export const History = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div data-testid="history-page" className="min-h-screen bg-gray-50 pb-20">
       <AppHeader 
         title={t('historico.title')} 
         showBack={true}
         subtitle={t('historico.currentMonth')}
       />
-      <Container size="sm" py="sm">
+      <Container data-testid="history-container" size="sm" py="sm">
         <Stack gap="sm">
           {/* Month Selector - Compact */}
-          <Card withBorder p="sm" className="bg-white">
+          <Card data-testid="month-selector" withBorder p="sm" className="bg-white">
             <Group justify="space-between" align="center">
               <Group gap="sm">
                 <IconCalendar size={16} className="text-blue-600" />
                 <Text fw={600} size="sm">{t('historico.currentMonth')}</Text>
               </Group>
               <Select
+                data-testid="month-select"
                 value={selectedMonth}
                 onChange={(value) => setSelectedMonth(value || selectedMonth)}
                 data={monthOptions}
@@ -70,26 +71,26 @@ export const History = () => {
           </Card>
 
           {/* Sessions List - Horizontal Layout */}
-          <Card withBorder p="sm" className="bg-white">
+          <Card data-testid="sessions-list" withBorder p="sm" className="bg-white">
             {loading ? (
-              <div className="text-center py-4">
+              <div data-testid="loading-sessions" className="text-center py-4">
                 <Text c="gray.6" size="sm">{t('app.loading')}</Text>
               </div>
             ) : sessions.length === 0 ? (
-              <div className="text-center py-4">
+              <div data-testid="no-sessions" className="text-center py-4">
                 <IconClock size={24} className="text-gray-400 mx-auto mb-2" />
                 <Text c="gray.6" size="sm">{t('historico.noSessions')}</Text>
               </div>
             ) : (
               <>
                 {/* Sessions Count */}
-                <div className="mb-3 pb-2 border-b border-gray-100">
+                <div data-testid="sessions-count" className="mb-3 pb-2 border-b border-gray-100">
                   <Text size="xs" c="gray.6">
                     {t('historico.showing')} {sessions.length} {t('historico.of')} {totalSessions} {t('historico.records')}
                   </Text>
                 </div>
 
-                <div className="space-y-1">
+                <div data-testid="sessions-container" className="space-y-1">
                   {sessions.map((session) => (
                     <SessionRecordCard
                       key={session.id}
@@ -109,7 +110,7 @@ export const History = () => {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                  <div className="mt-4 pt-3 border-t border-gray-100">
+                  <div data-testid="pagination" className="mt-4 pt-3 border-t border-gray-100">
                     <Pagination
                       total={totalPages}
                       value={currentPage}
@@ -129,6 +130,7 @@ export const History = () => {
 
       {/* Edit Modal */}
       <Modal
+        data-testid="edit-modal"
         opened={editModalOpen}
         onClose={() => setEditModalOpen(false)}
         title={t('historico.editSession')}
@@ -139,12 +141,14 @@ export const History = () => {
             {t('historico.editSessionSubtitle')}
           </Text>
           <TextInput
+            data-testid="edit-start-time"
             label={t('workSession.manual.startTime')}
             type="time"
             value={editForm.startTime}
             onChange={(e) => setEditForm(prev => ({ ...prev, startTime: e.target.value }))}
           />
           <TextInput
+            data-testid="edit-end-time"
             label={t('workSession.manual.endTime')}
             type="time"
             value={editForm.endTime}
@@ -154,7 +158,7 @@ export const History = () => {
             <Button variant="subtle" onClick={() => setEditModalOpen(false)} aria-label="Cancelar edição">
               {t('app.cancel')}
             </Button>
-            <Button onClick={handleSaveEdit} loading={actionLoading} disabled={actionLoading} aria-label="Salvar edição">
+            <Button data-testid="save-edit-button" onClick={handleSaveEdit} loading={actionLoading} disabled={actionLoading} aria-label="Salvar edição">
               {t('app.save')}
             </Button>
           </Group>
@@ -163,6 +167,7 @@ export const History = () => {
 
       {/* Delete Modal */}
       <Modal
+        data-testid="delete-modal"
         opened={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
         title={t('historico.deleteSession')}
@@ -176,7 +181,7 @@ export const History = () => {
             <Button variant="subtle" color="gray" onClick={() => setDeleteModalOpen(false)} aria-label="Cancelar exclusão">
               {t('app.cancel')}
             </Button>
-            <Button color="red" onClick={confirmDeleteSession} loading={actionLoading} disabled={actionLoading} aria-label="Confirmar exclusão">
+            <Button data-testid="confirm-delete-button" color="red" onClick={confirmDeleteSession} loading={actionLoading} disabled={actionLoading} aria-label="Confirmar exclusão">
               {t('app.delete')}
             </Button>
           </Group>

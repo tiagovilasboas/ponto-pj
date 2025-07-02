@@ -53,6 +53,7 @@ export function SessionStatusCard({
 
   return (
     <Card
+      data-testid="session-status-card"
       className="shadow-2xl border-0 bg-white/60 backdrop-blur-lg relative overflow-hidden px-0"
       style={{ border: 0 }}
       p={0}
@@ -69,11 +70,12 @@ export function SessionStatusCard({
         {!session?.start_time ? (
           <Stack align="center" gap={4}>
             {/* Relógio digital grande acima do botão */}
-            <span className="font-mono text-4xl text-blue-700 tracking-widest select-none" style={{ letterSpacing: '0.1em' }}>{currentTime}</span>
+            <span data-testid="current-time" className="font-mono text-4xl text-blue-700 tracking-widest select-none" style={{ letterSpacing: '0.1em' }}>{currentTime}</span>
             <Text size="md" className="text-gray-700 text-center">
               {t('workSession.status.noSession')}
             </Text>
             <Button
+              data-testid="start-journey-button"
               fullWidth
               size="lg"
               variant="filled"
@@ -92,12 +94,13 @@ export function SessionStatusCard({
         ) : !session?.end_time ? (
           <Stack align="center" gap={4}>
             {/* Relógio digital grande acima do botão */}
-            <span className="font-mono text-4xl text-blue-700 tracking-widest select-none" style={{ letterSpacing: '0.1em' }}>{currentTime}</span>
+            <span data-testid="current-time" className="font-mono text-4xl text-blue-700 tracking-widest select-none" style={{ letterSpacing: '0.1em' }}>{currentTime}</span>
             <Text className="text-gray-700 text-center">{t('workSession.status.startedAt')}</Text>
             <Text size="2xl" fw={700} className="text-blue-700">
               {formatTime(session.start_time)}
             </Text>
             <Button
+              data-testid="end-journey-button"
               fullWidth
               size="lg"
               variant="filled"
@@ -123,6 +126,7 @@ export function SessionStatusCard({
               {t('workSession.status.workedTime')}: {formatWorkedHours(session.worked_time_real || 0)}
             </Text>
             <Badge 
+              data-testid="session-status-badge"
               size="lg"
               className={`px-4 py-2 rounded-full text-white ${session.status === 'completa' ? 'bg-green-500' : 'bg-yellow-400 text-gray-900'}`}
             >
@@ -134,6 +138,7 @@ export function SessionStatusCard({
         <div className="w-full h-px bg-gradient-to-r from-transparent via-indigo-200 to-transparent my-2" />
         {/* Botão de registro manual */}
         <button 
+          data-testid="manual-register-button"
           type="button"
           className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 font-bold text-blue-800 bg-white/70 border border-blue-300 hover:bg-blue-50 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed w-full shadow"
           onClick={onManualRegister}

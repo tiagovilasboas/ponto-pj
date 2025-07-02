@@ -15,6 +15,24 @@ if (!window.matchMedia) {
   }));
 }
 
+// Mock global para ResizeObserver
+if (!window.ResizeObserver) {
+  window.ResizeObserver = vi.fn().mockImplementation(() => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+  }));
+}
+
+// Mock global para IntersectionObserver
+if (!window.IntersectionObserver) {
+  window.IntersectionObserver = vi.fn().mockImplementation(() => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+  }));
+}
+
 // Mock do Supabase para testes
 vi.mock('@/lib/supabaseClient', () => ({
   supabase: {

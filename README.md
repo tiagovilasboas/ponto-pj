@@ -1,6 +1,6 @@
 # 🕒 Sistema de Ponto Eletrônico PJ (PWA)
 
-Um sistema de **ponto eletrônico pessoal**, pensado para PJs organizarem suas horas de trabalho e também um **boilerplate moderno** para aplicações **React escaláveis** com base sólida.
+Um sistema de **ponto eletrônico pessoal**, pensado em devs PJs organizarem suas horas de trabalho e também um **boilerplate moderno** para aplicações **React escaláveis** com base sólida.
 
 ---
 
@@ -305,7 +305,6 @@ npm run test:coverage
 
 - **Unit Tests**: 95%+ cobertura
 - **Integration Tests**: Fluxos principais
-- **E2E Tests**: Cenários críticos
 - **Performance Tests**: Métricas de performance
 
 ### 🎯 Estratégia de Testes
@@ -557,7 +556,7 @@ Este projeto está licenciado sob a **MIT License** - veja o arquivo [LICENSE](L
 <div align="center">
   <strong>⭐ Se este projeto te ajudou, considere dar uma estrela! ⭐</strong>
   
-  <p>Feito com ❤️ seguindo as melhores práticas da indústria</p>
+  <p>Feito com ❤️ seguindo as melhores práticas do mercado</p>
 </div>
 
 ## 👤 Autor

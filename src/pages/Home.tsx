@@ -31,7 +31,7 @@ export const Home = () => {
   const todayLabel = formatDateForDisplay(session?.date || new Date().toISOString().split('T')[0])
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 pb-20 relative overflow-hidden">
+    <div data-testid="home-page" className="min-h-screen bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 pb-20 relative overflow-hidden">
       {/* Círculos decorativos de fundo */}
       <div className="absolute top-20 left-10 w-32 h-32 bg-blue-200/30 rounded-full blur-xl"></div>
       <div className="absolute top-40 right-8 w-24 h-24 bg-purple-200/40 rounded-full blur-xl"></div>
@@ -43,7 +43,7 @@ export const Home = () => {
         showLogout={true}
       />
       
-      <Container size="sm" py="md">
+      <Container data-testid="home-container" size="sm" py="md">
         <Stack gap="xl">
           {/* Session Status Card - Hero principal */}
           <SessionStatusCard
@@ -58,13 +58,14 @@ export const Home = () => {
 
           {/* Card de detalhes */}
           <Card
+            data-testid="session-details-card"
             p="xl"
             className="rounded-3xl shadow-2xl bg-white/85 backdrop-blur-md border-0 relative overflow-hidden"
             style={{ border: 0 }}
           >
             <Stack gap="xl">
               {/* Linha do tempo */}
-              <div className="grid grid-cols-3 gap-6">
+              <div data-testid="timeline" className="grid grid-cols-3 gap-6">
                 <div className="text-center">
                   <div className="flex justify-center mb-2">
                     <IconTarget size={24} className="text-purple-300" />
@@ -97,6 +98,7 @@ export const Home = () => {
               {isManual && (
                 <div className="flex justify-center">
                   <Badge 
+                    data-testid="manual-badge"
                     size="lg" 
                     className="bg-orange-100 text-orange-700 border-orange-200 px-4 py-2 rounded-full"
                   >
@@ -105,7 +107,7 @@ export const Home = () => {
                 </div>
               )}
               {/* Mensagem de feedback centralizada */}
-              <div className="flex items-center justify-center min-h-[48px]">
+              <div data-testid="feedback-message" className="flex items-center justify-center min-h-[48px]">
                 <Text size="lg" fw={500} className={feedbackColor}>
                   {isComplete
                     ? t('workSession.feedback.congratulations')
