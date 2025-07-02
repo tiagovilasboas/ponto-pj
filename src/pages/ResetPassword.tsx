@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   PasswordInput,
   Card,
@@ -24,7 +24,7 @@ export const ResetPassword = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const authRepository = new AuthRepository();
+  const authRepository = useMemo(() => new AuthRepository(), []);
   const { t } = useTranslation();
 
   // Verificar se há token de acesso na URL
@@ -60,7 +60,7 @@ export const ResetPassword = () => {
     };
 
     setupSession();
-  }, [accessToken, refreshToken, navigate, authRepository, t]);
+  }, [accessToken, refreshToken, navigate, t, authRepository]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
