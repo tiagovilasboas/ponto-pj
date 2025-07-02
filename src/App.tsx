@@ -80,7 +80,7 @@ function App() {
   return (
     <MantineProvider theme={theme}>
       <Notifications position='top-center' />
-      <Router>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <SecurityMonitor />
         <Suspense fallback={<LoadingFallback />}>
           <Routes>

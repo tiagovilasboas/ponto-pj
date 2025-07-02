@@ -20,13 +20,16 @@ import { AppLogoHeader } from '../components/common/AppLogoHeader';
 export const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const authRepository = new AuthRepository();
   const { t } = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     if (!email) {
+      setError(t('auth.forgotPassword.errors.fillFields'));
       notificationService.error(
         t('auth.forgotPassword.errors.fillFields'),
         t('app.error')
@@ -37,6 +40,11 @@ export const ForgotPassword = () => {
     try {
       const { error } = await authRepository.resetPassword({ email });
       if (error) {
+        if (error.message === 'User not found') {
+          setError(t('auth.forgotPassword.errors.emailNotFound'));
+        } else {
+          setError(t('auth.forgotPassword.errors.generic'));
+        }
         notificationService.error(
           error.message === 'User not found'
             ? t('auth.forgotPassword.errors.emailNotFound')
@@ -51,6 +59,7 @@ export const ForgotPassword = () => {
       );
       navigate('/login');
     } catch {
+      setError(t('auth.forgotPassword.errors.generic'));
       notificationService.error(
         t('auth.forgotPassword.errors.generic'),
         t('app.error')
@@ -95,8 +104,13 @@ export const ForgotPassword = () => {
                   type='email'
                   autoComplete='email'
                   size='md'
+                  error={!!error}
                 />
-
+                {error && (
+                  <Text c='red.6' size='sm' data-testid='email-error'>
+                    {error}
+                  </Text>
+                )}
                 <Stack gap='md' align='center'>
                   <PrimaryButton
                     type='submit'
