@@ -3,6 +3,7 @@ import {
   formatWorkedHours,
   formatDateForDisplay,
   getCurrentDate,
+  formatTime,
 } from '@/lib/utils';
 
 interface AppState {
@@ -22,6 +23,7 @@ interface AppState {
   formatWorkedHours: (hours: number) => string;
   formatDateForDisplay: (date: string) => string;
   getCurrentDate: () => string;
+  formatTime: (time: string) => string;
 }
 
 export const useAppStore = create<AppState>(set => ({
@@ -41,4 +43,5 @@ export const useAppStore = create<AppState>(set => ({
   formatWorkedHours,
   formatDateForDisplay,
   getCurrentDate,
+  formatTime,
 }));

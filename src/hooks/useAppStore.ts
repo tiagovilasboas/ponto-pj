@@ -1,12 +1,15 @@
 import { useAuthStore } from '@/stores/AuthStore';
 import { useSessionStore } from '@/stores/SessionStore';
-import { useAppStore } from '@/stores/AppStore';
+import { useAppStore as useAppStoreOriginal } from '@/stores/AppStore';
+
+// Re-export the original useAppStore
+export const useAppStore = useAppStoreOriginal;
 
 // Composed hook for components that need both auth and session
 export const useAppStoreWithAuth = () => {
   const auth = useAuthStore();
   const session = useSessionStore();
-  const app = useAppStore();
+  const app = useAppStoreOriginal();
 
   return {
     // Auth
@@ -42,5 +45,6 @@ export const useAppStoreWithAuth = () => {
     formatWorkedHours: app.formatWorkedHours,
     formatDateForDisplay: app.formatDateForDisplay,
     getCurrentDate: app.getCurrentDate,
+    formatTime: app.formatTime,
   };
 };
