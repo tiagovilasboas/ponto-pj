@@ -1,6 +1,7 @@
 # 🕒 Sistema de Ponto Eletrônico PJ (PWA)
 
-Um sistema de **ponto eletrônico pessoal**, pensado em devs PJs organizarem suas horas de trabalho e também um **boilerplate moderno** para aplicações **React escaláveis** com base sólida.
+Um sistema de **ponto eletrônico pessoal**, feito de dev pra dev.  
+Pra quem é PJ e cansou de marcar hora na mão ou tentar lembrar quantas reuniões teve na terça.
 
 ---
 

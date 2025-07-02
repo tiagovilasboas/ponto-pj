@@ -44,21 +44,21 @@ describe('Report Flow', () => {
 
       renderWithProviders(<Report />)
 
-      // Verificar se o componente renderiza
-      expect(screen.queryByText('report.title')).toBeInTheDocument()
+      // Verificar se o componente renderiza sem quebrar
+      expect(screen.getByTestId('report-page')).toBeInTheDocument()
 
       // Procurar por filtros de mês
-      const monthFilter = screen.queryByRole('combobox', { name: /month|mês/i })
+      const monthSelect = screen.queryByTestId('month-select')
       
-      if (monthFilter) {
-        await user.click(monthFilter)
+      if (monthSelect) {
+        await user.click(monthSelect)
         await waitFor(() => {
-          expect(monthFilter).toBeInTheDocument()
+          expect(monthSelect).toBeInTheDocument()
         })
       }
 
       // Teste básico de que o componente não quebra
-      expect(screen.queryByText('report.title')).toBeInTheDocument()
+      expect(screen.getByTestId('report-page')).toBeInTheDocument()
     })
 
     it('should generate report when filter changes', async () => {
@@ -66,35 +66,11 @@ describe('Report Flow', () => {
 
       renderWithProviders(<Report />)
 
-      // Verificar se o componente renderiza
-      expect(screen.queryByText('report.title')).toBeInTheDocument()
+      // Verificar se o componente renderiza sem quebrar
+      expect(screen.getByTestId('report-page')).toBeInTheDocument()
 
       // Procurar por botões de gerar relatório
-      const generateButton = screen.queryByRole('button', { name: /generate|gerar/i })
-      
-      if (generateButton) {
-        await user.click(generateButton)
-        await waitFor(() => {
-          expect(generateButton).toBeInTheDocument()
-        })
-      }
-
-      // Teste básico de que o componente não quebra
-      expect(screen.queryByText('report.title')).toBeInTheDocument()
-    })
-  })
-
-  describe('PDF Export', () => {
-    it('should allow exporting report to PDF', async () => {
-      const user = userEvent.setup()
-
-      renderWithProviders(<Report />)
-
-      // Verificar se o componente renderiza
-      expect(screen.queryByText('report.title')).toBeInTheDocument()
-
-      // Procurar por botões de exportar PDF
-      const exportButton = screen.queryByRole('button', { name: /export|pdf|download/i })
+      const exportButton = screen.queryByTestId('export-pdf-button')
       
       if (exportButton) {
         await user.click(exportButton)
@@ -104,18 +80,42 @@ describe('Report Flow', () => {
       }
 
       // Teste básico de que o componente não quebra
-      expect(screen.queryByText('report.title')).toBeInTheDocument()
+      expect(screen.getByTestId('report-page')).toBeInTheDocument()
+    })
+  })
+
+  describe('PDF Export', () => {
+    it('should allow exporting report to PDF', async () => {
+      const user = userEvent.setup()
+
+      renderWithProviders(<Report />)
+
+      // Verificar se o componente renderiza sem quebrar
+      expect(screen.getByTestId('report-page')).toBeInTheDocument()
+
+      // Procurar por botões de exportar PDF
+      const exportButton = screen.queryByTestId('export-pdf-button')
+      
+      if (exportButton) {
+        await user.click(exportButton)
+        await waitFor(() => {
+          expect(exportButton).toBeInTheDocument()
+        })
+      }
+
+      // Teste básico de que o componente não quebra
+      expect(screen.getByTestId('report-page')).toBeInTheDocument()
     })
 
     it('should show loading during export', async () => {
       renderWithProviders(<Report />)
 
-      // Verificar se o componente renderiza
-      expect(screen.queryByText('report.title')).toBeInTheDocument()
+      // Verificar se o componente renderiza sem quebrar
+      expect(screen.getByTestId('report-page')).toBeInTheDocument()
 
       // Verificar se há elementos de loading
-      const loadingElements = screen.queryAllByText(/loading|carregando|exporting/i)
-      expect(loadingElements.length).toBeGreaterThanOrEqual(0)
+      const loadingElement = screen.queryByTestId('loading-sessions')
+      expect(loadingElement).toBeInTheDocument()
     })
   })
 
@@ -123,23 +123,23 @@ describe('Report Flow', () => {
     it('should show report data when available', async () => {
       renderWithProviders(<Report />)
 
-      // Verificar se o componente renderiza
-      expect(screen.queryByText('report.title')).toBeInTheDocument()
+      // Verificar se o componente renderiza sem quebrar
+      expect(screen.getByTestId('report-page')).toBeInTheDocument()
 
       // Verificar se há elementos de dados do relatório
-      const reportElements = screen.queryAllByText(/report|data|dados|summary|resumo/i)
-      expect(reportElements.length).toBeGreaterThanOrEqual(0)
+      const statisticsCard = screen.getByTestId('statistics-card')
+      expect(statisticsCard).toBeInTheDocument()
     })
 
     it('should show message when no data is found', async () => {
       renderWithProviders(<Report />)
 
-      // Verificar se o componente renderiza
-      expect(screen.queryByText('report.title')).toBeInTheDocument()
+      // Verificar se o componente renderiza sem quebrar
+      expect(screen.getByTestId('report-page')).toBeInTheDocument()
 
-      // Verificar se há mensagens de "sem dados"
-      const noDataElements = screen.queryAllByText(/no data|sem dados|empty|vazio/i)
-      expect(noDataElements.length).toBeGreaterThanOrEqual(0)
+      // Verificar se há elementos básicos
+      const sessionsList = screen.getByTestId('sessions-list')
+      expect(sessionsList).toBeInTheDocument()
     })
   })
 }) 
