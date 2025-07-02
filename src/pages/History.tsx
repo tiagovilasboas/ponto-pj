@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Container, Stack, Card, Text, Badge, Group, ActionIcon, Modal, TextInput, Button, Select, Pagination } from '@mantine/core'
 import { IconEdit, IconCalendar, IconClock, IconTrash } from '@tabler/icons-react'
 import { notifications } from '@mantine/notifications'
@@ -7,7 +7,7 @@ import { useAppStore } from '@/hooks/useAppStore'
 import { AppHeader } from '@/components/common/AppHeader'
 import { BottomNavigation } from '@/components/common/BottomNavigation'
 import { workSessionService } from '@/services'
-import { getMonthOptionsThisYear, getCurrentMonth, formatDateWithWeekday } from '@/lib/utils'
+import { getLastNMonthsOptions, getCurrentMonth, formatDateWithWeekday } from '@/lib/utils'
 import type { WorkSession } from '@/types/workSession'
 
 export const History = () => {
@@ -18,7 +18,7 @@ export const History = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [totalSessions, setTotalSessions] = useState(0)
-  const monthOptions = getMonthOptionsThisYear()
+  const monthOptions = getLastNMonthsOptions(12)
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth())
   const [editingSession, setEditingSession] = useState<WorkSession | null>(null)
   const [editModalOpen, setEditModalOpen] = useState(false)
@@ -29,11 +29,7 @@ export const History = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [deletingSession, setDeletingSession] = useState<WorkSession | null>(null)
 
-  useEffect(() => {
-    loadSessions()
-  }, [selectedMonth])
-
-  const loadSessions = async (page: number = 1) => {
+  const loadSessions = useCallback(async (page: number = 1) => {
     setLoading(true)
     try {
       const result = await workSessionService.getSessionsForMonth(selectedMonth, page, 10) // 10 itens por página
@@ -50,7 +46,11 @@ export const History = () => {
     } finally {
       setLoading(false)
     }
-  }
+  }, [selectedMonth, t])
+
+  useEffect(() => {
+    loadSessions()
+  }, [loadSessions])
 
   const handlePageChange = (page: number) => {
     loadSessions(page)
@@ -181,11 +181,11 @@ export const History = () => {
 
                 <div className="space-y-1">
                   {sessions.map((session) => (
-                    <div key={session.id} className="border border-gray-200 rounded-lg p-2 hover:bg-gray-50 transition-colors">
+                    <div key={session.id} className="border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 transition-colors">
                       {/* Main Row - Date, Status, Actions */}
-                      <Group justify="space-between" align="center" mb="xs">
-                        <Group gap="sm" align="center">
-                          <Text fw={600} size="sm" className="min-w-[85px]">
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-2 min-w-0">
+                          <Text fw={600} size="sm" className="truncate">
                             {formatDateWithWeekday(session.date)}
                           </Text>
                           {getStatusBadge(session)}
@@ -194,46 +194,38 @@ export const History = () => {
                               {t('workSession.status.manualEdit')}
                             </Badge>
                           )}
-                        </Group>
-                        <Group gap="xs">
+                        </div>
+                        <div className="flex items-center gap-1">
                           <ActionIcon
                             variant="subtle"
-                            size="md"
+                            size="sm"
                             onClick={() => handleEditSession(session)}
                             className="text-blue-600 hover:bg-blue-50"
                           >
-                            <IconEdit size={16} />
+                            <IconEdit size={14} />
                           </ActionIcon>
                           <ActionIcon
                             variant="subtle"
-                            size="md"
+                            size="sm"
                             onClick={() => handleDeleteSession(session)}
                             className="text-red-600 hover:bg-red-50"
                           >
-                            <IconTrash size={16} />
+                            <IconTrash size={14} />
                           </ActionIcon>
-                        </Group>
-                      </Group>
+                        </div>
+                      </div>
 
-                      {/* Time Row - Entry, Exit, Worked Time */}
-                      <div className="grid grid-cols-3 gap-2 text-xs">
-                        <div>
-                          <Text size="xs" c="gray.6" mb="xs">{t('historico.entry')}</Text>
-                          <Text fw={500} size="xs">
-                            {session.start_time ? formatTime(session.start_time) : '-'}
-                          </Text>
+                      {/* Time Row - Entry → Exit | Net Time */}
+                      <div className="flex items-center text-xs">
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-500">{t('historico.entry')}</span>
+                          <span className="font-bold text-base text-gray-800">{session.start_time ? formatTime(session.start_time) : '-'}</span>
+                          <span className="mx-1 text-gray-400">→</span>
+                          <span className="text-gray-500">{t('historico.exit')}</span>
+                          <span className="font-bold text-base text-gray-800">{session.end_time ? formatTime(session.end_time) : '-'}</span>
                         </div>
-                        <div>
-                          <Text size="xs" c="gray.6" mb="xs">{t('historico.exit')}</Text>
-                          <Text fw={500} size="xs">
-                            {session.end_time ? formatTime(session.end_time) : '-'}
-                          </Text>
-                        </div>
-                        <div>
-                          <Text size="xs" c="gray.6" mb="xs">{t('historico.netTime')}</Text>
-                          <Text fw={600} c="blue.6" size="xs">
-                            {session.worked_time_real ? formatWorkedHours(session.worked_time_real) : '-'}
-                          </Text>
+                        <div className="flex items-center ml-auto pl-4">
+                          <span className="font-bold text-base text-blue-700">{session.worked_time_real ? formatWorkedHours(session.worked_time_real) : '-'}</span>
                         </div>
                       </div>
                     </div>
