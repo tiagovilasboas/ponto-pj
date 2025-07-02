@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { Modal, TextInput, Stack, Title, Text, Group, Button } from '@mantine/core'
-import { notifications } from '@mantine/notifications'
 import { IconClock, IconDeviceFloppy, IconX } from '@tabler/icons-react'
 import { useAppStore } from '@/hooks/useAppStore'
 import { useTranslation } from '@/i18n/useTranslation'
 import { PrimaryButton } from '../common/PrimaryButton'
 import { workSessionRepository } from '@/repositories/WorkSessionRepository'
 import type { WorkSession } from '@/types/workSession'
+import { notificationService } from '@/services/notifications'
 
 interface EditSessionModalProps {
   open: boolean
@@ -24,11 +24,7 @@ export const EditSessionModal = ({ open, session, onClose, onSuccess }: EditSess
 
   const handleSubmit = async () => {
     if (!startTime || !endTime) {
-      notifications.show({
-        title: t('app.error'),
-        message: t('workSession.manual.fillTimes'),
-        color: 'red',
-      })
+      notificationService.error(t('workSession.manual.fillTimes'), t('app.error'))
       return
     }
 
@@ -37,11 +33,7 @@ export const EditSessionModal = ({ open, session, onClose, onSuccess }: EditSess
     const end = new Date(`2000-01-01T${endTime}`)
     
     if (end <= start) {
-      notifications.show({
-        title: t('app.error'),
-        message: t('historico.invalidTimes'),
-        color: 'red',
-      })
+      notificationService.error(t('historico.invalidTimes'), t('app.error'))
       return
     }
 
@@ -69,11 +61,7 @@ export const EditSessionModal = ({ open, session, onClose, onSuccess }: EditSess
 
       onSuccess()
     } catch (error: unknown) {
-      notifications.show({
-        title: t('app.error'),
-        message: t('historico.editError'),
-        color: 'red',
-      })
+      notificationService.error(t('historico.editError'), t('app.error'))
       console.error(t('historico.editError'), error)
     } finally {
       setLoading(false)

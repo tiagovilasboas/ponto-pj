@@ -57,7 +57,7 @@ function App() {
 
   return (
     <MantineProvider theme={theme}>
-      <Notifications />
+      <Notifications position="top-center" />
       <Router>
         <SecurityMonitor />
         <Suspense fallback={

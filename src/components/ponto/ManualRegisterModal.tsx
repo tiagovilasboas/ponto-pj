@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 import { Modal, TextInput, Stack, Title, Text, Group } from '@mantine/core'
-import { notifications } from '@mantine/notifications'
 import { IconClock, IconDeviceFloppy, IconX } from '@tabler/icons-react'
 import { useAppStore } from '@/hooks/useAppStore'
 import { useTranslation } from '@/i18n/useTranslation'
 import { PrimaryButton } from '../common/PrimaryButton'
 import { SecurityUtils } from '@/lib/security'
+import { notificationService } from '@/services/notifications'
 
 interface ManualRegisterModalProps {
   open: boolean
@@ -55,20 +55,12 @@ export const ManualRegisterModal = ({ open, onClose }: ManualRegisterModalProps)
   const handleSubmit = async () => {
     // Validação de segurança
     if (!SecurityUtils.validateInput(startTime, 'time') || !SecurityUtils.validateInput(endTime, 'time')) {
-      notifications.show({
-        title: t('app.error'),
-        message: t('workSession.manual.invalidTimeFormat'),
-        color: 'red',
-      })
+      notificationService.error(t('workSession.manual.invalidTimeFormat'), t('app.error'))
       return
     }
 
     if (!startTime || !endTime) {
-      notifications.show({
-        title: t('app.error'),
-        message: t('workSession.manual.fillTimes'),
-        color: 'red',
-      })
+      notificationService.error(t('workSession.manual.fillTimes'), t('app.error'))
       return
     }
 
@@ -78,11 +70,7 @@ export const ManualRegisterModal = ({ open, onClose }: ManualRegisterModalProps)
 
     try {
       await appStore.registerManual(sanitizedStartTime, sanitizedEndTime)
-      notifications.show({
-        title: t('app.success'),
-        message: t('workSession.manual.success'),
-        color: 'green',
-      })
+      notificationService.success(t('workSession.manual.success'), t('app.success'))
       onClose()
       setStartTime('')
       setEndTime('')
@@ -90,11 +78,10 @@ export const ManualRegisterModal = ({ open, onClose }: ManualRegisterModalProps)
       const errorMessage = error instanceof Error ? error.message : t('app.unknownError')
       const isConstraintError = errorMessage === 'database.constraintError'
       
-      notifications.show({
-        title: t('app.error'),
-        message: isConstraintError ? t('database.constraintError') : t('workSession.manual.error'),
-        color: 'red',
-      })
+      notificationService.error(
+        isConstraintError ? t('database.constraintError') : t('workSession.manual.error'), 
+        t('app.error')
+      )
       console.error(t('workSession.manual.error'), error)
     }
   }

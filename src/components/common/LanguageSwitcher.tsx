@@ -1,29 +1,51 @@
-import { ActionIcon, Group, Text } from '@mantine/core'
+import { useState } from 'react'
+import { ActionIcon, Menu, Text } from '@mantine/core'
 import { IconLanguage } from '@tabler/icons-react'
 import { useTranslation } from '@/i18n/useTranslation'
+import i18n from '@/i18n'
 
 export const LanguageSwitcher = () => {
-  const { changeLanguage, isPortuguese } = useTranslation()
+  const [opened, setOpened] = useState(false)
+  const { t } = useTranslation()
+  const currentLanguage = i18n.language
 
-  const handleLanguageChange = () => {
-    const newLanguage = isPortuguese ? 'en-US' : 'pt-BR'
-    changeLanguage(newLanguage)
+  const languages = [
+    { code: 'pt-BR', name: 'Português', flag: '🇧🇷' },
+    { code: 'en-US', name: 'English', flag: '🇺🇸' }
+  ]
+
+  const handleLanguageChange = (languageCode: string) => {
+    i18n.changeLanguage(languageCode)
+    setOpened(false)
   }
 
+
+
   return (
-    <Group gap="xs">
-      <ActionIcon
-        variant="light"
-        color="blue"
-        size="sm"
-        onClick={handleLanguageChange}
-        aria-label={isPortuguese ? 'Switch to English' : 'Mudar para Português'}
-      >
-        <IconLanguage size={16} />
-      </ActionIcon>
-      <Text size="xs" c="gray.6">
-        {isPortuguese ? 'PT' : 'EN'}
-      </Text>
-    </Group>
+    <Menu opened={opened} onChange={setOpened} shadow="md" width={200}>
+      <Menu.Target>
+        <ActionIcon
+          variant="light"
+          size="lg"
+          aria-label={t('app.language') || 'Change language'}
+        >
+          <IconLanguage size={20} />
+        </ActionIcon>
+      </Menu.Target>
+
+      <Menu.Dropdown>
+        <Menu.Label>{t('app.language') || 'Language'}</Menu.Label>
+        {languages.map((language) => (
+          <Menu.Item
+            key={language.code}
+            leftSection={<span>{language.flag}</span>}
+            onClick={() => handleLanguageChange(language.code)}
+            className={currentLanguage === language.code ? 'bg-blue-50' : ''}
+          >
+            <Text size="sm">{language.name}</Text>
+          </Menu.Item>
+        ))}
+      </Menu.Dropdown>
+    </Menu>
   )
 } 

@@ -5,8 +5,16 @@ export interface WorkSession {
   start_time?: string
   end_time?: string
   worked_time_real?: number
-  status: 'sem_registro' | 'completa' | 'incompleta'
+  status?: string
   manual_edit?: boolean
   created_at?: string
   updated_at?: string
+}
+
+export interface WorkSessionUpdate {
+  start_time?: string
+  end_time?: string
+  worked_time_real?: number
+  status?: string
+  manual_edit?: boolean
 } 

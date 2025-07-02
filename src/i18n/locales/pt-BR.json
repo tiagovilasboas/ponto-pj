@@ -13,7 +13,8 @@
     "unknownError": "Erro desconhecido",
     "logout": "Sair",
     "back": "Voltar",
-    "delete": "Excluir"
+    "delete": "Excluir",
+    "language": "Idioma"
   },
   "auth": {
     "login": {
@@ -117,7 +118,7 @@
     "constraintError": "Erro de configuração do banco: É necessário criar uma constraint única para user_id e date. Execute: ALTER TABLE work_sessions ADD CONSTRAINT work_sessions_user_id_date_key UNIQUE (user_id, date);"
   },
   "historico": {
-    "title": "Histórico de Registros",
+    "title": "Registros",
     "currentMonth": "Mês atual",
     "date": "Data",
     "entry": "Entrada",

@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { TextInput, PasswordInput, Card, Title, Stack, Container, Text, Center, Anchor, Group } from '@mantine/core'
-import { notifications } from '@mantine/notifications'
+import { TextInput, PasswordInput, Card, Title, Stack, Container, Text, Anchor, Group } from '@mantine/core'
 import { IconMail, IconLock } from '@tabler/icons-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthRepository } from '@/repositories/AuthRepository'
 import { useTranslation } from '@/i18n/useTranslation'
 import { PrimaryButton } from '../components/common/PrimaryButton'
+import { notificationService } from '@/services/notifications'
 
 export const Register = () => {
   const [email, setEmail] = useState('')
@@ -18,55 +18,46 @@ export const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email || !password) {
-      notifications.show({
-        title: t('app.error'),
-        message: t('auth.register.errors.fillFields'),
-        color: 'red',
-      })
+      notificationService.error(t('auth.register.errors.fillFields'), t('app.error'))
       return
     }
     setLoading(true)
     try {
       const { user, error } = await authRepository.signUp({ email, password })
       if (error) {
-        notifications.show({
-          title: t('app.error'),
-          message: error.message,
-          color: 'red',
-        })
+        notificationService.error(error.message, t('app.error'))
         return
       }
       if (user) {
-        notifications.show({
-          title: t('app.success'),
-          message: t('auth.register.success'),
-          color: 'green',
-        })
+        notificationService.success(t('auth.register.success'), t('app.success'))
         navigate('/login')
       }
     } catch {
-      notifications.show({
-        title: t('app.error'),
-        message: t('auth.register.errors.generic'),
-        color: 'red',
-      })
+      notificationService.error(t('auth.register.errors.generic'), t('app.error'))
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <Center h="100vh" w="100vw" style={{ background: '#f8fafc' }}>
-      <Container size="xs" px="md" w="100%" maw={400}>
-        <Card withBorder shadow="md" p="xl" radius="md" w="100%">
-          <Stack gap="lg">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <Container size="xs" w="100%" maw={400}>
+        <Card 
+          withBorder 
+          shadow="xl" 
+          p="xl" 
+          radius="xl" 
+          w="100%"
+          className="bg-white/95 backdrop-blur-sm"
+        >
+          <Stack gap="xl">
             <div style={{ textAlign: 'center' }}>
               <Title order={1} size="h2" c="blue.6" mb="xs">{t('auth.register.title')}</Title>
               <Text c="gray.6" size="sm">{t('auth.register.subtitle')}</Text>
             </div>
 
             <form onSubmit={handleSubmit}>
-              <Stack gap="md">
+              <Stack gap="lg">
                 <TextInput
                   label={t('auth.register.email')}
                   placeholder={t('auth.register.emailPlaceholder')}
@@ -76,6 +67,7 @@ export const Register = () => {
                   required
                   type="email"
                   autoComplete="username"
+                  size="md"
                 />
 
                 <PasswordInput
@@ -86,19 +78,20 @@ export const Register = () => {
                   leftSection={<IconLock size={16} />}
                   required
                   autoComplete="new-password"
+                  size="md"
                 />
 
-                <Stack gap="xs" align="center">
+                <Stack gap="md" align="center">
                   <PrimaryButton
                     type="submit"
                     loading={loading}
-                    className="w-full mt-2"
+                    className="w-full h-12 text-base font-semibold"
                   >
                     {t('auth.register.submit')}
                   </PrimaryButton>
                   <Group gap={4}>
                     <Text size="sm" c="gray.7">{t('auth.register.hasAccount')}</Text>
-                    <Anchor component={Link} to="/login" size="sm">{t('auth.register.signIn')}</Anchor>
+                    <Anchor component={Link} to="/login" size="sm" c="blue.6">{t('auth.register.signIn')}</Anchor>
                   </Group>
                 </Stack>
               </Stack>
@@ -106,6 +99,6 @@ export const Register = () => {
           </Stack>
         </Card>
       </Container>
-    </Center>
+    </div>
   )
 } 

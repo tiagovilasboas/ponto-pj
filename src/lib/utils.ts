@@ -217,3 +217,21 @@ export function isValidSession(session: WorkSession | null): boolean {
 export function isCompleteSession(session: WorkSession | null): boolean {
   return !!(session && session.start_time && session.end_time)
 }
+
+/**
+ * Gera opções dos últimos N meses (ex: últimos 12 meses)
+ * @param n - Quantidade de meses (padrão: 12)
+ * @returns Array de opções { value: 'YYYY-MM', label: 'Mês Ano' }
+ */
+export function getLastNMonthsOptions() {
+  const options = []
+  const now = new Date()
+  const currentYear = now.getFullYear()
+  for (let m = 1; m <= 12; m++) {
+    const date = new Date(currentYear, m - 1, 1)
+    const value = `${currentYear}-${String(m).padStart(2, '0')}`
+    const label = `${date.toLocaleString('pt-BR', { month: 'long' })}`
+    options.push({ value, label: label.charAt(0).toUpperCase() + label.slice(1) })
+  }
+  return options
+}

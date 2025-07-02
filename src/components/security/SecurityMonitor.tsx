@@ -1,9 +1,9 @@
 import { useEffect, useState, useCallback } from 'react'
-import { notifications } from '@mantine/notifications'
 import { SecurityUtils } from '@/lib/security'
 import { useAppStore } from '@/hooks/useAppStore'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from '@/i18n/useTranslation'
+import { notificationService } from '@/services/notifications'
 
 export const SecurityMonitor = () => {
   const [isMonitoring, setIsMonitoring] = useState(true)
@@ -18,11 +18,11 @@ export const SecurityMonitor = () => {
     SecurityUtils.logSecurityEvent('security_violation', { message })
     
     // Notificar o usuário
-    notifications.show({
+    notificationService.show({
       title: t('security.alertTitle'),
       message,
-      color: 'red',
-      autoClose: false,
+      type: 'error',
+      autoClose: 0,
     })
 
     // Limpar dados sensíveis

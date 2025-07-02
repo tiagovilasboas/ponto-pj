@@ -2,8 +2,9 @@ import { Group, Title, ActionIcon, Text } from '@mantine/core'
 import { IconArrowLeft, IconLogout } from '@tabler/icons-react'
 import { useNavigate } from 'react-router-dom'
 import { useAppStore } from '@/hooks/useAppStore'
-import { useTranslation } from '@/i18n/useTranslation'
+import { useTranslation } from '../../i18n/useTranslation'
 import { Logo } from './Logo'
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher'
 
 interface AppHeaderProps {
   title: string
@@ -57,30 +58,34 @@ export const AppHeader = ({
           )}
           <Group gap="sm" align="center">
             <Logo size={32} />
-            <div>
-              <Title order={1} size="h5" className="text-gray-900 font-semibold">
-                {title}
-              </Title>
-              {subtitle && (
-                <Text size="sm" c="gray.6" className="mt-1">
-                  {subtitle}
-                </Text>
-              )}
-            </div>
+            {title && (
+              <div>
+                <Title order={1} size="h5" className="text-gray-900 font-semibold">
+                  {title}
+                </Title>
+                {subtitle && (
+                  <Text size="sm" c="gray.6" className="mt-1">
+                    {subtitle}
+                  </Text>
+                )}
+              </div>
+            )}
           </Group>
         </Group>
-        
-        {showLogout && (
-          <ActionIcon
-            variant="subtle"
-            size="lg"
-            onClick={handleLogout}
-            className="text-gray-600 hover:bg-red-50 hover:text-red-600"
-            title={t('home.logout')}
-          >
-            <IconLogout size={20} />
-          </ActionIcon>
-        )}
+        <Group gap="xs">
+          <LanguageSwitcher />
+          {showLogout && (
+            <ActionIcon
+              variant="subtle"
+              size="lg"
+              onClick={handleLogout}
+              className="text-gray-600 hover:bg-red-50 hover:text-red-600"
+              title={t('home.logout')}
+            >
+              <IconLogout size={20} />
+            </ActionIcon>
+          )}
+        </Group>
       </Group>
     </div>
   )

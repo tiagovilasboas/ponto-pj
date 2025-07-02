@@ -13,7 +13,8 @@
     "unknownError": "Unknown error",
     "logout": "Logout",
     "back": "Back",
-    "delete": "Delete"
+    "delete": "Delete",
+    "language": "Language"
   },
   "auth": {
     "login": {
@@ -136,7 +137,7 @@
     "constraintError": "Database constraint error"
   },
   "historico": {
-    "title": "Time Records History",
+    "title": "Records",
     "currentMonth": "Current month",
     "date": "Date",
     "entry": "Entry",
