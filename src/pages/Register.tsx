@@ -43,18 +43,14 @@ export const Register = () => {
     }
     setLoading(true);
     try {
-      const { user, error } = await authRepository.signUp({ email, password });
+      const { error } = await authRepository.signUp({ email, password });
       if (error) {
         notificationService.error(error.message, t('app.error'));
         return;
       }
-      if (user) {
-        notificationService.success(
-          t('auth.register.success'),
-          t('app.success')
-        );
-        navigate('/login');
-      }
+      // Sempre mostrar sucesso para evitar enumeração de usuários
+      notificationService.success(t('auth.register.success'), t('app.success'));
+      navigate('/login');
     } catch {
       notificationService.error(
         t('auth.register.errors.generic'),
@@ -113,7 +109,7 @@ export const Register = () => {
 
                 <PasswordInput
                   label={t('auth.register.confirmPassword')}
-                  placeholder={t('auth.register.confirmPassword')}
+                  placeholder={t('auth.register.confirmPasswordPlaceholder')}
                   value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
                   leftSection={<IconLock size={16} />}

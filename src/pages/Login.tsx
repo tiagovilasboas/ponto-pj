@@ -1,5 +1,13 @@
 import { useAppStoreWithAuth } from '@/hooks/useAppStore';
-import { Container, Card, Text, TextInput, PasswordInput, Group, Anchor } from '@mantine/core';
+import {
+  Container,
+  Card,
+  Text,
+  TextInput,
+  PasswordInput,
+  Group,
+  Anchor,
+} from '@mantine/core';
 import { IconMail, IconLock } from '@tabler/icons-react';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
@@ -71,6 +79,15 @@ export const Login = () => {
                   autoComplete='current-password'
                   size='md'
                 />
+                <Anchor
+                  component={Link}
+                  to='/forgot-password'
+                  size='sm'
+                  c='blue.6'
+                  ta='center'
+                >
+                  {t('auth.login.forgotPassword')}
+                </Anchor>
                 <Stack gap='md' align='center'>
                   <PrimaryButton
                     type='submit'
