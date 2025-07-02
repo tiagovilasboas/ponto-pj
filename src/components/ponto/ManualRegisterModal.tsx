@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
 import { Modal, TextInput, Stack, Title, Text, Group } from '@mantine/core'
 import { IconClock, IconDeviceFloppy, IconX } from '@tabler/icons-react'
-import { useAppStore } from '@/hooks/useAppStore'
+import { useState, useEffect } from 'react'
+import { useAppStoreWithAuth } from '@/hooks/useAppStore'
 import { useTranslation } from '@/i18n/useTranslation'
 import { PrimaryButton } from '../common/PrimaryButton'
 import { notificationService } from '@/services/notifications'
@@ -12,7 +12,8 @@ interface ManualRegisterModalProps {
 }
 
 export const ManualRegisterModal = ({ open, onClose }: ManualRegisterModalProps) => {
-  const appStore = useAppStore()
+  const appStore = useAppStoreWithAuth()
+  const { t } = useTranslation()
   const [startTime, setStartTime] = useState('')
   const [endTime, setEndTime] = useState('')
   const [currentTime, setCurrentTime] = useState(() => {
@@ -24,7 +25,7 @@ export const ManualRegisterModal = ({ open, onClose }: ManualRegisterModalProps)
       hour12: false
     })
   })
-  const { t } = useTranslation()
+  const [loading, setLoading] = useState(false)
 
   // Atualizar hora atual a cada segundo
   useEffect(() => {
@@ -52,12 +53,12 @@ export const ManualRegisterModal = ({ open, onClose }: ManualRegisterModalProps)
   }, []) // Array vazio para executar apenas uma vez na montagem
 
   const handleSubmit = async () => {
-    // Validação mínima: campos obrigatórios
-    if (!startTime?.trim() || !endTime?.trim()) {
-      notificationService.error(t('workSession.manual.fillTimes'), t('app.error'))
+    if (!startTime || !endTime) {
+      // TODO: Mostrar erro
       return
     }
 
+    setLoading(true)
     try {
       await appStore.registerManual(startTime, endTime)
       notificationService.success(t('workSession.manual.success'), t('app.success'))
@@ -73,6 +74,8 @@ export const ManualRegisterModal = ({ open, onClose }: ManualRegisterModalProps)
         t('app.error')
       )
       console.error(t('workSession.manual.error'), error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -141,12 +144,12 @@ export const ManualRegisterModal = ({ open, onClose }: ManualRegisterModalProps)
           <PrimaryButton
             type="button"
             onClick={handleSubmit}
-            loading={appStore.actionLoading}
+            loading={loading}
             leftIcon={<IconDeviceFloppy size={16} aria-hidden="true" />}
-            disabled={appStore.actionLoading}
+            disabled={loading}
             aria-label="Salvar registro manual"
           >
-            {appStore.actionLoading ? t('app.saving') : t('app.save')}
+            {loading ? t('app.saving') : t('app.save')}
           </PrimaryButton>
         </Group>
       </Stack>

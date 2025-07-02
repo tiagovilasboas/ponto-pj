@@ -1,44 +1,31 @@
-import { Group, Title, ActionIcon, Text } from '@mantine/core';
+import { Group, Text, ActionIcon, Stack } from '@mantine/core';
 import { IconArrowLeft, IconLogout } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
-import { useAppStore } from '@/hooks/useAppStore';
-import { useTranslation } from '../../i18n/useTranslation';
-import { Logo } from './Logo';
+import { useAppStoreWithAuth } from '@/hooks/useAppStore';
 import { LanguageSwitcher } from '@/components/common/LanguageSwitcher';
 
 interface AppHeaderProps {
   title: string;
-  showBack?: boolean;
-  onBack?: () => void;
-  showLogout?: boolean;
   subtitle?: string;
+  showBack?: boolean;
+  showLogout?: boolean;
 }
 
 export const AppHeader = ({
   title,
-  showBack = false,
-  onBack,
-  showLogout = true,
   subtitle,
+  showBack = false,
+  showLogout = true,
 }: AppHeaderProps) => {
   const navigate = useNavigate();
-  const { logout } = useAppStore();
-  const { t } = useTranslation();
-
-  const handleBack = () => {
-    if (onBack) {
-      onBack();
-    } else {
-      navigate(-1);
-    }
-  };
+  const { logout } = useAppStoreWithAuth();
 
   const handleLogout = async () => {
     try {
       await logout();
       navigate('/login');
     } catch (error) {
-      console.error(t('auth.logoutError'), error);
+      console.error('Erro ao fazer logout:', error);
     }
   };
 
@@ -50,33 +37,23 @@ export const AppHeader = ({
             <ActionIcon
               variant='subtle'
               size='lg'
-              onClick={handleBack}
+              onClick={() => navigate(-1)}
               className='text-gray-600 hover:bg-gray-100'
-              aria-label={t('aria.back')}
+              aria-label='Voltar'
             >
               <IconArrowLeft size={20} />
             </ActionIcon>
           )}
-          <Group gap='sm' align='center'>
-            <Logo size={32} aria-hidden='true' />
-            {title && (
-              <div>
-                <Title
-                  order={1}
-                  size='h5'
-                  className='text-gray-900 font-semibold'
-                  aria-label={title}
-                >
-                  {title}
-                </Title>
-                {subtitle && (
-                  <Text size='sm' c='gray.6' className='mt-1'>
-                    {subtitle}
-                  </Text>
-                )}
-              </div>
+          <Stack gap={0}>
+            <Text fw={600} size='lg' className='text-gray-900'>
+              {title}
+            </Text>
+            {subtitle && (
+              <Text size='sm' c='gray.6'>
+                {subtitle}
+              </Text>
             )}
-          </Group>
+          </Stack>
         </Group>
         <Group gap='xs'>
           <LanguageSwitcher />
@@ -85,8 +62,8 @@ export const AppHeader = ({
               variant='subtle'
               size='lg'
               onClick={handleLogout}
-              className='text-gray-600 hover:bg-red-50 hover:text-red-600'
-              aria-label={t('home.logout')}
+              className='text-red-600 hover:bg-red-50'
+              aria-label='Sair'
             >
               <IconLogout size={20} />
             </ActionIcon>

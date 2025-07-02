@@ -103,7 +103,7 @@ export const Logo = React.memo<LogoProps>(({ size = 40, className = '' }) => {
       ref={canvasRef}
       className={`${className}`}
       style={{ display: 'block' }}
-      aria-label={t('aria.logo')}
+      aria-label="Logo do Ponto PJ"
     />
   );
 });

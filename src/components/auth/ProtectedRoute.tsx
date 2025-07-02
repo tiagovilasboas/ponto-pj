@@ -1,33 +1,31 @@
+import type { ReactNode } from 'react'
 import { Navigate } from 'react-router-dom'
-import { Center, Text, Loader } from '@mantine/core'
-import { useAppStore } from '@/hooks/useAppStore'
-import { useTranslation } from '@/i18n/useTranslation'
+import { Center, Loader, Text } from '@mantine/core'
+import { useAppStoreWithAuth } from '@/hooks/useAppStore'
 
 interface ProtectedRouteProps {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { user, loading } = useAppStore()
-  const { t } = useTranslation()
+  const { user, authLoading } = useAppStoreWithAuth()
 
-  // Se ainda está carregando, mostra loading
-  if (loading) {
+  if (authLoading) {
     return (
-      <Center h="100vh">
-        <div style={{ textAlign: 'center' }}>
-          <Loader size="lg" mb="md" />
-          <Text c="gray.6">{t('app.loading')}</Text>
+      <Center h='100vh' className='bg-gradient-to-br from-blue-50 to-indigo-50'>
+        <div className='text-center'>
+          <Loader size='lg' color='blue' className='mb-4' />
+          <Text size='lg' c='dimmed'>
+            Carregando...
+          </Text>
         </div>
       </Center>
     )
   }
 
-  // Se não há usuário, redireciona para login
   if (!user) {
-    return <Navigate to="/login" replace />
+    return <Navigate to='/login' replace />
   }
 
-  // Se há usuário, mostra o conteúdo protegido
   return <>{children}</>
 } 

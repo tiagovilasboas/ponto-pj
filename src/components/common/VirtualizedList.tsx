@@ -1,5 +1,5 @@
 import React from 'react';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import { useVirtualizer, type VirtualItem } from '@tanstack/react-virtual';
 import { Box } from '@mantine/core';
 
 interface VirtualizedListProps<T> {
@@ -57,7 +57,7 @@ export function VirtualizedList<T>({
             transform: `translateY(${paddingTop}px)`,
           }}
         >
-          {virtualItems.map(virtualItem => (
+          {virtualItems.map((virtualItem: VirtualItem) => (
             <div
               key={virtualItem.key}
               style={{

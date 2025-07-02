@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Modal, TextInput, Stack, Title, Text, Group, Button } from '@mantine/core'
 import { IconClock, IconDeviceFloppy, IconX } from '@tabler/icons-react'
-import { useAppStore } from '@/hooks/useAppStore'
+import { useAppStoreWithAuth } from '@/hooks/useAppStore'
 import { useTranslation } from '@/i18n/useTranslation'
 import { PrimaryButton } from '../common/PrimaryButton'
 import { workSessionRepository } from '@/repositories/WorkSessionRepository'
@@ -16,11 +16,11 @@ interface EditSessionModalProps {
 }
 
 export const EditSessionModal = ({ open, session, onClose, onSuccess }: EditSessionModalProps) => {
-  const appStore = useAppStore()
+  const appStore = useAppStoreWithAuth()
+  const { t } = useTranslation()
   const [startTime, setStartTime] = useState(session.start_time || '')
   const [endTime, setEndTime] = useState(session.end_time || '')
   const [loading, setLoading] = useState(false)
-  const { t } = useTranslation()
 
   const handleSubmit = async () => {
     if (!startTime || !endTime) {
