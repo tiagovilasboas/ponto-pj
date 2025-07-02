@@ -29,6 +29,7 @@
       "success": "Login successful!",
       "noAccount": "Don't have an account?",
       "signUp": "Sign up",
+      "forgotPassword": "Forgot my password",
       "errors": {
         "fillFields": "Please fill in all fields",
         "invalidCredentials": "Invalid email or password",
@@ -40,15 +41,51 @@
       "title": "Register",
       "subtitle": "Create your account to get started",
       "email": "Email",
+      "emailPlaceholder": "your@email.com",
       "password": "Password",
+      "passwordPlaceholder": "Your password",
       "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Confirm your password",
       "submit": "Register",
       "submitting": "Registering...",
-      "success": "Account created successfully!",
+      "success": "If the email is not registered, you will receive a confirmation link. Check your inbox.",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
       "errors": {
         "fillFields": "Please fill in all fields",
         "passwordsNotMatch": "Passwords do not match",
         "generic": "Registration error"
+      }
+    },
+    "forgotPassword": {
+      "title": "Forgot my password",
+      "subtitle": "Enter your email to receive a reset link",
+      "email": "Email",
+      "emailPlaceholder": "your@email.com",
+      "submit": "Send reset link",
+      "submitting": "Sending...",
+      "success": "Reset link sent to your email!",
+      "backToLogin": "Back to login",
+      "errors": {
+        "fillFields": "Please fill in the email field",
+        "emailNotFound": "Email not found",
+        "generic": "Error sending reset link"
+      }
+    },
+    "resetPassword": {
+      "title": "Reset password",
+      "subtitle": "Enter your new password",
+      "password": "New password",
+      "passwordPlaceholder": "Your new password",
+      "confirmPassword": "Confirm new password",
+      "confirmPasswordPlaceholder": "Confirm your new password",
+      "submit": "Reset password",
+      "submitting": "Resetting...",
+      "success": "Password reset successfully!",
+      "errors": {
+        "fillFields": "Please fill in all fields",
+        "passwordsNotMatch": "Passwords do not match",
+        "generic": "Error resetting password"
       }
     },
     "confirmPassword": "Confirm Password",
@@ -221,4 +258,4 @@
     "suspicious_url_change": "Suspicious URL change detected",
     "suspicious_url_replace": "Suspicious URL replacement detected"
   }
-} 
+}

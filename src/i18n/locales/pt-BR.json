@@ -29,6 +29,7 @@
       "success": "Login realizado com sucesso!",
       "noAccount": "Não tem uma conta?",
       "signUp": "Cadastre-se",
+      "forgotPassword": "Esqueci minha senha",
       "errors": {
         "fillFields": "Preencha todos os campos",
         "invalidCredentials": "E-mail ou senha incorretos",
@@ -40,15 +41,51 @@
       "title": "Cadastrar",
       "subtitle": "Crie sua conta para começar",
       "email": "E-mail",
+      "emailPlaceholder": "seu@email.com",
       "password": "Senha",
+      "passwordPlaceholder": "Sua senha",
       "confirmPassword": "Confirmar senha",
+      "confirmPasswordPlaceholder": "Confirme sua senha",
       "submit": "Cadastrar",
       "submitting": "Cadastrando...",
-      "success": "Conta criada com sucesso!",
+      "success": "Se o e-mail não estiver cadastrado, você receberá um link de confirmação. Verifique sua caixa de entrada.",
+      "hasAccount": "Já tem uma conta?",
+      "signIn": "Entrar",
       "errors": {
         "fillFields": "Preencha todos os campos",
         "passwordsNotMatch": "As senhas não coincidem",
         "generic": "Erro ao criar conta"
+      }
+    },
+    "forgotPassword": {
+      "title": "Esqueci minha senha",
+      "subtitle": "Digite seu e-mail para receber um link de redefinição",
+      "email": "E-mail",
+      "emailPlaceholder": "seu@email.com",
+      "submit": "Enviar link",
+      "submitting": "Enviando...",
+      "success": "Link de redefinição enviado para seu e-mail!",
+      "backToLogin": "Voltar ao login",
+      "errors": {
+        "fillFields": "Preencha o campo de e-mail",
+        "emailNotFound": "E-mail não encontrado",
+        "generic": "Erro ao enviar link de redefinição"
+      }
+    },
+    "resetPassword": {
+      "title": "Redefinir senha",
+      "subtitle": "Digite sua nova senha",
+      "password": "Nova senha",
+      "passwordPlaceholder": "Sua nova senha",
+      "confirmPassword": "Confirmar nova senha",
+      "confirmPasswordPlaceholder": "Confirme sua nova senha",
+      "submit": "Redefinir senha",
+      "submitting": "Redefinindo...",
+      "success": "Senha redefinida com sucesso!",
+      "errors": {
+        "fillFields": "Preencha todos os campos",
+        "passwordsNotMatch": "As senhas não coincidem",
+        "generic": "Erro ao redefinir senha"
       }
     },
     "notAuthenticated": "Usuário não autenticado",
