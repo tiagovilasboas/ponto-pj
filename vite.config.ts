@@ -80,25 +80,10 @@ export default defineConfig(({ mode }) => {
       target: 'esnext',
       minify: mode === 'analyze' ? false : 'terser',
       sourcemap: mode === 'analyze',
+      cssCodeSplit: true,
+      cssMinify: true,
       rollupOptions: {
         output: {
-          manualChunks: {
-            'react-vendor': ['react', 'react-dom'],
-            mantine: [
-              '@mantine/core',
-              '@mantine/hooks',
-              '@mantine/notifications',
-              '@mantine/dates',
-            ],
-            'tabler-icons': ['@tabler/icons-react'],
-            supabase: ['@supabase/supabase-js'],
-            i18n: [
-              'i18next',
-              'react-i18next',
-              'i18next-browser-languagedetector',
-            ],
-            utils: ['dayjs', 'jspdf', 'jspdf-autotable'],
-          },
           chunkFileNames: () => {
             return `js/[name]-[hash].js`;
           },
@@ -122,6 +107,15 @@ export default defineConfig(({ mode }) => {
               compress: {
                 drop_console: true,
                 drop_debugger: true,
+                pure_funcs: ['console.log', 'console.info', 'console.debug'],
+                passes: 2,
+                toplevel: true,
+                unsafe: true,
+                unsafe_comps: true,
+              },
+              mangle: {
+                toplevel: true,
+                safari10: true,
               },
             },
     },
@@ -134,7 +128,12 @@ export default defineConfig(({ mode }) => {
         '@mantine/notifications',
         '@tabler/icons-react',
         'zustand',
+        'react-router-dom',
       ],
+    },
+    css: {
+      postcss: './postcss.config.js',
+      devSourcemap: false,
     },
     test: {
       globals: true,
