@@ -128,19 +128,19 @@ describe('Complete Integration Flow', () => {
       // Verificar se está na home
       expect(screen.getByText(/joão silva/i)).toBeInTheDocument()
 
-      // Navegar para histórico
+      // Navigate to history
       const historyButton = screen.getByRole('button', { name: /histórico/i })
       await user.click(historyButton)
 
       expect(mockNavigate).toHaveBeenCalledWith('/history')
 
-      // Navegar para relatórios
+      // Navigate to reports
       const reportButton = screen.getByRole('button', { name: /relatórios/i })
       await user.click(reportButton)
 
       expect(mockNavigate).toHaveBeenCalledWith('/report')
 
-      // Voltar para home
+      // Back to home
       const homeButton = screen.getByRole('button', { name: /início/i })
       await user.click(homeButton)
 
@@ -174,7 +174,7 @@ describe('Complete Integration Flow', () => {
 
       renderWithProviders(<App />)
 
-      // Registrar entrada
+      // Register entry
       const entradaButton = screen.getByRole('button', { name: /entrada/i })
       await user.click(entradaButton)
 
@@ -182,7 +182,7 @@ describe('Complete Integration Flow', () => {
         expect(mockRegisterTime).toHaveBeenCalledWith('entrada')
       })
 
-      // Simular sessão ativa
+      // Simulate active session
       mockUseHistorySessions.mockReturnValue({
         sessions: [
           {
@@ -201,7 +201,7 @@ describe('Complete Integration Flow', () => {
         loadSessions: vi.fn(),
       })
 
-      // Registrar saída
+      // Register exit
       const saidaButton = screen.getByRole('button', { name: /saída/i })
       await user.click(saidaButton)
 
@@ -239,7 +239,7 @@ describe('Complete Integration Flow', () => {
       })
     })
 
-    it('deve lidar com erros de rede', async () => {
+    it('should handle network errors', async () => {
       const user = userEvent.setup()
       
       mockUseAppStore.mockReturnValue({
@@ -248,7 +248,7 @@ describe('Complete Integration Flow', () => {
         actionLoading: false,
         login: vi.fn(),
         logout: vi.fn(),
-        registerTime: vi.fn().mockRejectedValue(new Error('Erro de conexão')),
+        registerTime: vi.fn().mockRejectedValue(new Error('Connection error')),
       } as any)
 
       mockUseHistorySessions.mockReturnValue({
@@ -268,9 +268,9 @@ describe('Complete Integration Flow', () => {
       const entradaButton = screen.getByRole('button', { name: /entrada/i })
       await user.click(entradaButton)
 
-      // Verificar se erro foi tratado
+      // Check if error was handled
       await waitFor(() => {
-        expect(screen.getByText(/erro de conexão/i)).toBeInTheDocument()
+        expect(screen.getByText(/connection error/i)).toBeInTheDocument()
       })
     })
   })
