@@ -45,7 +45,7 @@ describe('Registration Flow', () => {
 
   describe('User Registration', () => {
     it('should allow registration with valid data', async () => {
-      const user = userEvent.setup()
+      // const user = userEvent.setup()
       const mockSignUp = vi.fn().mockResolvedValue({ user: { id: '1' }, error: null })
       
       mockAuthRepository.mockImplementation(() => ({
@@ -59,10 +59,10 @@ describe('Registration Flow', () => {
       const confirmPasswordInput = screen.getByPlaceholderText('auth.register.confirmPassword')
       const submitButton = screen.getByRole('button', { name: 'auth.register.submit' })
 
-      await user.type(emailInput, 'joao@exemplo.com')
-      await user.type(passwordInput, 'senha123')
-      await user.type(confirmPasswordInput, 'senha123')
-      await user.click(submitButton)
+      await userEvent.type(emailInput, 'joao@exemplo.com')
+      await userEvent.type(passwordInput, 'senha123')
+      await userEvent.type(confirmPasswordInput, 'senha123')
+      await userEvent.click(submitButton)
 
       await waitFor(() => {
         expect(screen.queryByText(/Passwords do not match|As senhas não coincidem/i)).not.toBeInTheDocument()
@@ -70,7 +70,7 @@ describe('Registration Flow', () => {
     })
 
     it('should show error when passwords do not match', async () => {
-      const user = userEvent.setup()
+      // const user = userEvent.setup()
       renderWithProviders(<Register />)
 
       const emailInput = screen.getByPlaceholderText('auth.register.emailPlaceholder')
@@ -78,16 +78,16 @@ describe('Registration Flow', () => {
       const confirmPasswordInput = screen.getByPlaceholderText('auth.register.confirmPassword')
       const submitButton = screen.getByRole('button', { name: 'auth.register.submit' })
 
-      await user.type(emailInput, 'joao@exemplo.com')
-      await user.type(passwordInput, 'senha123')
-      await user.type(confirmPasswordInput, 'outrasenha')
-      await user.click(submitButton)
+      await userEvent.type(emailInput, 'joao@exemplo.com')
+      await userEvent.type(passwordInput, 'senha123')
+      await userEvent.type(confirmPasswordInput, 'outrasenha')
+      await userEvent.click(submitButton)
 
       expect(await screen.findByTestId('password-error')).toBeInTheDocument()
     })
 
     it('should show loading during registration', async () => {
-      const user = userEvent.setup()
+      // const user = userEvent.setup()
       const mockSignUp = vi.fn().mockImplementation(() => new Promise(() => {})) // Never resolves
       
       mockAuthRepository.mockImplementation(() => ({
@@ -101,10 +101,10 @@ describe('Registration Flow', () => {
       const confirmPasswordInput = screen.getByPlaceholderText('auth.register.confirmPassword')
       const submitButton = screen.getByRole('button', { name: 'auth.register.submit' })
 
-      await user.type(emailInput, 'joao@exemplo.com')
-      await user.type(passwordInput, 'senha123')
-      await user.type(confirmPasswordInput, 'senha123')
-      await user.click(submitButton)
+      await userEvent.type(emailInput, 'joao@exemplo.com')
+      await userEvent.type(passwordInput, 'senha123')
+      await userEvent.type(confirmPasswordInput, 'senha123')
+      await userEvent.click(submitButton)
 
       await waitFor(() => {
         expect(submitButton).toBeDisabled()
@@ -114,7 +114,7 @@ describe('Registration Flow', () => {
 
   describe('Navigation', () => {
     it('should navigate to login when clicking link', async () => {
-      const user = userEvent.setup()
+      // const user = userEvent.setup()
       renderWithProviders(<Register />)
 
       const loginLink = screen.getByRole('link', { name: 'auth.register.signIn' })
