@@ -48,23 +48,23 @@ export const SessionRecordCard: React.FC<SessionRecordCardProps> = ({
           {onEdit && (
             <ActionIcon
               variant="subtle"
-              size="sm"
+              size="lg"
               onClick={onEdit}
               className="text-blue-600 hover:bg-blue-50"
-              aria-label="Edit session"
+              aria-label="Editar registro de ponto"
             >
-              <IconEdit size={14} />
+              <IconEdit size={18} aria-hidden="true" />
             </ActionIcon>
           )}
           {onDelete && (
             <ActionIcon
               variant="subtle"
-              size="sm"
+              size="lg"
               onClick={onDelete}
               className="text-red-600 hover:bg-red-50"
-              aria-label="Delete session"
+              aria-label="Excluir registro de ponto"
             >
-              <IconTrash size={14} />
+              <IconTrash size={18} aria-hidden="true" />
             </ActionIcon>
           )}
         </div>

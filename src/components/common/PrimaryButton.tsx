@@ -5,6 +5,7 @@ interface PrimaryButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   loading?: boolean
   leftIcon?: React.ReactNode
   size?: 'sm' | 'md' | 'lg'
+  'aria-label'?: string
 }
 
 export const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonProps>(
@@ -31,6 +32,7 @@ export const PrimaryButton = React.forwardRef<HTMLButtonElement, PrimaryButtonPr
           ${className}
         `}
         disabled={disabled || loading}
+        aria-label={props['aria-label']}
         {...props}
       >
         {loading && (

@@ -26,9 +26,12 @@ export const History = () => {
     handlePageChange,
     handleEditSession,
     handleDeleteSession,
+    confirmDeleteSession,
+    handleSaveEdit,
     formatDateWithWeekday,
     formatWorkedHours,
     t,
+    actionLoading,
   } = useHistorySessions()
   const { formatTime } = useAppStore()
 
@@ -148,10 +151,10 @@ export const History = () => {
             onChange={(e) => setEditForm(prev => ({ ...prev, endTime: e.target.value }))}
           />
           <Group justify="flex-end" gap="sm">
-            <Button variant="subtle" onClick={() => setEditModalOpen(false)}>
+            <Button variant="subtle" onClick={() => setEditModalOpen(false)} aria-label="Cancelar edição">
               {t('app.cancel')}
             </Button>
-            <Button onClick={handleSaveEdit}>
+            <Button onClick={handleSaveEdit} loading={actionLoading} disabled={actionLoading} aria-label="Salvar edição">
               {t('app.save')}
             </Button>
           </Group>
@@ -170,10 +173,10 @@ export const History = () => {
             {t('historico.deleteConfirm')}
           </Text>
           <Group justify="flex-end" gap="sm">
-            <Button variant="subtle" color="gray" onClick={() => setDeleteModalOpen(false)}>
+            <Button variant="subtle" color="gray" onClick={() => setDeleteModalOpen(false)} aria-label="Cancelar exclusão">
               {t('app.cancel')}
             </Button>
-            <Button color="red" onClick={confirmDeleteSession}>
+            <Button color="red" onClick={confirmDeleteSession} loading={actionLoading} disabled={actionLoading} aria-label="Confirmar exclusão">
               {t('app.delete')}
             </Button>
           </Group>

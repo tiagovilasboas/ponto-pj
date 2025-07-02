@@ -59,8 +59,8 @@ export function SessionStatusCard({
     >
       {/* Header com gradiente e borda arredondada consistente */}
       <div className="bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400 px-6 py-4 flex items-center gap-2">
-        <IconClock size={22} className="text-white/90" />
-        <Title order={2} size="h4" className="text-white font-bold tracking-tight">
+        <IconClock size={22} className="text-white/90" aria-hidden="true" />
+        <Title order={2} size="h4" className="text-white font-bold tracking-tight" aria-label={t('app.title')}>
           {t('app.title')}
         </Title>
       </div>
@@ -84,6 +84,7 @@ export function SessionStatusCard({
               loading={actionLoading}
               onClick={onStart}
               disabled={actionLoading}
+              aria-label={t('workSession.start.button')}
             >
               {actionLoading ? t('workSession.start.submitting') : t('workSession.start.button')}
             </Button>
@@ -107,6 +108,7 @@ export function SessionStatusCard({
               loading={actionLoading}
               onClick={onEnd}
               disabled={actionLoading}
+              aria-label={t('workSession.end.button')}
             >
               {actionLoading ? t('workSession.end.submitting') : t('workSession.end.button')}
             </Button>
@@ -135,8 +137,9 @@ export function SessionStatusCard({
           type="button"
           className="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 font-bold text-blue-800 bg-white/70 border border-blue-300 hover:bg-blue-50 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed w-full shadow"
           onClick={onManualRegister}
+          aria-label={t('workSession.manual.title')}
         >
-          <IconEdit size={20} className="mr-2 text-blue-800 font-bold" />
+          <IconEdit size={20} className="mr-2 text-blue-800 font-bold" aria-hidden="true" />
           {t('workSession.manual.title')}
         </button>
       </Stack>

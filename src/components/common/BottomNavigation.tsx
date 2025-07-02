@@ -30,7 +30,7 @@ export const BottomNavigation = () => {
   ]
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-0 py-2">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-0 py-2" role="navigation" aria-label="Menu de navegação inferior">
       <div className="flex justify-between items-center w-full">
         {navItems.map((item) => {
           const Icon = item.icon
@@ -51,8 +51,9 @@ export const BottomNavigation = () => {
                     : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
                   )
                 }
+                aria-label={item.label}
               >
-                <Icon size={22} />
+                <Icon size={22} aria-hidden="true" />
               </ActionIcon>
               <Text 
                 size="xs" 

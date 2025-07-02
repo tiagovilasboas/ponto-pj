@@ -3,7 +3,6 @@ import { AuthRepository } from '@/repositories/AuthRepository'
 import { WorkSessionRepository } from '@/repositories/WorkSessionRepository'
 import type { User } from '@supabase/supabase-js'
 import type { WorkSession } from '@/types/workSession'
-import { SecurityUtils } from '@/lib/security'
 import { getCurrentDate } from '@/lib/utils'
 
 interface AppState {
@@ -62,36 +61,18 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   // Auth actions
   login: async (email: string, password: string) => {
-    // Validação de entrada (desabilitada temporariamente para permitir login)
-    // if (!import.meta.env.DEV && (!SecurityUtils.validateInput(email, 'email') || !SecurityUtils.validateInput(password, 'password'))) {
-    //   SecurityUtils.logSecurityEvent('invalid_input', { email: email.substring(0, 10) + '...' })
-    //   throw new Error('Dados de entrada inválidos')
-    // }
-
-    // Rate limiting (desabilitado temporariamente)
-    // if (!import.meta.env.DEV) {
-    //   const identifier = email.toLowerCase()
-    //   if (!SecurityUtils.checkRateLimit(identifier)) {
-    //     SecurityUtils.logSecurityEvent('rate_limit_exceeded', { email: email.substring(0, 10) + '...' })
-    //     throw new Error('Muitas tentativas de login. Tente novamente em 30 minutos.')
-    //   }
-    // }
-
-    // Verificação de ambiente seguro (desabilitada temporariamente)
-    // if (!import.meta.env.DEV && !SecurityUtils.isSecureEnvironment()) {
-    //   SecurityUtils.logSecurityEvent('insecure_environment')
-    //   throw new Error('Ambiente não seguro. Use HTTPS.')
-    // }
+    // Validação mínima: campos obrigatórios
+    if (!email?.trim() || !password?.trim()) {
+      throw new Error('Email e senha são obrigatórios')
+    }
 
     set({ actionLoading: true })
     try {
       const { user, error } = await authRepository.signIn({ email, password })
       if (error) {
-        SecurityUtils.logSecurityEvent('login_failed', { email: email.substring(0, 10) + '...' })
         throw new Error(error.message)
       }
       if (user) {
-        SecurityUtils.logSecurityEvent('login_success', { userId: user.id })
         set({ user })
         await get().loadUserAndSession()
       }

@@ -86,6 +86,8 @@ export const EditSessionModal = ({ open, session, onClose, onSuccess }: EditSess
       }
       size="sm"
       centered
+      role="dialog"
+      aria-label="Editar registro de ponto"
     >
       <Stack gap="md">
         <Text size="sm" c="gray.6">
@@ -120,6 +122,7 @@ export const EditSessionModal = ({ open, session, onClose, onSuccess }: EditSess
             color="gray" 
             onClick={handleClose}
             leftSection={<IconX size={16} />}
+            aria-label="Cancelar edição"
           >
             {t('app.cancel')}
           </Button>
@@ -127,6 +130,7 @@ export const EditSessionModal = ({ open, session, onClose, onSuccess }: EditSess
             onClick={handleSubmit}
             loading={loading}
             leftIcon={<IconDeviceFloppy size={16} />}
+            aria-label="Salvar edição"
           >
             {loading ? t('app.saving') : t('app.save')}
           </PrimaryButton>

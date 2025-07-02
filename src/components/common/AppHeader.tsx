@@ -52,15 +52,16 @@ export const AppHeader = ({
               size="lg"
               onClick={handleBack}
               className="text-gray-600 hover:bg-gray-100"
+              aria-label="Voltar"
             >
               <IconArrowLeft size={20} />
             </ActionIcon>
           )}
           <Group gap="sm" align="center">
-            <Logo size={32} />
+            <Logo size={32} aria-hidden="true" />
             {title && (
               <div>
-                <Title order={1} size="h5" className="text-gray-900 font-semibold">
+                <Title order={1} size="h5" className="text-gray-900 font-semibold" aria-label={title}>
                   {title}
                 </Title>
                 {subtitle && (
@@ -80,7 +81,7 @@ export const AppHeader = ({
               size="lg"
               onClick={handleLogout}
               className="text-gray-600 hover:bg-red-50 hover:text-red-600"
-              title={t('home.logout')}
+              aria-label={t('home.logout')}
             >
               <IconLogout size={20} />
             </ActionIcon>

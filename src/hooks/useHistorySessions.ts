@@ -19,6 +19,7 @@ export function useHistorySessions() {
   const [editForm, setEditForm] = useState({ startTime: '', endTime: '' })
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [deletingSession, setDeletingSession] = useState<WorkSession | null>(null)
+  const [actionLoading, setActionLoading] = useState(false)
 
   // Load sessions from Supabase API
   const loadSessions = useCallback(async () => {
@@ -65,6 +66,7 @@ export function useHistorySessions() {
 
   const confirmDeleteSession = async () => {
     if (!deletingSession) return
+    setActionLoading(true)
     try {
       await workSessionService.deleteSession(deletingSession.date)
       notifications.show({
@@ -81,11 +83,14 @@ export function useHistorySessions() {
         message: t('historico.deleteError'),
         color: 'red',
       })
+    } finally {
+      setActionLoading(false)
     }
   }
 
   const handleSaveEdit = async () => {
     if (!editingSession) return
+    setActionLoading(true)
     try {
       const startTime = new Date(`2000-01-01T${editForm.startTime}`)
       const endTime = new Date(`2000-01-01T${editForm.endTime}`)
@@ -95,6 +100,7 @@ export function useHistorySessions() {
           message: t('historico.invalidTimes'),
           color: 'red',
         })
+        setActionLoading(false)
         return
       }
       await workSessionService.updateSession(editingSession.date, {
@@ -115,6 +121,8 @@ export function useHistorySessions() {
         message: t('historico.editError'),
         color: 'red',
       })
+    } finally {
+      setActionLoading(false)
     }
   }
 
@@ -144,5 +152,6 @@ export function useHistorySessions() {
     formatDateWithWeekday,
     formatWorkedHours,
     t,
+    actionLoading,
   }
 } 

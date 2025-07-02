@@ -29,12 +29,12 @@ export const LanguageSwitcher = () => {
           size="lg"
           aria-label={t('app.language') || 'Change language'}
         >
-          <IconLanguage size={20} />
+          <IconLanguage size={20} aria-hidden="true" />
         </ActionIcon>
       </Menu.Target>
 
-      <Menu.Dropdown>
-        <Menu.Label>{t('app.language') || 'Language'}</Menu.Label>
+      <Menu.Dropdown aria-labelledby="language-switcher-label">
+        <Menu.Label id="language-switcher-label">{t('app.language') || 'Language'}</Menu.Label>
         {languages.map((language) => (
           <Menu.Item
             key={language.code}

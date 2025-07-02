@@ -57,7 +57,7 @@ export const Login = () => {
                   placeholder={t('auth.login.emailPlaceholder')}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  leftSection={<IconMail size={16} />}
+                  leftSection={<IconMail size={16} aria-hidden="true" />}
                   required
                   type="email"
                   autoComplete="username"
@@ -68,7 +68,7 @@ export const Login = () => {
                   placeholder={t('auth.login.passwordPlaceholder')}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  leftSection={<IconLock size={16} />}
+                  leftSection={<IconLock size={16} aria-hidden="true" />}
                   required
                   autoComplete="current-password"
                   size="md"

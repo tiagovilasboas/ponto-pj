@@ -4,7 +4,6 @@ import { IconClock, IconDeviceFloppy, IconX } from '@tabler/icons-react'
 import { useAppStore } from '@/hooks/useAppStore'
 import { useTranslation } from '@/i18n/useTranslation'
 import { PrimaryButton } from '../common/PrimaryButton'
-import { SecurityUtils } from '@/lib/security'
 import { notificationService } from '@/services/notifications'
 
 interface ManualRegisterModalProps {
@@ -53,23 +52,14 @@ export const ManualRegisterModal = ({ open, onClose }: ManualRegisterModalProps)
   }, []) // Array vazio para executar apenas uma vez na montagem
 
   const handleSubmit = async () => {
-    // Validação de segurança
-    if (!SecurityUtils.validateInput(startTime, 'time') || !SecurityUtils.validateInput(endTime, 'time')) {
-      notificationService.error(t('workSession.manual.invalidTimeFormat'), t('app.error'))
-      return
-    }
-
-    if (!startTime || !endTime) {
+    // Validação mínima: campos obrigatórios
+    if (!startTime?.trim() || !endTime?.trim()) {
       notificationService.error(t('workSession.manual.fillTimes'), t('app.error'))
       return
     }
 
-    // Sanitizar dados
-    const sanitizedStartTime = SecurityUtils.sanitizeInput(startTime)
-    const sanitizedEndTime = SecurityUtils.sanitizeInput(endTime)
-
     try {
-      await appStore.registerManual(sanitizedStartTime, sanitizedEndTime)
+      await appStore.registerManual(startTime, endTime)
       notificationService.success(t('workSession.manual.success'), t('app.success'))
       onClose()
       setStartTime('')
@@ -104,6 +94,8 @@ export const ManualRegisterModal = ({ open, onClose }: ManualRegisterModalProps)
       }
       size="sm"
       centered
+      role="dialog"
+      aria-label="Registro manual de ponto"
     >
       <Stack gap="md">
         <Text size="sm" c="gray.6">
@@ -141,16 +133,18 @@ export const ManualRegisterModal = ({ open, onClose }: ManualRegisterModalProps)
             type="button"
             className="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
             onClick={handleClose}
+            aria-label="Cancelar registro manual"
           >
-            <IconX size={16} className="mr-2" />
+            <IconX size={16} className="mr-2" aria-hidden="true" />
             {t('app.cancel')}
           </button>
           <PrimaryButton
             type="button"
             onClick={handleSubmit}
             loading={appStore.actionLoading}
-            leftIcon={<IconDeviceFloppy size={16} />}
+            leftIcon={<IconDeviceFloppy size={16} aria-hidden="true" />}
             disabled={appStore.actionLoading}
+            aria-label="Salvar registro manual"
           >
             {appStore.actionLoading ? t('app.saving') : t('app.save')}
           </PrimaryButton>
