@@ -92,7 +92,7 @@ export const ForgotPassword = () => {
               </Text>
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} noValidate>
               <Stack gap='lg'>
                 <TextInput
                   label={t('auth.forgotPassword.email')}

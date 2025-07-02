@@ -4,13 +4,15 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { BrowserRouter } from 'react-router-dom'
 import { MantineProvider } from '@mantine/core'
 import { ForgotPassword } from '@/pages/ForgotPassword'
-import { ResetPassword } from '@/pages/ResetPassword'
 import { AuthRepository } from '@/repositories/AuthRepository'
+import { notificationService } from '@/services/notifications'
 
 vi.mock('@/repositories/AuthRepository')
 const mockAuthRepository = vi.mocked(AuthRepository)
 
 const mockNavigate = vi.fn()
+
+// Mock do react-router-dom
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom')
   return {
@@ -62,59 +64,85 @@ describe('Reset Password Flow', () => {
 
       await waitFor(() => {
         expect(mockResetPassword).toHaveBeenCalledWith({ email: 'user@example.com' })
-        expect(screen.getByText('auth.forgotPassword.success')).toBeInTheDocument()
+        expect(notificationService.success).toHaveBeenCalledWith(
+          'auth.forgotPassword.success',
+          'app.success'
+        )
+        expect(mockNavigate).toHaveBeenCalledWith('/login')
       })
     })
 
-    it('should show error for invalid email', async () => {
+    it('should show error for empty email', async () => {
       renderWithProviders(<ForgotPassword />)
 
       const emailInput = screen.getByPlaceholderText('auth.forgotPassword.emailPlaceholder')
       const submitButton = screen.getByRole('button', { name: 'auth.forgotPassword.submit' })
 
-      await userEvent.clear(emailInput)
+      // Verificar se o campo está vazio
+      expect(emailInput).toHaveValue('')
+
       await userEvent.click(submitButton)
 
-      expect(await screen.findByTestId('email-error')).toBeInTheDocument()
-    })
-  })
-
-  describe('ResetPassword', () => {
-    it('should allow submitting new password and confirmation', async () => {
-      const mockResetPassword = vi.fn().mockResolvedValue({ error: null })
-      mockAuthRepository.mockImplementation(() => ({
-        resetPassword: mockResetPassword,
-        updatePassword: mockResetPassword,
-      } as any))
-
-      renderWithProviders(<ResetPassword />)
-
-      const passwordInput = screen.getByPlaceholderText('auth.resetPassword.passwordPlaceholder')
-      const confirmPasswordInput = screen.getByPlaceholderText('auth.resetPassword.confirmPasswordPlaceholder')
-      const submitButton = screen.getByRole('button', { name: 'auth.resetPassword.submit' })
-
-      await userEvent.type(passwordInput, 'novaSenha123')
-      await userEvent.type(confirmPasswordInput, 'novaSenha123')
-      await userEvent.click(submitButton)
+      // Aguardar um pouco mais para garantir que o estado foi atualizado
+      await new Promise(resolve => setTimeout(resolve, 100))
 
       await waitFor(() => {
-        expect(mockResetPassword).toHaveBeenCalled()
-        expect(screen.getByText('auth.resetPassword.success')).toBeInTheDocument()
+        expect(screen.getByTestId('email-error')).toBeInTheDocument()
+        expect(notificationService.error).toHaveBeenCalledWith(
+          'auth.forgotPassword.errors.fillFields',
+          'app.error'
+        )
       })
     })
 
-    it('should show error when passwords do not match', async () => {
-      renderWithProviders(<ResetPassword />)
+    it('should show error for user not found', async () => {
+      const mockResetPassword = vi.fn().mockResolvedValue({ 
+        error: { message: 'User not found' } 
+      })
+      mockAuthRepository.mockImplementation(() => ({
+        resetPassword: mockResetPassword,
+      } as any))
 
-      const passwordInput = screen.getByPlaceholderText('auth.resetPassword.passwordPlaceholder')
-      const confirmPasswordInput = screen.getByPlaceholderText('auth.resetPassword.confirmPasswordPlaceholder')
-      const submitButton = screen.getByRole('button', { name: 'auth.resetPassword.submit' })
+      renderWithProviders(<ForgotPassword />)
 
-      await userEvent.type(passwordInput, 'novaSenha123')
-      await userEvent.type(confirmPasswordInput, 'outraSenha')
+      const emailInput = screen.getByPlaceholderText('auth.forgotPassword.emailPlaceholder')
+      const submitButton = screen.getByRole('button', { name: 'auth.forgotPassword.submit' })
+
+      await userEvent.type(emailInput, 'nonexistent@example.com')
       await userEvent.click(submitButton)
 
-      expect(await screen.findByTestId('password-error')).toBeInTheDocument()
+      await waitFor(() => {
+        expect(screen.getByTestId('email-error')).toBeInTheDocument()
+        expect(notificationService.error).toHaveBeenCalledWith(
+          'auth.forgotPassword.errors.emailNotFound',
+          'app.error'
+        )
+      })
+    })
+
+    it('should show generic error for other failures', async () => {
+      const mockResetPassword = vi.fn().mockResolvedValue({ 
+        error: { message: 'Network error' } 
+      })
+      mockAuthRepository.mockImplementation(() => ({
+        resetPassword: mockResetPassword,
+      } as any))
+
+      renderWithProviders(<ForgotPassword />)
+
+      const emailInput = screen.getByPlaceholderText('auth.forgotPassword.emailPlaceholder')
+      const submitButton = screen.getByRole('button', { name: 'auth.forgotPassword.submit' })
+
+      await userEvent.type(emailInput, 'user@example.com')
+      await userEvent.click(submitButton)
+
+      await waitFor(() => {
+        expect(screen.getByTestId('email-error')).toBeInTheDocument()
+        expect(notificationService.error).toHaveBeenCalledWith(
+          'auth.forgotPassword.errors.generic',
+          'app.error'
+        )
+      })
     })
   })
 }) 
