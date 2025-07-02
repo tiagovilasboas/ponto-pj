@@ -56,7 +56,7 @@ describe('Registration Flow', () => {
 
       const emailInput = screen.getByPlaceholderText('auth.register.emailPlaceholder')
       const passwordInput = screen.getByPlaceholderText('auth.register.passwordPlaceholder')
-      const confirmPasswordInput = screen.getByPlaceholderText('auth.register.confirmPassword')
+      const confirmPasswordInput = screen.getByPlaceholderText('auth.register.confirmPasswordPlaceholder')
       const submitButton = screen.getByRole('button', { name: 'auth.register.submit' })
 
       await userEvent.type(emailInput, 'joao@exemplo.com')
@@ -75,7 +75,7 @@ describe('Registration Flow', () => {
 
       const emailInput = screen.getByPlaceholderText('auth.register.emailPlaceholder')
       const passwordInput = screen.getByPlaceholderText('auth.register.passwordPlaceholder')
-      const confirmPasswordInput = screen.getByPlaceholderText('auth.register.confirmPassword')
+      const confirmPasswordInput = screen.getByPlaceholderText('auth.register.confirmPasswordPlaceholder')
       const submitButton = screen.getByRole('button', { name: 'auth.register.submit' })
 
       await userEvent.type(emailInput, 'joao@exemplo.com')
@@ -98,7 +98,7 @@ describe('Registration Flow', () => {
 
       const emailInput = screen.getByPlaceholderText('auth.register.emailPlaceholder')
       const passwordInput = screen.getByPlaceholderText('auth.register.passwordPlaceholder')
-      const confirmPasswordInput = screen.getByPlaceholderText('auth.register.confirmPassword')
+      const confirmPasswordInput = screen.getByPlaceholderText('auth.register.confirmPasswordPlaceholder')
       const submitButton = screen.getByRole('button', { name: 'auth.register.submit' })
 
       await userEvent.type(emailInput, 'joao@exemplo.com')
