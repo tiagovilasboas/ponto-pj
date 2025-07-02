@@ -1,5 +1,6 @@
 {
   "name": "ponto-pj",
+  "author": "Tiago Vilas Boas <tcarvalhovb@gmail.com>",
   "private": true,
   "version": "0.0.0",
   "type": "module",

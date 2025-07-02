@@ -1,6 +1,28 @@
-# 🚀 Ponto PJ - Sistema de Ponto Eletrônico
+# 🕒 Sistema de Ponto Eletrônico PJ (PWA)
 
-> **Um sistema de ponto eletrônico moderno e um boilerplate de referência para aplicações React escaláveis**
+Um sistema de **ponto eletrônico pessoal**, pensado para PJs organizarem suas horas de trabalho — e também um **boilerplate moderno** para aplicações **React escaláveis** com base sólida.
+
+---
+
+## ✅ Funcionalidades
+
+- Aplicação **PWA** com suporte offline
+- **Autenticação via Supabase** com regras de segurança e **RLS** aplicadas
+- Registro de ponto **manual ou em tempo real**
+- **Exportação de relatório em PDF**
+- **Testes unitários** cobrindo os principais fluxos de front-end
+- Separação em camadas: `repository`, `service`, `UI`
+- **Boas práticas aplicadas**: SOLID, SRP, código limpo
+
+---
+
+## 💡 Por que isso importa
+
+Este projeto é mais do que uma solução de ponto — é um **exemplo prático** de arquitetura bem estruturada em React.  
+Feito com critério técnico, pensando na **escalabilidade**, **segurança** e **manutenibilidade** do código.
+
+Se algum dev esbarrar nesse repositório e achar útil, considere um presente.  
+Foi feito com carinho — do tipo de projeto que eu gostaria de ter encontrado quando comecei a construir soluções sérias em React.
 
 [![React](https://img.shields.io/badge/React-19.1.0-61DAFB?logo=react)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
@@ -537,3 +559,8 @@ Este projeto está licenciado sob a **MIT License** - veja o arquivo [LICENSE](L
   
   <p>Feito com ❤️ seguindo as melhores práticas da indústria</p>
 </div>
+
+## 👤 Autor
+
+**Tiago Vilas Boas**  
+[tcarvalhovb@gmail.com](mailto:tcarvalhovb@gmail.com)
