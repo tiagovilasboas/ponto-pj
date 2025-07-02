@@ -31,8 +31,6 @@ describe('History Flow', () => {
       isAuthenticated: true,
     } as any)
 
-    const tMock = Object.assign((...args: any[]) => args[0], { $TFunctionBrand: 'translation' as const })
-
     mockUseHistorySessions.mockReturnValue({
       sessions: [],
       loading: false,
@@ -61,7 +59,7 @@ describe('History Flow', () => {
       handleSaveEdit: vi.fn(),
       formatDateWithWeekday: vi.fn((date) => date),
       formatWorkedHours: vi.fn((h) => `${h}h`),
-      t: tMock,
+      t: Object.assign(vi.fn((k) => k), { $TFunctionBrand: 'translation' }) as any,
       actionLoading: false,
     })
   })
@@ -97,7 +95,7 @@ describe('History Flow', () => {
         handleSaveEdit: vi.fn(),
         formatDateWithWeekday: vi.fn((date) => date),
         formatWorkedHours: vi.fn((h) => `${h}h`),
-        t: vi.fn((k) => k),
+        t: Object.assign(vi.fn((k) => k), { $TFunctionBrand: 'translation' }) as any,
         actionLoading: false,
       })
 
@@ -136,7 +134,7 @@ describe('History Flow', () => {
         handleSaveEdit: vi.fn(),
         formatDateWithWeekday: vi.fn((date) => date),
         formatWorkedHours: vi.fn((h) => `${h}h`),
-        t: vi.fn((k) => k),
+        t: Object.assign(vi.fn((k) => k), { $TFunctionBrand: 'translation' }) as any,
         actionLoading: false,
       })
 
@@ -179,7 +177,7 @@ describe('History Flow', () => {
         handleSaveEdit: vi.fn(),
         formatDateWithWeekday: vi.fn((date) => date),
         formatWorkedHours: vi.fn((h) => `${h}h`),
-        t: vi.fn((k) => k),
+        t: Object.assign(vi.fn((k) => k), { $TFunctionBrand: 'translation' }) as any,
         actionLoading: false,
       })
 
@@ -227,9 +225,8 @@ describe('History Flow', () => {
         handleSaveEdit: vi.fn(),
         formatDateWithWeekday: vi.fn((date) => date),
         formatWorkedHours: vi.fn((h) => `${h}h`),
-        t: vi.fn((k) => k),
+        t: Object.assign(vi.fn((k) => k), { $TFunctionBrand: 'translation' }) as any,
         actionLoading: false,
-        setCurrentPage: mockSetCurrentPage,
       })
 
       renderWithProviders(<History />)
@@ -268,9 +265,8 @@ describe('History Flow', () => {
         handleSaveEdit: vi.fn(),
         formatDateWithWeekday: vi.fn((date) => date),
         formatWorkedHours: vi.fn((h) => `${h}h`),
-        t: vi.fn((k) => k),
+        t: Object.assign(vi.fn((k) => k), { $TFunctionBrand: 'translation' }) as any,
         actionLoading: false,
-        setCurrentPage: vi.fn(),
       })
 
       renderWithProviders(<History />)
@@ -282,8 +278,6 @@ describe('History Flow', () => {
 
   describe('Session Display', () => {
     it('should show sessions when available', () => {
-      const tMock = Object.assign((...args: any[]) => args[0], { $TFunctionBrand: 'translation' as const })
-
       mockUseHistorySessions.mockReturnValue({
         sessions: [
           {
@@ -324,7 +318,7 @@ describe('History Flow', () => {
         handleSaveEdit: vi.fn(),
         formatDateWithWeekday: vi.fn((date) => date),
         formatWorkedHours: vi.fn((h) => `${h}h`),
-        t: tMock,
+        t: Object.assign(vi.fn((k) => k), { $TFunctionBrand: 'translation' }) as any,
         actionLoading: false,
       })
 
@@ -346,7 +340,24 @@ describe('History Flow', () => {
         ],
         selectedMonth: '2024-01',
         setSelectedMonth: vi.fn(),
+        editingSession: null,
+        editModalOpen: false,
+        editForm: { startTime: '', endTime: '' },
+        setEditForm: vi.fn(),
+        setEditModalOpen: vi.fn(),
+        deleteModalOpen: false,
+        setDeleteModalOpen: vi.fn(),
+        deletingSession: null,
         loadSessions: vi.fn(),
+        handlePageChange: vi.fn(),
+        handleEditSession: vi.fn(),
+        handleDeleteSession: vi.fn(),
+        confirmDeleteSession: vi.fn(),
+        handleSaveEdit: vi.fn(),
+        formatDateWithWeekday: vi.fn((date) => date),
+        formatWorkedHours: vi.fn((h) => `${h}h`),
+        t: Object.assign(vi.fn((k) => k), { $TFunctionBrand: 'translation' }) as any,
+        actionLoading: false,
       })
 
       renderWithProviders(<History />)

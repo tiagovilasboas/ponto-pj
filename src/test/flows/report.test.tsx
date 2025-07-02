@@ -70,7 +70,6 @@ describe('Report Flow', () => {
 
   describe('Report Filters', () => {
     it('should allow selecting different month', async () => {
-      const user = userEvent.setup()
       const mockSetSelectedMonth = vi.fn()
       
       mockUseReportSessions.mockReturnValue({
@@ -95,16 +94,15 @@ describe('Report Flow', () => {
       renderWithProviders(<Report />)
 
       const monthSelect = screen.getByRole('combobox')
-      await user.click(monthSelect)
+      await userEvent.click(monthSelect)
       
       const februaryOption = screen.getByText('Fevereiro 2024')
-      await user.click(februaryOption)
+      await userEvent.click(februaryOption)
 
       expect(mockSetSelectedMonth).toHaveBeenCalledWith('2024-02')
     })
 
     it('should generate report when filter changes', async () => {
-      const user = userEvent.setup()
       const mockLoadReport = vi.fn()
       
       mockUseReportSessions.mockReturnValue({
@@ -136,8 +134,6 @@ describe('Report Flow', () => {
 
   describe('PDF Export', () => {
     it('should allow exporting report to PDF', async () => {
-      const user = userEvent.setup()
-      
       mockUseReportSessions.mockReturnValue({
         sessions: [
           {
@@ -169,7 +165,7 @@ describe('Report Flow', () => {
       renderWithProviders(<Report />)
 
       const exportButton = screen.getByRole('button', { name: /exportar pdf/i })
-      await user.click(exportButton)
+      await userEvent.click(exportButton)
 
       await waitFor(() => {
         expect(exportButton).toBeInTheDocument()
@@ -177,8 +173,6 @@ describe('Report Flow', () => {
     })
 
     it('should show loading during export', async () => {
-      const user = userEvent.setup()
-      
       mockUseReportSessions.mockReturnValue({
         sessions: [],
         loading: true,
