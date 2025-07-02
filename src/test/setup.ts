@@ -3,7 +3,7 @@ import { vi } from 'vitest';
 
 // Mock global para window.matchMedia
 if (!window.matchMedia) {
-  window.matchMedia = vi.fn().mockImplementation((query) => ({
+  window.matchMedia = vi.fn().mockImplementation(query => ({
     matches: false,
     media: query,
     onchange: null,
@@ -46,6 +46,7 @@ vi.mock('@mantine/notifications', () => ({
   notifications: {
     show: vi.fn(),
   },
+  Notifications: () => null,
 }));
 
 // Mock completo do useAppStore
@@ -90,7 +91,7 @@ vi.mock('@/hooks/useAppStore', () => ({
     sessionLoading: false,
     sessionActionLoading: false,
     sessionError: null,
-    currentPage: 1,
+    currentPage: '1',
     sidebarOpen: false,
     theme: 'light',
     language: 'pt-BR',
