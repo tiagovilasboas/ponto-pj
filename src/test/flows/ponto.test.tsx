@@ -36,8 +36,12 @@ describe('Time Clock Registration Flow', () => {
     mockUseAppStore.mockReturnValue({
       user: { id: '1', name: 'João Silva', email: 'joao@exemplo.com' },
       isAuthenticated: true,
-      registerTime: vi.fn(),
-      actionLoading: false,
+      session: null,
+      formatTime: vi.fn(),
+      formatWorkedHours: vi.fn(),
+      loadUser: vi.fn(),
+      startJourney: vi.fn(),
+      endJourney: vi.fn(),
     } as any)
 
     mockUseHistorySessions.mockReturnValue({
