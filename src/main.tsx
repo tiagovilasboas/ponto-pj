@@ -5,6 +5,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import './i18n';
 import App from './App.tsx';
+import { Analytics } from '@vercel/analytics/react';
 
 // Lazy load CSS não crítico após o primeiro render
 const loadNonCriticalCSS = () => {
@@ -24,5 +25,6 @@ setTimeout(loadNonCriticalCSS, 1000);
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
+    <Analytics />
   </StrictMode>
 );
