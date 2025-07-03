@@ -8,7 +8,7 @@ import App from './App.tsx';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/react';
 
-// Lazy load CSS não crítico após o primeiro render
+// Loads the non-critical stylesheet after first render
 const loadNonCriticalCSS = () => {
   const link = document.createElement('link');
   link.rel = 'stylesheet';
@@ -20,7 +20,7 @@ const loadNonCriticalCSS = () => {
   document.head.appendChild(link);
 };
 
-// Carregar CSS não crítico após um delay
+// Defer non-critical CSS loading by 1 second
 setTimeout(loadNonCriticalCSS, 1000);
 
 createRoot(document.getElementById('root')!).render(
