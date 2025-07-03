@@ -17,7 +17,7 @@ Pra quem é PJ e cansou de marcar hora na mão ou tentar lembrar quantas reuniõ
 [![PWA](https://img.shields.io/badge/PWA-Ready-5A0FC8?logo=pwa)](https://web.dev/progressive-web-apps/)
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?logo=supabase)](https://supabase.com/)
 [![Zustand](https://img.shields.io/badge/Zustand-5.0.6-764ABC?logo=redux)](https://zustand-demo.pmnd.rs/)
-[![Tests](https://img.shields.io/badge/Tests-62%20Passing-6E56CF?logo=vitest)](https://vitest.dev/)
+[![Tests](https://img.shields.io/badge/Tests-74%20Passing-6E56CF?logo=vitest)](https://vitest.dev/)
 [![Coverage](https://img.shields.io/badge/Coverage-41.38%25-orange?logo=vitest)](https://vitest.dev/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -60,7 +60,7 @@ Pra quem é PJ e cansou de marcar hora na mão ou tentar lembrar quantas reuniõ
 - 🎯 **Arquitetura Limpa**: Implementação dos princípios SOLID
 - 🏗️ **Repository Pattern**: Camada de dados robusta e testável
 - ⚡ **PWA Nativo**: Funciona offline e pode ser instalado como app
-- 🧪 **Testes Estruturados**: 62 testes passando com cobertura de 41.38%
+- 🧪 **Testes Estruturados**: 74 testes passando com cobertura de 41.38%
 - 🌐 **Internacionalização**: Suporte a português e inglês
 - 🎨 **UI Moderna**: Interface responsiva com Mantine + Tailwind
 - 🔒 **Segurança**: Autenticação robusta com Supabase
@@ -348,8 +348,8 @@ VITE_APP_URL=http://localhost:5173
 
 ### 📊 Cobertura de Testes
 
-- **62 testes passando** (100% de sucesso!)
-- **10 arquivos de teste**
+- **74 testes passando** (100% de sucesso!)
+- **11 arquivos de teste**
 - **Cobertura geral**: 41.38%
 - **Cobertura de src/**: 85.82%
 
@@ -533,7 +533,7 @@ src/
 ### 🧪 Qualidade dos Testes
 
 - **Cobertura**: 41.38% geral, 85.82% em src/
-- **Testes**: 62 testes passando
+- **Testes**: 74 testes passando
 - **Estrutura**: Testes organizados por fluxos
 
 ## 🐛 Troubleshooting
