@@ -1,11 +1,13 @@
-import { Container, Stack, Card, Text, Badge, Group, Modal, TextInput, Button, Select, Pagination } from '@mantine/core'
-import { IconCalendar, IconClock } from '@tabler/icons-react'
-import { useAppStore } from '@/hooks/useAppStore'
-import { AppHeader } from '@/components/common/AppHeader'
-import { BottomNavigation } from '@/components/common/BottomNavigation'
-import type { WorkSession } from '@/types/workSession'
-import { SessionRecordCard } from '../components/common/SessionRecordCard'
-import { useHistorySessions } from '../hooks/useHistorySessions'
+import { Container, Stack, Badge } from '@mantine/core';
+import { useAppStore } from '@/hooks/useAppStore';
+import { AppHeader } from '@/components/common/AppHeader';
+import { BottomNavigation } from '@/components/common/BottomNavigation';
+import { MonthSelector } from '@/components/common/MonthSelector';
+import { SessionsList } from '@/components/common/SessionsList';
+import { EditSessionModal } from '@/components/common/EditSessionModal';
+import { DeleteSessionModal } from '@/components/common/DeleteSessionModal';
+import type { WorkSession } from '@/types/workSession';
+import { useHistorySessions } from '../hooks/useHistorySessions';
 
 export const History = () => {
   const {
@@ -32,161 +34,95 @@ export const History = () => {
     formatWorkedHours,
     t,
     actionLoading,
-  } = useHistorySessions()
-  const { formatTime } = useAppStore()
+  } = useHistorySessions();
+  const { formatTime } = useAppStore();
 
   const getStatusBadge = (session: WorkSession) => {
-    const color = session.status === 'completa' ? 'green' : session.status === 'incompleta' ? 'yellow' : 'gray'
-    const label = session.status === 'completa' ? t('historico.complete') : 
-                  session.status === 'incompleta' ? t('historico.incomplete') : t('historico.noRecord')
-    return <Badge color={color} size="xs">{label}</Badge>
-  }
+    const color =
+      session.status === 'completa'
+        ? 'green'
+        : session.status === 'incompleta'
+          ? 'yellow'
+          : 'gray';
+    const label =
+      session.status === 'completa'
+        ? t('historico.complete')
+        : session.status === 'incompleta'
+          ? t('historico.incomplete')
+          : t('historico.noRecord');
+    return (
+      <Badge color={color} size='xs'>
+        {label}
+      </Badge>
+    );
+  };
+
+  const handleStartTimeChange = (value: string) => {
+    setEditForm(prev => ({ ...prev, startTime: value }));
+  };
+
+  const handleEndTimeChange = (value: string) => {
+    setEditForm(prev => ({ ...prev, endTime: value }));
+  };
 
   return (
-    <div data-testid="history-page" className="min-h-screen bg-gray-50 pb-20">
-      <AppHeader 
-        title={t('historico.title')} 
+    <div data-testid='history-page' className='min-h-screen bg-gray-50 pb-20'>
+      <AppHeader
+        title={t('historico.title')}
         showBack={true}
         subtitle={t('historico.currentMonth')}
       />
-      <Container data-testid="history-container" size="sm" py="sm">
-        <Stack gap="sm">
-          {/* Month Selector - Compact */}
-          <Card data-testid="month-selector" withBorder p="sm" className="bg-white">
-            <Group justify="space-between" align="center">
-              <Group gap="sm">
-                <IconCalendar size={16} className="text-blue-600" />
-                <Text fw={600} size="sm">{t('historico.currentMonth')}</Text>
-              </Group>
-              <Select
-                data-testid="month-select"
-                value={selectedMonth}
-                onChange={(value) => setSelectedMonth(value || selectedMonth)}
-                data={monthOptions}
-                size="xs"
-                w={140}
-                searchable
-              />
-            </Group>
-          </Card>
+      <Container data-testid='history-container' size='sm' py='sm'>
+        <Stack gap='sm'>
+          <MonthSelector
+            selectedMonth={selectedMonth}
+            monthOptions={monthOptions}
+            onMonthChange={setSelectedMonth}
+            title={t('historico.currentMonth')}
+            testId='month-selector'
+          />
 
-          {/* Sessions List - Horizontal Layout */}
-          <Card data-testid="sessions-list" withBorder p="sm" className="bg-white">
-            {loading ? (
-              <div data-testid="loading-sessions" className="text-center py-4">
-                <Text c="gray.6" size="sm">{t('app.loading')}</Text>
-              </div>
-            ) : sessions.length === 0 ? (
-              <div data-testid="no-sessions" className="text-center py-4">
-                <IconClock size={24} className="text-gray-400 mx-auto mb-2" />
-                <Text c="gray.6" size="sm">{t('historico.noSessions')}</Text>
-              </div>
-            ) : (
-              <>
-                {/* Sessions Count */}
-                <div data-testid="sessions-count" className="mb-3 pb-2 border-b border-gray-100">
-                  <Text size="xs" c="gray.6">
-                    {t('historico.showing')} {sessions.length} {t('historico.of')} {totalSessions} {t('historico.records')}
-                  </Text>
-                </div>
-
-                <div data-testid="sessions-container" className="space-y-1">
-                  {sessions.map((session) => (
-                    <SessionRecordCard
-                      key={session.id}
-                      date={formatDateWithWeekday(session.date)}
-                      status={(session.status as 'completa' | 'incompleta' | 'pendente') || 'pendente'}
-                      statusLabel={getStatusBadge(session).props.children}
-                      manualEdit={!!session.manual_edit}
-                      manualEditLabel={session.manual_edit ? t('workSession.status.manualEdit') : undefined}
-                      startTime={session.start_time ? formatTime(session.start_time) : '-'}
-                      endTime={session.end_time ? formatTime(session.end_time) : '-'}
-                      netTime={session.worked_time_real ? formatWorkedHours(session.worked_time_real) : '-'}
-                      onEdit={() => handleEditSession(session)}
-                      onDelete={() => handleDeleteSession(session)}
-                    />
-                  ))}
-                </div>
-
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div data-testid="pagination" className="mt-4 pt-3 border-t border-gray-100">
-                    <Pagination
-                      total={totalPages}
-                      value={currentPage}
-                      onChange={handlePageChange}
-                      size="xs"
-                      radius="md"
-                      className="justify-center"
-                    />
-                  </div>
-                )}
-              </>
-            )}
-          </Card>
+          <SessionsList
+            sessions={sessions}
+            loading={loading}
+            totalSessions={totalSessions}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            onEditSession={handleEditSession}
+            onDeleteSession={handleDeleteSession}
+            formatDateWithWeekday={formatDateWithWeekday}
+            formatWorkedHours={formatWorkedHours}
+            formatTime={formatTime}
+            getStatusBadge={getStatusBadge}
+            t={t}
+            testId='sessions-list'
+          />
         </Stack>
       </Container>
       <BottomNavigation />
 
-      {/* Edit Modal */}
-      <Modal
-        data-testid="edit-modal"
+      <EditSessionModal
         opened={editModalOpen}
         onClose={() => setEditModalOpen(false)}
-        title={t('historico.editSession')}
-        size="sm"
-      >
-        <Stack gap="md">
-          <Text size="sm" c="gray.6">
-            {t('historico.editSessionSubtitle')}
-          </Text>
-          <TextInput
-            data-testid="edit-start-time"
-            label={t('workSession.manual.startTime')}
-            type="time"
-            value={editForm.startTime}
-            onChange={(e) => setEditForm(prev => ({ ...prev, startTime: e.target.value }))}
-          />
-          <TextInput
-            data-testid="edit-end-time"
-            label={t('workSession.manual.endTime')}
-            type="time"
-            value={editForm.endTime}
-            onChange={(e) => setEditForm(prev => ({ ...prev, endTime: e.target.value }))}
-          />
-          <Group justify="flex-end" gap="sm">
-            <Button variant="subtle" onClick={() => setEditModalOpen(false)} aria-label="Cancelar edição">
-              {t('app.cancel')}
-            </Button>
-            <Button data-testid="save-edit-button" onClick={handleSaveEdit} loading={actionLoading} disabled={actionLoading} aria-label="Salvar edição">
-              {t('app.save')}
-            </Button>
-          </Group>
-        </Stack>
-      </Modal>
+        startTime={editForm.startTime}
+        endTime={editForm.endTime}
+        onStartTimeChange={handleStartTimeChange}
+        onEndTimeChange={handleEndTimeChange}
+        onSave={handleSaveEdit}
+        loading={actionLoading}
+        t={t}
+        testId='edit-modal'
+      />
 
-      {/* Delete Modal */}
-      <Modal
-        data-testid="delete-modal"
+      <DeleteSessionModal
         opened={deleteModalOpen}
         onClose={() => setDeleteModalOpen(false)}
-        title={t('historico.deleteSession')}
-        size="xs"
-      >
-        <Stack gap="md">
-          <Text size="sm" c="gray.6">
-            {t('historico.deleteConfirm')}
-          </Text>
-          <Group justify="flex-end" gap="sm">
-            <Button variant="subtle" color="gray" onClick={() => setDeleteModalOpen(false)} aria-label="Cancelar exclusão">
-              {t('app.cancel')}
-            </Button>
-            <Button data-testid="confirm-delete-button" color="red" onClick={confirmDeleteSession} loading={actionLoading} disabled={actionLoading} aria-label="Confirmar exclusão">
-              {t('app.delete')}
-            </Button>
-          </Group>
-        </Stack>
-      </Modal>
+        onConfirm={confirmDeleteSession}
+        loading={actionLoading}
+        t={t}
+        testId='delete-modal'
+      />
     </div>
-  )
-} 
+  );
+};
