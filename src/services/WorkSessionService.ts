@@ -1,5 +1,6 @@
 import { workSessionRepository } from '@/repositories/WorkSessionRepository';
 import { WorkSessionBusinessService } from './WorkSessionBusinessService';
+import { SessionStatisticsService } from './SessionStatisticsService';
 import type { WorkSession } from '@/types/workSession';
 
 export interface SessionUpdates {
@@ -187,7 +188,7 @@ export class WorkSessionService {
         endDate
       );
 
-      return WorkSessionBusinessService.calculateStatistics(sessions);
+      return SessionStatisticsService.calculateStatistics(sessions);
     } catch (error) {
       console.error('Erro ao buscar estatísticas do mês:', error);
       throw error;
