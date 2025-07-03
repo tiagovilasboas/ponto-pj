@@ -1,90 +1,33 @@
 import { calculateWorkedHours, getMonthDateRange } from '@/lib/utils';
-import type { WorkSession } from '@/types/workSession';
+import { SessionValidationService } from './SessionValidationService';
 
-export interface SessionStatistics {
-  totalHours: number;
-  completeDays: number;
-  incompleteDays: number;
-  totalDays: number;
-  averageHoursPerDay: number;
+export interface CreateSessionData {
+  user_id: string;
+  date: string;
+  start_time?: string;
+  end_time?: string;
+  worked_time_real?: number;
+  status: 'sem_registro' | 'completa' | 'incompleta';
+  manual_edit: boolean;
 }
 
 export class WorkSessionBusinessService {
   /**
-   * Calcula estatísticas de um conjunto de sessões
-   */
-  static calculateStatistics(sessions: WorkSession[]): SessionStatistics {
-    const totalHours = sessions.reduce((sum, session) => {
-      return sum + (session.worked_time_real || 0);
-    }, 0);
-
-    const completeDays = sessions.filter(s => s.status === 'completa').length;
-    const incompleteDays = sessions.filter(
-      s => s.status === 'incompleta'
-    ).length;
-    const totalDays = sessions.length;
-
-    return {
-      totalHours,
-      completeDays,
-      incompleteDays,
-      totalDays,
-      averageHoursPerDay: totalDays > 0 ? totalHours / totalDays : 0,
-    };
-  }
-
-  /**
-   * Calcula tempo trabalhado entre dois horários
+   * Calculates worked time between two times
    */
   static calculateWorkedTime(startTime: string, endTime: string): number {
     return calculateWorkedHours(startTime, endTime);
   }
 
   /**
-   * Obtém range de datas do mês
+   * Gets month date range
    */
   static getMonthDateRange(month: string) {
     return getMonthDateRange(month);
   }
 
   /**
-   * Valida se uma sessão está completa
-   */
-  static isSessionComplete(session: WorkSession): boolean {
-    return (
-      session.status === 'completa' &&
-      !!session.start_time &&
-      !!session.end_time &&
-      !!session.worked_time_real
-    );
-  }
-
-  /**
-   * Valida se uma sessão está incompleta
-   */
-  static isSessionIncomplete(session: WorkSession): boolean {
-    return (
-      session.status === 'incompleta' &&
-      !!session.start_time &&
-      !session.end_time
-    );
-  }
-
-  /**
-   * Determina o status de uma sessão baseado nos dados
-   */
-  static determineSessionStatus(
-    startTime?: string,
-    endTime?: string,
-    workedTime?: number
-  ): 'sem_registro' | 'completa' | 'incompleta' {
-    if (!startTime) return 'sem_registro';
-    if (startTime && endTime && workedTime) return 'completa';
-    return 'incompleta';
-  }
-
-  /**
-   * Formata dados para criação de sessão
+   * Formats data for session creation
    */
   static formatCreateData(
     userId: string,
@@ -92,13 +35,17 @@ export class WorkSessionBusinessService {
     startTime?: string,
     endTime?: string,
     manualEdit = false
-  ) {
+  ): CreateSessionData {
     const workedTime =
       startTime && endTime
         ? this.calculateWorkedTime(startTime, endTime)
         : undefined;
 
-    const status = this.determineSessionStatus(startTime, endTime, workedTime);
+    const status = SessionValidationService.determineSessionStatus(
+      startTime,
+      endTime,
+      workedTime
+    );
 
     return {
       user_id: userId,
@@ -109,5 +56,40 @@ export class WorkSessionBusinessService {
       status,
       manual_edit: manualEdit,
     };
+  }
+
+  /**
+   * Creates session data for clock in
+   */
+  static createClockInData(
+    userId: string,
+    date: string,
+    startTime: string
+  ): CreateSessionData {
+    return this.formatCreateData(userId, date, startTime, undefined, false);
+  }
+
+  /**
+   * Creates session data for clock out
+   */
+  static createClockOutData(
+    userId: string,
+    date: string,
+    startTime: string,
+    endTime: string
+  ): CreateSessionData {
+    return this.formatCreateData(userId, date, startTime, endTime, false);
+  }
+
+  /**
+   * Creates session data for manual edit
+   */
+  static createManualEditData(
+    userId: string,
+    date: string,
+    startTime: string,
+    endTime: string
+  ): CreateSessionData {
+    return this.formatCreateData(userId, date, startTime, endTime, true);
   }
 }
