@@ -39,6 +39,7 @@ Pra quem é PJ e cansou de marcar hora na mão ou tentar lembrar quantas reuniõ
 - [🛠️ Stack Tecnológica](#️-stack-tecnológica)
 - [📱 PWA - Progressive Web App](#-pwa---progressive-web-app)
 - [⚡ Performance & Otimizações](#-performance--otimizações)
+- [📈 Observabilidade](#-observabilidade)
 - [🔐 Segurança](#-segurança)
 - [🧪 Testes](#-testes)
 - [🌐 Internacionalização](#-internacionalização)
@@ -293,6 +294,28 @@ npm run lighthouse
 
 > ⚠️ **Nota:** O LCP ficou levemente acima do ideal (<2.5s), mas ainda é considerado bom para a maioria dos cenários. Melhorias são bem-vindas!
 
+## 📈 Observabilidade
+
+### Vercel Analytics – Web Vitals automáticos
+
+A biblioteca **@vercel/analytics** foi instalada e o componente `<Analytics />` está renderizado em `src/main.tsx`. Quando o aplicativo roda em **produção na Vercel**, os Core Web Vitals (LCP, CLS, FID etc.) são enviados automaticamente para a aba **Analytics → Web Vitals** do projeto.
+
+### Vercel Speed Insights – métricas detalhadas de performance
+
+Também adicionamos **@vercel/speed-insights** e renderizamos o componente `<SpeedInsights />` logo após o `<Analytics />`. Ele coleta métricas de rede, TTFB, hydration e uso de recursos, exibindo tudo em **Analytics → Speed Insights**.
+
+### Desabilitando em ambientes de desenvolvimento
+
+Os scripts de observabilidade só são injetados nos builds de produção na Vercel; em desenvolvimento local eles são ignorados. Caso queira desativar em staging ou outros ambientes, basta definir a variável de ambiente:
+
+```bash
+NEXT_PUBLIC_VERCEL_ANALYTICS_ID=""
+```
+
+ou remover os componentes no `main.tsx`.
+
+---
+
 ## 🔐 Segurança
 
 ### 🛡️ Medidas de Segurança
@@ -435,7 +458,7 @@ npm run dev
 -- populate_may_2025.sql
 ```
 
-## 🏛️ Estrutura do Projeto
+## ��️ Estrutura do Projeto
 
 ```
 src/
