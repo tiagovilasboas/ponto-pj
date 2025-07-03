@@ -1,128 +1,94 @@
-// Utilitários de segurança para o aplicativo
+// Security monitoring and rate limiting utilities
 
 interface RateLimitConfig {
-  maxAttempts: number
-  windowMs: number
-  blockDurationMs: number
+  maxAttempts: number;
+  windowMs: number;
+  blockDurationMs: number;
 }
 
-class SecurityUtils {
-  private static loginAttempts = new Map<string, { count: number; lastAttempt: number; blockedUntil?: number }>()
-  private static sessionTokens = new Set<string>()
+class SecurityMonitor {
+  private static loginAttempts = new Map<
+    string,
+    { count: number; lastAttempt: number; blockedUntil?: number }
+  >();
+  private static sessionTokens = new Set<string>();
 
-  // Rate limiting para tentativas de login
-  static checkRateLimit(identifier: string, config: RateLimitConfig = { maxAttempts: 5, windowMs: 15 * 60 * 1000, blockDurationMs: 30 * 60 * 1000 }): boolean {
-    const now = Date.now()
-    const attempts = this.loginAttempts.get(identifier)
+  // Rate limiting for login attempts
+  static checkRateLimit(
+    identifier: string,
+    config: RateLimitConfig = {
+      maxAttempts: 5,
+      windowMs: 15 * 60 * 1000,
+      blockDurationMs: 30 * 60 * 1000,
+    }
+  ): boolean {
+    const now = Date.now();
+    const attempts = this.loginAttempts.get(identifier);
 
     if (!attempts) {
-      this.loginAttempts.set(identifier, { count: 1, lastAttempt: now })
-      return true
+      this.loginAttempts.set(identifier, { count: 1, lastAttempt: now });
+      return true;
     }
 
-    // Verificar se está bloqueado
+    // Check if blocked
     if (attempts.blockedUntil && now < attempts.blockedUntil) {
-      return false
+      return false;
     }
 
-    // Resetar se passou o tempo da janela
+    // Reset if window time passed
     if (now - attempts.lastAttempt > config.windowMs) {
-      this.loginAttempts.set(identifier, { count: 1, lastAttempt: now })
-      return true
+      this.loginAttempts.set(identifier, { count: 1, lastAttempt: now });
+      return true;
     }
 
-    // Incrementar tentativas
-    attempts.count++
-    attempts.lastAttempt = now
+    // Increment attempts
+    attempts.count++;
+    attempts.lastAttempt = now;
 
-    // Bloquear se excedeu o limite
+    // Block if limit exceeded
     if (attempts.count >= config.maxAttempts) {
-      attempts.blockedUntil = now + config.blockDurationMs
-      return false
+      attempts.blockedUntil = now + config.blockDurationMs;
+      return false;
     }
 
-    return true
+    return true;
   }
 
-  // Validação de entrada de dados
-  static validateInput(input: string, type: 'email' | 'password' | 'time' | 'date'): boolean {
-    switch (type) {
-      case 'email': {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        return emailRegex.test(input) && input.length <= 254
-      }
-
-      case 'password': {
-        // Validação mais flexível: mínimo 6 caracteres
-        return input.length >= 6 && input.length <= 128
-      }
-
-      case 'time': {
-        const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/
-        return timeRegex.test(input)
-      }
-
-      case 'date': {
-        const dateRegex = /^\d{4}-\d{2}-\d{2}$/
-        if (!dateRegex.test(input)) return false
-        const date = new Date(input)
-        return !isNaN(date.getTime()) && date >= new Date('2020-01-01') && date <= new Date('2030-12-31')
-      }
-
-      default:
-        return false
-    }
-  }
-
-  // Sanitização de dados
-  static sanitizeInput(input: string): string {
-    return input
-      .trim()
-      .replace(/[<>]/g, '') // Remove caracteres perigosos
-      .substring(0, 1000) // Limita tamanho
-  }
-
-  // Geração de token de sessão seguro
-  static generateSessionToken(): string {
-    const array = new Uint8Array(32)
-    crypto.getRandomValues(array)
-    return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('')
-  }
-
-  // Verificação de token de sessão
-  static validateSessionToken(token: string): boolean {
-    return token.length === 64 && /^[a-f0-9]+$/i.test(token)
-  }
-
-  // Log de eventos de segurança
-  static logSecurityEvent(event: string, details: Record<string, unknown> = {}): void {
+  // Security event logging
+  static logSecurityEvent(
+    event: string,
+    details: Record<string, unknown> = {}
+  ): void {
     const logEntry = {
       timestamp: new Date().toISOString(),
       event,
       details,
       userAgent: navigator.userAgent,
-      url: window.location.href
-    }
+      url: window.location.href,
+    };
 
-    console.warn('Security Event:', logEntry)
-    
-    // Em produção, enviar para serviço de logging
+    console.warn('Security Event:', logEntry);
+
+    // In production, send to logging service
     if (import.meta.env.PROD) {
-      // TODO: Implementar envio para serviço de logging
+      // TODO: Implement logging service integration
       // this.sendToLoggingService(logEntry)
     }
   }
 
-  // Verificação de ambiente seguro
+  // Secure environment check
   static isSecureEnvironment(): boolean {
-    return window.location.protocol === 'https:' || window.location.hostname === 'localhost'
+    return (
+      window.location.protocol === 'https:' ||
+      window.location.hostname === 'localhost'
+    );
   }
 
-  // Detecção de atividade suspeita
+  // Suspicious activity detection
   static detectSuspiciousActivity(): boolean {
-    // Em desenvolvimento, ser menos restritivo
+    // Be less restrictive in development
     if (import.meta.env.DEV) {
-      return false
+      return false;
     }
 
     const suspiciousPatterns = [
@@ -130,50 +96,50 @@ class SecurityUtils {
       /javascript:/i,
       /on\w+\s*=/i,
       /eval\s*\(/i,
-      /document\./i
-    ]
+      /document\./i,
+    ];
 
-    const currentUrl = window.location.href
-    const userInput = document.activeElement?.textContent || ''
+    const currentUrl = window.location.href;
+    const userInput = document.activeElement?.textContent || '';
 
-    return suspiciousPatterns.some(pattern => 
-      pattern.test(currentUrl) || pattern.test(userInput)
-    )
+    return suspiciousPatterns.some(
+      pattern => pattern.test(currentUrl) || pattern.test(userInput)
+    );
   }
 
-  // Limpeza de dados sensíveis
+  // Clear sensitive data
   static clearSensitiveData(): void {
-    // Limpar dados do localStorage
-    const sensitiveKeys = ['auth_token', 'user_data', 'session_data']
+    // Clear localStorage data
+    const sensitiveKeys = ['auth_token', 'user_data', 'session_data'];
     sensitiveKeys.forEach(key => {
-      localStorage.removeItem(key)
-      sessionStorage.removeItem(key)
-    })
+      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
+    });
 
-    // Limpar rate limiting
-    this.loginAttempts.clear()
-    this.sessionTokens.clear()
+    // Clear rate limiting
+    this.loginAttempts.clear();
+    this.sessionTokens.clear();
   }
 
-  // Verificação de integridade da sessão
+  // Session integrity validation
   static validateSessionIntegrity(): boolean {
-    // Em desenvolvimento, ser menos restritivo
+    // Be less restrictive in development
     if (import.meta.env.DEV) {
-      return true
+      return true;
     }
 
-    // Verificar se o token ainda é válido
-    const token = localStorage.getItem('supabase.auth.token')
-    if (!token) return false
+    // Check if token is still valid
+    const token = localStorage.getItem('supabase.auth.token');
+    if (!token) return false;
 
     try {
-      const parsed = JSON.parse(token)
-      const expiresAt = parsed.expires_at * 1000
-      return Date.now() < expiresAt
+      const parsed = JSON.parse(token);
+      const expiresAt = parsed.expires_at * 1000;
+      return Date.now() < expiresAt;
     } catch {
-      return false
+      return false;
     }
   }
 }
 
-export { SecurityUtils } 
+export { SecurityMonitor };

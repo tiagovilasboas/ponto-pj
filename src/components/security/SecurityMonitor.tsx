@@ -4,7 +4,7 @@ import { useAppStoreWithAuth } from '@/hooks/useAppStore';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from '@/i18n/useTranslation';
 import { notificationService } from '@/services/notifications';
-import { SecurityUtils } from '@/lib/security';
+import { SecurityMonitor as SecurityUtils } from '@/lib/security';
 
 export const SecurityMonitor = () => {
   const { violations, stopMonitoring } = useSecurityMonitor();

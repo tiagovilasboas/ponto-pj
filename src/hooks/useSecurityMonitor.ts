@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { SecurityUtils } from '@/lib/security';
+import { SecurityMonitor } from '@/lib/security';
 import { useTranslation } from '@/i18n/useTranslation';
 
 interface SecurityViolation {
@@ -19,7 +19,7 @@ export const useSecurityMonitor = () => {
       setViolations(prev => [...prev, violation]);
 
       // Log do evento
-      SecurityUtils.logSecurityEvent(type, data);
+      SecurityMonitor.logSecurityEvent(type, data);
     },
     []
   );
@@ -39,7 +39,7 @@ export const useSecurityMonitor = () => {
     // Verificar integridade da sessão a cada 5 minutos
     const sessionCheckInterval = setInterval(
       () => {
-        if (!SecurityUtils.validateSessionIntegrity()) {
+        if (!SecurityMonitor.validateSessionIntegrity()) {
           logViolation(
             'session_integrity_failed',
             t('security.session_integrity_failed')
@@ -51,7 +51,7 @@ export const useSecurityMonitor = () => {
 
     // Detectar atividade suspeita
     const suspiciousActivityCheck = setInterval(() => {
-      if (SecurityUtils.detectSuspiciousActivity()) {
+      if (SecurityMonitor.detectSuspiciousActivity()) {
         logViolation(
           'suspicious_activity_detected',
           t('security.suspicious_activity_detected')
@@ -95,7 +95,7 @@ export const useSecurityMonitor = () => {
 
     history.pushState = function (...args) {
       const newUrl = args[2] as string;
-      if (newUrl && SecurityUtils.detectSuspiciousActivity()) {
+      if (newUrl && SecurityMonitor.detectSuspiciousActivity()) {
         logViolation(
           'suspicious_url_change',
           t('security.suspicious_url_change'),
@@ -108,7 +108,7 @@ export const useSecurityMonitor = () => {
 
     history.replaceState = function (...args) {
       const newUrl = args[2] as string;
-      if (newUrl && SecurityUtils.detectSuspiciousActivity()) {
+      if (newUrl && SecurityMonitor.detectSuspiciousActivity()) {
         logViolation(
           'suspicious_url_replace',
           t('security.suspicious_url_replace'),
