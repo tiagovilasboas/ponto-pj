@@ -78,7 +78,7 @@ export const ForgotPassword = () => {
           withBorder
           shadow='xl'
           p='xl'
-          radius='xl'
+          radius={0}
           w='100%'
           className='bg-white/95 backdrop-blur-sm'
         >

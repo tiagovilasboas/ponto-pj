@@ -45,10 +45,11 @@ export const Login = () => {
       <div className='h-4' />
       <Container size='xs' w='100%' maw={400}>
         <Card
+          withBorder
           p='xl'
-          radius='3xl'
-          className='bg-white/80 backdrop-blur-md shadow-2xl border-0'
-          style={{ border: 0 }}
+          radius={0}
+          shadow='xl'
+          className='bg-white/90 backdrop-blur-md'
         >
           <Stack gap='xl'>
             <div style={{ textAlign: 'center' }}>
